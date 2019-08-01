@@ -1,0 +1,3 @@
+[submodule "Frontend/MDC/Assets"]
+	path = Frontend/MDC/Assets
+	url = git@github.com:ledidious/MonsterDungeonCrawler_Assets.git
