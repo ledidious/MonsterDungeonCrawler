@@ -8,7 +8,7 @@ namespace MDC.Gamedata
     {
         private int _playerRemainingMoves { get; set; }
         private int _life { get; set; }
-         private int _attackBoost { get; set; }
+        private int _attackBoost { get; set; }
         private int _defenseBoost { get; set; }
         private int[] _items { get; set; }
         private int[][] _position { get; set; }
