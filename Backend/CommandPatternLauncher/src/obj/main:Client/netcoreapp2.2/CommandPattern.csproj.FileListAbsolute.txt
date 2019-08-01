@@ -1,4 +1,0 @@
-/home/jannis/DEV/workspaces/CommandPattern/obj/main:Client/netcoreapp2.2/CommandPattern.csprojAssemblyReference.cache
-/home/jannis/DEV/workspaces/CommandPattern/obj/main:Client/netcoreapp2.2/CommandPattern.csproj.CoreCompileInputs.cache
-/home/jannis/DEV/workspaces/CommandPattern/obj/main:Client/netcoreapp2.2/CommandPattern.AssemblyInfoInputs.cache
-/home/jannis/DEV/workspaces/CommandPattern/obj/main:Client/netcoreapp2.2/CommandPattern.AssemblyInfo.cs
