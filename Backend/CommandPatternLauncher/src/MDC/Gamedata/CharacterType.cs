@@ -3,15 +3,14 @@ namespace MDC.Gamedata
 {
     public abstract class CharacterType
     {
-        private int _attackPower { get; set; }
-        private int _defensePower { get; set; }
-        private int _attackRanger { get; set; }
+        protected int _attackPower { get; set; }
+        protected int _defensePower { get; set; }
+        protected int _attackRanger { get; set; }
 
         public Boolean AttackEnemy(Player targetPlayer)
         {
             return true;
         }
-
     }
 }
 

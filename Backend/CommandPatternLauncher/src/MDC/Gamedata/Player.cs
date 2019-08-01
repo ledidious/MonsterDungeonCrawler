@@ -7,11 +7,11 @@ namespace MDC.Gamedata
     public abstract class Player
     {
         private int _playerRemainingMoves { get; set; }
-        private int _life { get; set; }
-        private int _attackBoost { get; set; }
-        private int _defenseBoost { get; set; }
-        private int[] _items { get; set; }
-        private int[][] _position { get; set; }
+        protected int _life { get; set; }
+        protected int _attackBoost { get; set; }
+        protected int _defenseBoost { get; set; }
+        protected int[] _items { get; set; }
+        protected int[][] _position { get; set; }
         private CharacterType _char { get; set; }
         public string PlayerName { get; set; }
 
@@ -30,6 +30,13 @@ namespace MDC.Gamedata
                     this._playerRemainingMoves = -999;
                 }
             }
+        }
+
+        public abstract void CollectItem(Item item);
+
+        public Boolean AttackEnemy(Player targetPlayer)
+        {
+            return false;
         }
 
         
