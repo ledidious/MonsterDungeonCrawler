@@ -4,9 +4,16 @@ using System;
 namespace MDC.Gamedata
 {
     [Serializable]
-    public class Player
+    public abstract class Player
     {
-        private int _playerRemainingMoves;
+        private int _playerRemainingMoves { get; set; }
+        private int _life { get; set; }
+         private int _attackBoost { get; set; }
+        private int _defenseBoost { get; set; }
+        private int[] _items { get; set; }
+        private int[][] _position { get; set; }
+        public string PlayerName { get; set; }
+
         public int PlayerRemainingMoves
         {
             get { return _playerRemainingMoves; }
@@ -24,13 +31,16 @@ namespace MDC.Gamedata
             }
         }
 
-        public string PlayerName { get; set; }
+        
 
+        /*
         public Player(string playerName, int moveLimit)
         {
             this.PlayerRemainingMoves = moveLimit;
             this.PlayerName = playerName;
+
         }
+        */
 
     }
 }

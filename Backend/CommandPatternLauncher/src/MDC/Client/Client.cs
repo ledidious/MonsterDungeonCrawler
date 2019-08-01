@@ -7,7 +7,7 @@ using MDC.Gamedata;
 
 namespace MDC.Client
 {
-    class ClientProgram
+    public class ClientProgram
     {
         const int PORT_NO = 5000;
         const string SERVER_IP = "127.0.0.1";

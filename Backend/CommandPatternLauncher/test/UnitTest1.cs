@@ -42,5 +42,6 @@ namespace test
             cm.ProcessPendingTransactions();
             Assert.AreEqual(15, correctPlayer.PlayerRemainingMoves);
         }
-    }
+
+       }
 }
