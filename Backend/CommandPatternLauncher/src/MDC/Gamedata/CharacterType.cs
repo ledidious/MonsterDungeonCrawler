@@ -1,7 +1,6 @@
 using System;
 namespace MDC.Gamedata
 {
-    [Serializable]
     public abstract class CharacterType
     {
         private int _attackPower { get; set; }

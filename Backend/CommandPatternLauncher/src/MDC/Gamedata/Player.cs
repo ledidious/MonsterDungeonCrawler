@@ -12,6 +12,7 @@ namespace MDC.Gamedata
         private int _defenseBoost { get; set; }
         private int[] _items { get; set; }
         private int[][] _position { get; set; }
+        private CharacterType _char { get; set; }
         public string PlayerName { get; set; }
 
         public int PlayerRemainingMoves
