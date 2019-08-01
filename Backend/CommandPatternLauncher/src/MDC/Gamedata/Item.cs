@@ -6,6 +6,7 @@ namespace MDC.Gamedata
         protected int _level;
         protected int _duration; 
 
+<<<<<<< HEAD
         public Boolean CanBeAccessed()
         {
             return true;
@@ -15,5 +16,15 @@ namespace MDC.Gamedata
         {
 
         }     
+=======
+        public Boolean CanBeAccessed(){
+            return true;
+        }
+        public void Effects(Player player){
+
+        }
+
+        
+>>>>>>> branch 'master' of git@github.com:ledidious/MonsterDungeonCrawler.git
     }
 }

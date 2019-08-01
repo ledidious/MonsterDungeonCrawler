@@ -24,6 +24,7 @@ namespace MDC.Server
         /// </summary>
         public static void StartServer()
         {
+
             CommandManager cm = new CommandManager();
 
             //---listen at the specified IP and port no.---
