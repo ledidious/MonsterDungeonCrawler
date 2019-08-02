@@ -4,27 +4,16 @@ namespace MDC.Gamedata
     public abstract class Item : FieldType
     {
         protected int _level;
-        protected int _duration; 
+        protected int _duration;
 
-<<<<<<< HEAD
-        public Boolean CanBeAccessed()
+        public bool CanBeAccessed()
         {
-            return true;
+            throw new NotImplementedException();
         }
-        
+
         public void Effects(Player player)
         {
-
-        }     
-=======
-        public Boolean CanBeAccessed(){
-            return true;
+            throw new NotImplementedException();
         }
-        public void Effects(Player player){
-
-        }
-
-        
->>>>>>> branch 'master' of git@github.com:ledidious/MonsterDungeonCrawler.git
     }
 }

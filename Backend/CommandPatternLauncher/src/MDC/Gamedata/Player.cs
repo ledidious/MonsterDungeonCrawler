@@ -10,7 +10,7 @@ namespace MDC.Gamedata
         protected int _life { get; set; }
         protected int _attackBoost { get; set; }
         protected int _defenseBoost { get; set; }
-        protected int[] _items { get; set; }
+        protected Item[] _items { get; set; }
         protected int[][] _position { get; set; }
         private CharacterType _char { get; set; }
         public string PlayerName { get; set; }

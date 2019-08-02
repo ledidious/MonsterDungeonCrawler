@@ -4,7 +4,7 @@ namespace MDC.Gamedata
     public interface FieldType
     {
         Boolean CanBeAccessed(); 
-        void Effects(Player player); 
+        public void Effects(Player player); 
         
     }
 }
