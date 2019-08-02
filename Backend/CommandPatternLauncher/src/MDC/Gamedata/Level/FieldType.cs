@@ -1,7 +1,7 @@
 using System;
 using MDC.Gamedata.PlayerType;
 
-namespace MDC.Gamedata
+namespace MDC.Gamedata.Level
 {
     interface FieldType
     {
