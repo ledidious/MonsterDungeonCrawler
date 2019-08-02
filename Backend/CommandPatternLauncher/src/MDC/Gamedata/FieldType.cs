@@ -1,10 +1,10 @@
 using System;
 namespace MDC.Gamedata
 {
-    public interface FieldType
+    interface FieldType
     {
         Boolean CanBeAccessed(); 
-        public void Effects(Player player); 
+        void Effects(Player player); 
         
     }
 }
