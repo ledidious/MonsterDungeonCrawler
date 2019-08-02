@@ -16,6 +16,17 @@ namespace MDC.Gamedata.PlayerType
         private CharacterType _char { get; set; }
         public string PlayerName { get; set; }
 
+
+        public int AttackBoost
+        {
+            get { return _attackBoost; }
+        }
+
+        public CharacterType CharacterType
+        {
+            get { return _char; }
+        }
+
         public int PlayerRemainingMoves
         {
             get { return _playerRemainingMoves; }
@@ -35,9 +46,9 @@ namespace MDC.Gamedata.PlayerType
 
         public abstract void CollectItem(Item item);
 
-        public Boolean AttackEnemy(Player targetPlayer)
+        public void DecrementLife(int attackBoost, CharacterType characterType)
         {
-            return false;
+            
         }
 
         

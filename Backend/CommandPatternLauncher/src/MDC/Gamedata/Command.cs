@@ -7,9 +7,10 @@ namespace MDC.Gamedata
     [Serializable]
     public abstract class Command
     {
-        public Player TargetPlayer { get; set; }
-        public string ClientID { get; set; }
+        public Player SourcePlayer { get; set; }
+        public string SourceClientID { get; set; }
         public bool IsCompleted { set; get; }
+
         abstract public void Execute();
     }
 
@@ -19,9 +20,9 @@ namespace MDC.Gamedata
         // private readonly string _direction;
         private readonly int _moveAmount;
 
-        public CommandMove(string clientID, int moveAmount)
+        public CommandMove(string sourceClientID, int moveAmount)
         {
-            ClientID = clientID;
+            SourceClientID = sourceClientID;
             _moveAmount = moveAmount;
             // _direction = direction;
 
@@ -35,9 +36,9 @@ namespace MDC.Gamedata
         {
             try
             {
-                if (TargetPlayer.PlayerRemainingMoves >= _moveAmount)
+                if (SourcePlayer.PlayerRemainingMoves >= _moveAmount)
                 {
-                    TargetPlayer.PlayerRemainingMoves -= _moveAmount;
+                    SourcePlayer.PlayerRemainingMoves -= _moveAmount;
 
                     IsCompleted = true;
                 }
@@ -53,6 +54,31 @@ namespace MDC.Gamedata
 
         }
 
+    }
+
+    [Serializable]
+    public class CommandAttack : Command
+    {
+        public string TargetClientID { get; set; }
+        public Player TargetPlayer { get; set; }
+
+        public CommandAttack(string sourceClientID, string targetClientID){
+            SourceClientID = sourceClientID;
+            TargetClientID = targetClientID;  
+        }
+
+            //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
+        public override void Execute()
+        {
+            //TODO: Throw Exception if AttackedPlayer not reachable 
+
+            int attackBoost = SourcePlayer.AttackBoost; 
+            CharacterType characterType = SourcePlayer.CharacterType;
+        
+            TargetPlayer.DecrementLife(attackBoost, characterType); 
+            
+            
+        }
     }
 
 }
