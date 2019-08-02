@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using MDC.Gamedata;
+using MDC.Gamedata.PlayerType;
 
 namespace MDC.Server
 {
@@ -59,7 +60,9 @@ namespace MDC.Server
 
             //---Get the playerName from the server and create a new Player---
             string playerName = ReceiveStringFromClient(client);
-            _players.Add(clientID, new Player(playerName, 20));
+            // _players.Add(clientID, new Player(playerName, 20));
+            //TODO: Make it universal --> Each PlayerType should be addable
+            _players.Add(clientID, new Hero("Manfred", 20));
 
             //---write back the client ID to the client---
             SendStringToClient(client, clientID);

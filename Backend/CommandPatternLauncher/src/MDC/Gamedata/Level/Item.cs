@@ -1,4 +1,6 @@
 using System;
+using MDC.Gamedata.PlayerType;
+
 namespace MDC.Gamedata
 {
     public abstract class Item : FieldType

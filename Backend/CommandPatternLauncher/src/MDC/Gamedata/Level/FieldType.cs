@@ -1,4 +1,6 @@
 using System;
+using MDC.Gamedata.PlayerType;
+
 namespace MDC.Gamedata
 {
     interface FieldType

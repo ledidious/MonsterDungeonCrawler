@@ -1,4 +1,5 @@
 using System;
+using MDC.Gamedata.Level;
 
 namespace MDC.Gamedata.PlayerType
 {

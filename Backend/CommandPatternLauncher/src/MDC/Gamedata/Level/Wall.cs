@@ -1,10 +1,10 @@
 using System;
+using MDC.Gamedata.PlayerType;
+
 namespace MDC.Gamedata
 {
-    public abstract class Trap : FieldType
+    public class Wall : FieldType
     {
-        private int _dealingDamage;
-
         public Boolean CanBeAccessed(){
             return true;
         }

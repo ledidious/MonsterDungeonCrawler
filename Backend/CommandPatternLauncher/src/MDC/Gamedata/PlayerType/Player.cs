@@ -1,7 +1,8 @@
 //Receiver
 using System;
+using MDC.Gamedata.Level;
 
-namespace MDC.Gamedata
+namespace MDC.Gamedata.PlayerType
 {
     [Serializable]
     public abstract class Player
@@ -51,4 +52,26 @@ namespace MDC.Gamedata
         */
 
     }
+
+    // public class Hero : Player
+    // {
+    //     public Hero(string playerName, int moveLimit){
+    //         this.PlayerRemainingMoves = moveLimit;
+    //         this.PlayerName = playerName;
+    //     }
+
+    //     public override void CollectItem(Item item)
+    //     {
+    //         this._items[this._items.Length] = item;
+    //     }
+    // }
+
+    // class Monster : Player
+    // {
+    //     public override void CollectItem(Item item)
+    //     {
+    //         this._items[this._items.Length] = item;
+    //     }
+    // }
 }
+
