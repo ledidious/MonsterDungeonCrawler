@@ -72,12 +72,11 @@ namespace MDC.Gamedata
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
 
-            int attackBoost = SourcePlayer.AttackBoost; 
+            double attackBoost = SourcePlayer.AttackBoost; 
             CharacterType characterType = SourcePlayer.CharacterType;
         
             TargetPlayer.DecrementLife(attackBoost, characterType); 
-            
-            
+                        
         }
     }
 

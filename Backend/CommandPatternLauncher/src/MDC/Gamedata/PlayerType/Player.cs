@@ -7,17 +7,38 @@ namespace MDC.Gamedata.PlayerType
     [Serializable]
     public abstract class Player
     {
+
+        const double LIFE_MONSTER = 3;
+        const double LIFE_HERO = 5;
+
         private int _playerRemainingMoves { get; set; }
-        protected int _life { get; set; }
-        protected int _attackBoost { get; set; }
-        protected int _defenseBoost { get; set; }
+        public double _life { get; set; }
+        protected double _attackBoost { get; set; }
+        protected double _defenseBoost { get; set; }
         protected Item[] _items { get; set; }
-        protected int[][] _position { get; set; }
-        private CharacterType _char { get; set; }
+        protected int[,] _position { get; set; }
+        protected CharacterType _char { get; set; }
         public string PlayerName { get; set; }
 
+        public double Life 
+        {
+            get { return _life; }
 
-        public int AttackBoost
+            set 
+            {
+                if (this._char.Equals(typeof(Monster)))
+                {
+                    _life = LIFE_MONSTER;
+                }
+                else
+                {
+                    _life = LIFE_HERO;
+                }
+
+            }
+        }
+
+        public double AttackBoost
         {
             get { return _attackBoost; }
         }
@@ -25,6 +46,8 @@ namespace MDC.Gamedata.PlayerType
         public CharacterType CharacterType
         {
             get { return _char; }
+
+            set => _char = value; 
         }
 
         public int PlayerRemainingMoves
@@ -46,9 +69,12 @@ namespace MDC.Gamedata.PlayerType
 
         public abstract void CollectItem(Item item);
 
-        public void DecrementLife(int attackBoost, CharacterType characterType)
+        public void DecrementLife(double attackBoost, CharacterType characterType)
         {
-            
+            double totalAttackPower = attackBoost + characterType._attackPower; 
+            double totalDefensePower = this._defenseBoost + this._char._defensePower;
+
+            this._life -= totalAttackPower - totalDefensePower; 
         }
 
         

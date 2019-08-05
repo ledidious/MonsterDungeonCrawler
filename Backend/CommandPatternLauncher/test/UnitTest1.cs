@@ -2,12 +2,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MDC.Server;
 using MDC.Gamedata;
 using MDC.Client;
+using MDC.Gamedata.Level;
+using MDC.Gamedata.PlayerType; 
 
 namespace test
 {
     [TestClass]
     public class UnitTest1
     {
+        
         [TestMethod]
         [ExpectedException(typeof(System.NullReferenceException), "Object reference not set to an instance of an object.")]
         public void NullTargetPlayerCommand()
@@ -19,6 +22,33 @@ namespace test
             cm.ProcessPendingTransactions();
         }
 
+        [TestMethod]
+        public void NumberOfLife() 
+        {
+            Hero player1 = new Hero("hero", new MeleeFighter(), new int[3, 2]);
+            Monster player2 = new Monster("monster", new RangeFighter(), new int[3, 1]);
+
+            Assert.AreEqual(5, player1._life);
+            Assert.AreEqual(3, player2._life);
+        }
+
+
+        [TestMethod]
+        public void AttackEnemy() 
+        {
+            CommandManager cm = new CommandManager(); 
+
+            Hero player1 = new Hero("hero", new MeleeFighter(), new int[3, 2]); 
+            Monster player2 = new Monster("monster", new RangeFighter(), new int[3, 1]);
+
+            player2.DecrementLife(player1.AttackBoost, player1.CharacterType); 
+
+            Assert.AreEqual(2.75, player2._life);
+        }
+
+       
+       //TODO: change Player objects to Monster or Hero objects
+        /*
         [TestMethod]
         public void TestAllCommandsSuccessful()
         {
@@ -42,6 +72,7 @@ namespace test
             cm.ProcessPendingTransactions();
             Assert.AreEqual(15, correctPlayer.PlayerRemainingMoves);
         }
+        */
 
        }
 }
