@@ -8,34 +8,24 @@ namespace MDC.Gamedata.PlayerType
     public abstract class Player
     {
 
-        const double LIFE_MONSTER = 3;
-        const double LIFE_HERO = 5;
+        protected const double LIFE_MONSTER = 3;
+        protected const double LIFE_HERO = 5;
 
+        protected int XPosition;
+        protected int YPosition;
         private int _playerRemainingMoves { get; set; }
         public double _life { get; set; }
         protected double _attackBoost { get; set; }
         protected double _defenseBoost { get; set; }
-        protected Item[] _items { get; set; }
-        protected int[,] _position { get; set; }
+        protected int[] _items { get; set; }
         protected CharacterType _char { get; set; }
         public string PlayerName { get; set; }
 
-        public double Life 
+        public double Life
         {
             get { return _life; }
 
-            set 
-            {
-                if (this._char.Equals(typeof(Monster)))
-                {
-                    _life = LIFE_MONSTER;
-                }
-                else
-                {
-                    _life = LIFE_HERO;
-                }
-
-            }
+            set => _life = value;
         }
 
         public double AttackBoost
@@ -47,7 +37,20 @@ namespace MDC.Gamedata.PlayerType
         {
             get { return _char; }
 
-            set => _char = value; 
+            set
+            {
+
+                _char = value;
+
+                if (this is Monster)
+                {
+                    _life = LIFE_MONSTER;
+                }
+                else
+                {
+                    _life = LIFE_HERO;
+                }
+            }
         }
 
         public int PlayerRemainingMoves
@@ -71,13 +74,13 @@ namespace MDC.Gamedata.PlayerType
 
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
-            double totalAttackPower = attackBoost + characterType._attackPower; 
+            double totalAttackPower = attackBoost + characterType._attackPower;
             double totalDefensePower = this._defenseBoost + this._char._defensePower;
 
-            this._life -= totalAttackPower - totalDefensePower; 
+            _life -= totalAttackPower - totalDefensePower;
         }
 
-        
+
 
         /*
         public Player(string playerName, int moveLimit)
