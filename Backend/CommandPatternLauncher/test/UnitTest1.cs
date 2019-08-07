@@ -4,6 +4,7 @@ using MDC.Client;
 using MDC.Gamedata.Level;
 using MDC.Gamedata.PlayerType;
 using MDC.Server;
+using MDC.Exceptions;
 
 namespace test
 {
@@ -32,7 +33,6 @@ namespace test
             cm.ProcessPendingTransactions();
         }
 
-        
         [TestMethod]
         public void AttackEnemy()
         {
@@ -42,6 +42,29 @@ namespace test
             player4.DecrementLife(player3.AttackBoost, player3.CharacterType);
 
             Assert.AreEqual(2, player4._life);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CantAttackException))]
+        public void AttackMyself()
+        {
+            CommandManager cm = new CommandManager();
+            CommandAttack cattack = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "2f2de19a291c41b5ae950faa11162e07");
+
+        }
+        
+        [TestMethod]
+        [ExpectedException(typeof(CantAttackException))]
+        public void AttackATeammember()
+        {
+            Monster player5 = new Monster("monster", new RangeFighter(), 30, 20);
+            Monster player6 = new Monster("monster", new RangeFighter(), 30, 20);
+            CommandManager cm2 = new CommandManager();
+            CommandAttack cattack = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "2f2de19a291c41b5ae950faa11162e07");
+            cattack.SourcePlayer = player5; 
+            cattack.SourcePlayer = player6;
+            cm2.ProcessPendingTransactions();  
+
         }
 
         /*

@@ -62,21 +62,29 @@ namespace MDC.Gamedata
         public string TargetClientID { get; set; }
         public Player TargetPlayer { get; set; }
 
-        public CommandAttack(string sourceClientID, string targetClientID){
+        public CommandAttack(string sourceClientID, string targetClientID)
+        {
             SourceClientID = sourceClientID;
-            TargetClientID = targetClientID;  
+            TargetClientID = targetClientID;
+
+            if(SourceClientID == TargetClientID)
+                throw new Exceptions.CantAttackException();
+            
         }
 
-            //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
+        //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
         public override void Execute()
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
 
-            double attackBoost = SourcePlayer.AttackBoost; 
+            if(SourcePlayer is Monster && TargetPlayer is Monster)
+                throw new Exceptions.CantAttackException();
+
+            double attackBoost = SourcePlayer.AttackBoost;
             CharacterType characterType = SourcePlayer.CharacterType;
-        
-            TargetPlayer.DecrementLife(attackBoost, characterType); 
-                        
+
+            TargetPlayer.DecrementLife(attackBoost, characterType);
+
         }
     }
 
