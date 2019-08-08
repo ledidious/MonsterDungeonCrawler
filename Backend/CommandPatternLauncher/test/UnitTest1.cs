@@ -60,11 +60,51 @@ namespace test
             Monster player5 = new Monster("monster", new RangeFighter(), 30, 20);
             Monster player6 = new Monster("monster", new RangeFighter(), 30, 20);
             CommandManager cm2 = new CommandManager();
-            CommandAttack cattack = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "2f2de19a291c41b5ae950faa11162e07");
-            cattack.SourcePlayer = player5; 
-            cattack.SourcePlayer = player6;
+            CommandAttack cattack2 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "2242342342343");
+            cattack2.SourcePlayer = player5; 
+            cattack2.TargetPlayer = player6;
+            cm2.AddCommand(cattack2);
             cm2.ProcessPendingTransactions();  
 
+        }
+        
+        [TestMethod]
+        public void EnemyInRange()
+        {   
+            CommandManager cm3 = new CommandManager();
+
+            //Test enemy in range on the right side
+            Hero player7 = new Hero("hero", new RangeFighter(), 11, 9);
+            Monster player8 = new Monster("monster", new MeleeFighter(), 14, 9);
+            CommandAttack cattack3 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "8582252885");
+            cattack3.SourcePlayer = player7;
+            cattack3.TargetPlayer = player8;
+           
+            Assert.IsTrue(cattack3.VerifyAttackRange());
+            
+            //Test out of range on the right side
+            Monster player9 = new Monster("monster", new MeleeFighter(), 15, 9);
+            CommandAttack cattack4 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "zut85822asd52885");
+            cattack4.SourcePlayer = player7;
+            cattack4.TargetPlayer = player9;
+
+            Assert.IsFalse(cattack4.VerifyAttackRange());
+
+            //Test enemy in range on the bottom side
+            Monster player10 = new Monster("monster", new MeleeFighter(), 11, 11);
+            CommandAttack cattack5 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "123124sdf2885");
+            cattack5.SourcePlayer = player7;
+            cattack5.TargetPlayer = player10;
+
+            Assert.IsTrue(cattack5.VerifyAttackRange());
+
+            //Test out of range on the bottom side
+            Monster player11 = new Monster("monster", new MeleeFighter(), 11, 5);
+            CommandAttack cattack6 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
+            cattack6.SourcePlayer = player7;
+            cattack6.TargetPlayer = player11;
+
+            Assert.IsFalse(cattack6.VerifyAttackRange());
         }
 
         /*
