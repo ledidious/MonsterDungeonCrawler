@@ -69,7 +69,6 @@ namespace MDC.Gamedata
 
             if (SourceClientID == TargetClientID)
                 throw new Exceptions.CantAttackException();
-
         }
 
         public Boolean VerifyAttackRange()
@@ -81,31 +80,38 @@ namespace MDC.Gamedata
                 for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
                 {
                     if (SourcePlayer.YPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.YPosition)
+                    {
                         TargetInRange = true;
+                    }
                     else
                     {
-                        //Target isn't in attackrange
+                        //enemy out of range
                     }
-
                 }
 
-                if (SourcePlayer.YPosition == TargetPlayer.YPosition)
-                {
-                    for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
-                    {
-                        if (SourcePlayer.XPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.XPosition)
-                            TargetInRange = true;
-                        else
-                        {
-                            //Target isn't in attackrange
-                        }
-                    }
-
-                }
             }
+
+            if (SourcePlayer.YPosition == TargetPlayer.YPosition)
+            {
+                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                {
+                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.XPosition)
+                    {
+                        TargetInRange = true;
+                    }
+                    else
+                    {
+                        //enemy out of range
+                    }
+
+                }
+
+            }
+
 
             return TargetInRange;
         }
+
 
         //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
         public override void Execute()
@@ -121,6 +127,7 @@ namespace MDC.Gamedata
             TargetPlayer.DecrementLife(attackBoost, characterType);
 
         }
+
     }
 
 }
