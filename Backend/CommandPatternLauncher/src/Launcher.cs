@@ -22,7 +22,7 @@ class Launcher
                 break;
             case 2:
                 Console.WriteLine("---------------------SERVER---------------------");
-                ServerProgram.StartServer();
+                MasterServer.StartServer();
                 break;
             default:
                 break;

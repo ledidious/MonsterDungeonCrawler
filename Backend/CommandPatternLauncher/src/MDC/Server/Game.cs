@@ -11,50 +11,97 @@ using MDC.Gamedata.PlayerType;
 
 namespace MDC.Server
 {
-    public class ServerProgram
+    public class Game
     {
-        const int PORT_NO = 5000;
-        const string SERVER_IP = "127.0.0.1";
-        const int MAX_CLIENTS = 4;
+        const int MAX_CLIENTS = 4; //Vorher 4, aber da Game vom Hauptclient gehostet wird nur 3
 
         // Player/Client mapping: the string represents the clientID
-        static private Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        private Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        // private Dictionary<string, TcpClient> _clientsOfThisGame = new Dictionary<string, TcpClient>();
+        private List<TcpClient> _clientsOfThisGame = new List<TcpClient>();
+        private TcpClient _currentClient;
+        private Player _currentPlayer;
+        private int _lapsRemaining;
+        private String _sessionID;
+        CommandManager gcm = new CommandManager();
 
-        /// <summary>
-        /// Start a new server, which clients can connect to via a TCP connection
-        /// </summary>
-        public static void StartServer()
+        public Game(String sessionID, TcpClient firstClient)
         {
+            _clientsOfThisGame.Add(firstClient);
+            this._sessionID = sessionID;
+            this._currentClient = firstClient;
 
-            CommandManager cm = new CommandManager();
+            // CommandManager gcm = new CommandManager();
 
-            //---listen at the specified IP and port no.---
-            IPAddress localAdd = IPAddress.Parse(SERVER_IP);
-            TcpListener listener = new TcpListener(localAdd, PORT_NO);
-            
-            Console.WriteLine("IP: " + SERVER_IP);
-            Console.WriteLine("Listening...");
-            listener.Start();
+            // while (true)
+            // {
+            //     gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
+            //     gcm.ProcessPendingTransactions();
+            // }
+        }
 
-            int counter = 0;
-            while (counter < MAX_CLIENTS)
+        private void AddPlayerToGame(String playerName)
+        {
+            //TODO: Richtige Namen ermitteln
+            // _players.Add(new Hero(playerName, 20));
+
+            throw new NotImplementedException();
+        }
+
+        public void AddClientToGame(TcpClient client, string playerName)
+        {
+            if (_clientsOfThisGame.Count < MAX_CLIENTS)
             {
-                counter++;
-                TcpClient tcpClient = listener.AcceptTcpClient();
-
-                Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, cm)));
-                clientThread.Start();
+                _clientsOfThisGame.Add(client);
+                // _players.Add()
             }
 
-            listener.Stop();
+            throw new NotImplementedException();
         }
+
+        public void StartGame()
+        {
+            // gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
+            // gcm.ProcessPendingTransactions();
+
+            throw new NotImplementedException();
+        }
+
+        // /// <summary>
+        // /// Start a new server, which clients can connect to via a TCP connection
+        // /// </summary>
+        // public static void StartServer()
+        // {
+
+        //     CommandManager cm = new CommandManager();
+
+        //     //---listen at the specified IP and port no.---
+        //     IPAddress localAdd = IPAddress.Parse(SERVER_IP);
+        //     TcpListener listener = new TcpListener(localAdd, PORT_NO);
+
+        //     Console.WriteLine("IP: " + SERVER_IP);
+        //     Console.WriteLine("Listening...");
+        //     listener.Start();
+
+        //     int counter = 0;
+        //     while (counter < MAX_CLIENTS)
+        //     {
+        //         counter++;
+        //         TcpClient tcpClient = listener.AcceptTcpClient();
+
+        //         Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, cm)));
+        //         clientThread.Start();
+        //     }
+
+        //     listener.Stop();
+        // }
 
         /// <summary>
         /// Called when a new Client connects to the server
         /// </summary>
         /// <param name="client">The Tcp Client</param>
         /// <param name="cm">The Command Manager</param>
-        private static void ClientInteraction(TcpClient client, CommandManager cm)
+        private void ClientInteraction(TcpClient client, CommandManager cm)
         {
             string clientID = GenerateID();
 
@@ -70,7 +117,7 @@ namespace MDC.Server
             Console.WriteLine($"Player {_players[clientID].PlayerName} has {_players[clientID].PlayerRemainingMoves} moves left.");
 
             //---Receive command from client
-            Command command = ReceiveCommandFromClient(client);
+            GameCommand command = ReceiveCommandFromClient(client);
 
             //---Get the matching player object from the dictionary and inject it into the command----
             command.TargetPlayer = _players.GetValueOrDefault(command.ClientID);
@@ -125,12 +172,18 @@ namespace MDC.Server
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received Command</returns>
-        private static Command ReceiveCommandFromClient(TcpClient client)
+        private static GameCommand ReceiveCommandFromClient(TcpClient client)
         {
             NetworkStream nwStream = client.GetStream();
             IFormatter formatter = new BinaryFormatter();
 
-            return (Command)formatter.Deserialize(nwStream); ;
+            return (GameCommand)formatter.Deserialize(nwStream); ;
+        }
+
+        public Player NextPlayer()
+        {
+            // _currentClient = _clientsOfThisGame.FindIndex();
+            return null;
         }
 
         // ############

@@ -12,7 +12,8 @@ namespace MDC.Client
         const int PORT_NO = 5000;
         const string SERVER_IP = "127.0.0.1";
 
-        static string CLIENT_ID;
+        static string hostSession_ID;
+        static string client_ID;
 
         /// <summary>
         /// generates a tcp client and networkstream to send data or receive data from the server
@@ -25,17 +26,61 @@ namespace MDC.Client
             //---create a TCPClient object at the IP and port no.---
             TcpClient server = new TcpClient(SERVER_IP, PORT_NO);
 
-            //---send the player name to the server---
-            SendStringToServer(server, "Vegeta");
-
             //---get the client ID from the server---
-            CLIENT_ID = ReceiveStringFromServer(server);
+            client_ID = ReceiveStringFromServer(server);
 
-            //---create a command for the player of this client---
-            CommandMove command = new CommandMove(CLIENT_ID, 5);
-            SendCommandToServer(server, command);
+
+            // //---send the player name to the server---
+            // SendStringToServer(server, "Vegeta");
+
+            // //---create a command for the player of this client---
+            // CommandMove command = new CommandMove(CLIENT_ID, 5);
+
+            Console.WriteLine("Please choose: [1] New Game, [2] Connect to Game");
+            int decision = int.Parse(Console.ReadLine());
+
+            switch (decision)
+            {
+                case 1:
+                    CreateNewGame(server);
+                    break;
+                case 2:
+                    Console.WriteLine("Insert Session ID");
+                    string input = Console.ReadLine();
+                    ConnectToGame(server, input);
+                    break;
+                default:
+                    break;
+            }
+            // CreateNewGame(server);
+            // StartGame(server);
 
             server.Close();
+        }
+
+        public static void CreateNewGame(TcpClient server)
+        {
+            // CommandNewGame command = new CommandNewGame();
+            CommandNewGame command = new CommandNewGame(client_ID);
+            SendCommandToServer(server, command);
+
+            hostSession_ID = ReceiveStringFromServer(server);
+            Console.WriteLine("ID of the new Game: " + hostSession_ID);
+        }
+
+        public static void ConnectToGame(TcpClient server, string sessionID)
+        {
+            Console.WriteLine("Connecting to: " + sessionID);
+            CommandJoinGame command = new CommandJoinGame(client_ID, sessionID, "Luffy");
+            SendCommandToServer(server, command);
+
+            hostSession_ID = ReceiveStringFromServer(server);
+        }
+
+        public static void StartGame(TcpClient server)
+        {
+            CommandStartGame command = new CommandStartGame(client_ID, hostSession_ID);
+            SendCommandToServer(server, command);
         }
 
         /// <summary>
