@@ -11,8 +11,8 @@ namespace MDC.Gamedata.PlayerType
         protected const double LIFE_MONSTER = 3;
         protected const double LIFE_HERO = 5;
 
-        protected int XPosition;
-        protected int YPosition;
+        public int XPosition;
+        public int YPosition;
         private int _playerRemainingMoves { get; set; }
         public double _life { get; set; }
         protected double _attackBoost { get; set; }
@@ -79,6 +79,7 @@ namespace MDC.Gamedata.PlayerType
 
             _life -= totalAttackPower - totalDefensePower;
         }
+
 
 
 

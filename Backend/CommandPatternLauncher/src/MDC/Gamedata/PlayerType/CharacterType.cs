@@ -7,10 +7,8 @@ namespace MDC.Gamedata.PlayerType
     {
         public abstract double _attackPower { get; }
         public abstract double _defensePower { get; }
-        public abstract double _attackRange { get; }
+        public abstract int _attackRange { get; }
 
-    }
-
-    
+    }    
 }
 

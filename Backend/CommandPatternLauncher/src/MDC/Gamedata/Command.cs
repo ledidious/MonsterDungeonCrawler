@@ -67,9 +67,44 @@ namespace MDC.Gamedata
             SourceClientID = sourceClientID;
             TargetClientID = targetClientID;
 
-            if(SourceClientID == TargetClientID)
+            if (SourceClientID == TargetClientID)
                 throw new Exceptions.CantAttackException();
-            
+
+        }
+
+        public Boolean VerifyAttackRange()
+        {
+            Boolean TargetInRange = false;
+
+            if (SourcePlayer.XPosition == TargetPlayer.XPosition)
+            {
+                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                {
+                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.YPosition)
+                        TargetInRange = true;
+                    else
+                    {
+                        //Target isn't in attackrange
+                    }
+
+                }
+
+                if (SourcePlayer.YPosition == TargetPlayer.YPosition)
+                {
+                    for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                    {
+                        if (SourcePlayer.XPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.XPosition)
+                            TargetInRange = true;
+                        else
+                        {
+                            //Target isn't in attackrange
+                        }
+                    }
+
+                }
+            }
+
+            return TargetInRange;
         }
 
         //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
@@ -77,7 +112,7 @@ namespace MDC.Gamedata
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
 
-            if(SourcePlayer is Monster && TargetPlayer is Monster)
+            if (SourcePlayer is Monster && TargetPlayer is Monster)
                 throw new Exceptions.CantAttackException();
 
             double attackBoost = SourcePlayer.AttackBoost;
