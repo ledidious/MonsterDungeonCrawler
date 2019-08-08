@@ -1,17 +1,19 @@
 //Command
 using System;
+using MDC.Gamedata.PlayerType;
 
 namespace MDC.Gamedata
 {
     [Serializable]
     public abstract class Command
     {
-        public string ClientID { get; set; }
+        public string SourceClientID { get; set; }
         public bool IsCompleted { set; get; }
 
-        public Command(string clientID)
+
+        public Command(string sourceClientID)
         {
-            this.ClientID = clientID;
+            this.SourceClientID = sourceClientID;
         }
         abstract public void Execute();
     }

@@ -101,7 +101,7 @@ namespace MDC.Server
         /// </summary>
         /// <param name="client">The Tcp Client</param>
         /// <param name="cm">The Command Manager</param>
-        private void ClientInteraction(TcpClient client, CommandManager cm)
+       /*  private void ClientInteraction(TcpClient client, CommandManager cm)
         {
             string clientID = GenerateID();
 
@@ -129,7 +129,7 @@ namespace MDC.Server
 
             client.Close();
 
-        }
+        } */
 
         /// <summary>
         /// Generate an unique ID
