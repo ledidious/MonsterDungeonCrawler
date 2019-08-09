@@ -1,9 +1,9 @@
 using System;
 using MDC.Gamedata.PlayerType;
 
-namespace MDC.Gamedata.Level
+namespace MDC.Gamedata.LevelContent
 {
-    interface FieldType
+    public interface FieldType
     {
         Boolean CanBeAccessed(); 
         void Effects(Player player); 

@@ -1,6 +1,6 @@
 using System;
 
-namespace MDC.Gamedata.Level
+namespace MDC.Gamedata.LevelContent
 {
     public class ExtraLife : Item
     {

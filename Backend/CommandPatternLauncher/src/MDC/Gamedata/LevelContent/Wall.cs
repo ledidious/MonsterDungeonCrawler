@@ -1,17 +1,17 @@
 using System;
 using MDC.Gamedata.PlayerType;
 
-namespace MDC.Gamedata.Level
+namespace MDC.Gamedata.LevelContent
 {
-    public abstract class Trap : FieldType
+    public class Wall : FieldType
     {
-        private int _dealingDamage;
-
         public Boolean CanBeAccessed(){
-            return true;
+            return false;
         }
         public void Effects(Player player){
 
         }
+
+        
     }
 }
