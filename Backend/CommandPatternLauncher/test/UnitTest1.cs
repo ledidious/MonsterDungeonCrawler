@@ -111,11 +111,15 @@ namespace test
         public void LevelAddAllFieldObjects()
         {
             Field field1 = new Field(13, 9, new Wall()); 
+            Field field8 = new Field(11, 9, new Floor());
 
             Assert.AreEqual(field1, Level.playingField[13, 9]);
             Assert.AreNotEqual(field1, Level.playingField[10, 9]);
 
+            Assert.AreEqual(field8, Level.playingField[11, 9]);
+
             Assert.IsInstanceOfType(Level.playingField[13, 9]._fieldType, typeof(Wall));
+            Assert.IsInstanceOfType(Level.playingField[11, 9]._fieldType, typeof(Floor));
         }
 
         [TestMethod]
@@ -124,6 +128,7 @@ namespace test
 
             //test obstacle in range on the bottom side
             Field field2 = new Field(11, 11, new Wall());
+            Field field7 = new Field(11, 10, new Floor()); 
 
             Hero player12 = new Hero("hero", new MeleeFighter(), 11, 9);
             Monster player13 = new Monster("monster", new MeleeFighter(), 11, 12);
@@ -179,7 +184,7 @@ namespace test
 
             //test obstacle in range on the left side
             Field field6 = new Field(2, 5, new Wall());
-
+    
             Hero player19 = new Hero("hero", new MeleeFighter(), 4, 5);
             Monster player20 = new Monster("monster", new MeleeFighter(), 1, 5);
 
@@ -209,7 +214,20 @@ namespace test
       
         }
 
-        
+          [TestMethod]
+        public void ManualTrapAttack()
+        {
+            Hero player21 = new Hero("hero", new RangeFighter(), 11, 9);
+            Field field7 = new Field(11, 9, new Trapdoor());
+
+            field7._fieldType.Effects(player21);
+
+            Assert.AreEqual(0, player21.Life);
+        }
+
+
+
+        //TODO: test if player can access a floor object and a wall object        
 
         /*
         //TODO: change Player objects to Monster or Hero objects

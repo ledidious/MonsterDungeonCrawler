@@ -16,8 +16,8 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandMove : GameCommand
-    {
+    public class CommandMove : GameCommand //TODO: check if target fieldtype is a trap -> activate Effects method
+    {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
         // private readonly string _direction;
         private readonly int _moveAmount;
 
@@ -199,6 +199,8 @@ namespace MDC.Gamedata
             CharacterType characterType = SourcePlayer.CharacterType;
 
             TargetPlayer.DecrementLife(attackBoost, characterType);
+
+            SourcePlayer._playerRemainingMoves = 0;
 
         }
 

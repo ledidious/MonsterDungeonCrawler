@@ -5,13 +5,11 @@ namespace MDC.Gamedata.LevelContent
 {
     public abstract class Trap : FieldType
     {
-        private int _dealingDamage;
+        public abstract double _dealingDamage { get; } 
 
         public Boolean CanBeAccessed(){
             return true;
         }
-        public void Effects(Player player){
-
-        }
+        public void Effects(Player player) => player.DecrementLife(this._dealingDamage);
     }
 }

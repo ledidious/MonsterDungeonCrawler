@@ -4,14 +4,36 @@ namespace MDC.Gamedata.LevelContent
 {
     public class LaserBeam : Trap
     {
-        private int _interval;
 
-        public void turnOn(){
+        public override double _dealingDamage => 1; 
 
-        }
+        public Boolean _isActive { get; set; } 
+        
+        private int _interval = 3;
 
-        public void turnOff(){
+
+        //TODO: connect with playround counter
+        /*
+        
+        public Boolean ActivateLaser
+        {
+            get { return _isActive; }
+
+            set 
+            { 
+                if(ROUNDCOUNTER % _interval == 0)
+                {
+                    _isActive = true;
+                }
+                else
+                {
+                    _isActive = false; 
+                }
             
+            }
         }
+        
+         */
+  
     }
 }

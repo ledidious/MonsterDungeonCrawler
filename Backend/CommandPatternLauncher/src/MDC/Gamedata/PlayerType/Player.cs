@@ -13,7 +13,7 @@ namespace MDC.Gamedata.PlayerType
 
         public int XPosition;
         public int YPosition;
-        private int _playerRemainingMoves { get; set; }
+        public int _playerRemainingMoves { get; set; }
         public double _life { get; set; }
         protected double _attackBoost { get; set; }
         protected double _defenseBoost { get; set; }
@@ -78,41 +78,18 @@ namespace MDC.Gamedata.PlayerType
             double totalDefensePower = this._defenseBoost + this._char._defensePower;
 
             _life -= totalAttackPower - totalDefensePower;
+
+            this._defenseBoost = 0; 
         }
 
-
-
-
-        /*
-        public Player(string playerName, int moveLimit)
+        public void DecrementLife(double _dealingDamage)
         {
-            this.PlayerRemainingMoves = moveLimit;
-            this.PlayerName = playerName;
+           _life -= _dealingDamage - (this._defenseBoost + this._char._defensePower);
 
+            this._defenseBoost = 0; 
         }
-        */
 
     }
 
-    // public class Hero : Player
-    // {
-    //     public Hero(string playerName, int moveLimit){
-    //         this.PlayerRemainingMoves = moveLimit;
-    //         this.PlayerName = playerName;
-    //     }
-
-    //     public override void CollectItem(Item item)
-    //     {
-    //         this._items[this._items.Length] = item;
-    //     }
-    // }
-
-    // class Monster : Player
-    // {
-    //     public override void CollectItem(Item item)
-    //     {
-    //         this._items[this._items.Length] = item;
-    //     }
-    // }
 }
 
