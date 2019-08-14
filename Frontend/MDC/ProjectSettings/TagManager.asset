@@ -9,7 +9,7 @@ TagManager:
   - Door
   - Enemy
   - Trap
-  - Teleporter
+  - Trapdoor
   layers:
   - Default
   - TransparentFX
