@@ -10,6 +10,9 @@ namespace MDC.Gamedata.LevelContent
         public Boolean CanBeAccessed(){
             return true;
         }
-        public void Effects(Player player) => player.DecrementLife(this._dealingDamage);
+        public void Effects(Player player)
+        {
+            player.DecrementLife(this._dealingDamage);
+        }
     }
 }

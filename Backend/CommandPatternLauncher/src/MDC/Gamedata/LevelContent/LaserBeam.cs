@@ -1,4 +1,5 @@
 using System;
+using MDC.Server;
 
 namespace MDC.Gamedata.LevelContent
 {
@@ -7,33 +8,19 @@ namespace MDC.Gamedata.LevelContent
 
         public override double _dealingDamage => 1; 
 
-        public Boolean _isActive { get; set; } 
+        public Boolean IsActive; 
         
         private int _interval = 3;
 
-
-        //TODO: connect with playround counter
-        /*
-        
+        //TODO: Game class has to activate this attribute if roundcounter % 3 == 0
         public Boolean ActivateLaser
         {
-            get { return _isActive; }
+            get { return IsActive; }
 
-            set 
-            { 
-                if(ROUNDCOUNTER % _interval == 0)
-                {
-                    _isActive = true;
-                }
-                else
-                {
-                    _isActive = false; 
-                }
-            
-            }
+            set { IsActive = value; }
         }
         
-         */
+         
   
     }
 }

@@ -13,6 +13,7 @@ namespace MDC.Server
 {
     public class Game
     {
+        public int RoundCounter;
         const int MAX_CLIENTS = 4; //Vorher 4, aber da Game vom Hauptclient gehostet wird nur 3
 
         // Player/Client mapping: the string represents the clientID

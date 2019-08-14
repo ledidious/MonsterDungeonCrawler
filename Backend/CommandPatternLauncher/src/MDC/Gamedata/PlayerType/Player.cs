@@ -17,7 +17,7 @@ namespace MDC.Gamedata.PlayerType
         public double _life { get; set; }
         protected double _attackBoost { get; set; }
         protected double _defenseBoost { get; set; }
-        protected int[] _items { get; set; }
+        public Item[] Items;
         protected CharacterType _char { get; set; }
         public string PlayerName { get; set; }
 
@@ -46,7 +46,7 @@ namespace MDC.Gamedata.PlayerType
                 {
                     _life = LIFE_MONSTER;
                 }
-                else
+                else if (this is Hero)
                 {
                     _life = LIFE_HERO;
                 }

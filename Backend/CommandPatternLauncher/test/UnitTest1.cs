@@ -214,7 +214,7 @@ namespace test
       
         }
 
-          [TestMethod]
+        [TestMethod]
         public void ManualTrapAttack()
         {
             Hero player21 = new Hero("hero", new RangeFighter(), 11, 9);
@@ -223,7 +223,17 @@ namespace test
             field7._fieldType.Effects(player21);
 
             Assert.AreEqual(0, player21.Life);
+            
         }
+
+        [TestMethod]
+        public void ItemList()
+        {
+            Field field8 = new Field(13, 13, new Floor());
+            field8.Item = new DefenseBoost();
+
+            Assert.IsTrue(Level.itemList.Contains(field8._item));
+        } 
 
 
 
