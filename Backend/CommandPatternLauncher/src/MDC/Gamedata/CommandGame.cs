@@ -129,7 +129,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.YPosition - 1; i > SourcePlayer.YPosition; i--)
                     {
-                        if (Level.playingField[SourcePlayer.XPosition, i]._fieldType.CanBeAccessed() == false)
+                        if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;  
                             break;    
@@ -140,7 +140,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.YPosition + 1; i < SourcePlayer.YPosition; i++)
                     {
-                        if (Level.playingField[SourcePlayer.XPosition, i]._fieldType.CanBeAccessed() == false)
+                        if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;  
                             break;    
@@ -160,7 +160,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.XPosition - 1; i > SourcePlayer.XPosition; i--)
                     {
-                        if (Level.playingField[i, SourcePlayer.YPosition]._fieldType.CanBeAccessed() == false)
+                        if (Level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -171,7 +171,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.XPosition + 1; i < SourcePlayer.XPosition; i++)
                     {
-                        if (Level.playingField[i, SourcePlayer.YPosition]._fieldType.CanBeAccessed() == false)
+                        if (Level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -202,7 +202,7 @@ namespace MDC.Gamedata
 
             TargetPlayer.DecrementLife(attackBoost, characterType);
 
-            SourcePlayer._playerRemainingMoves = 0;
+            SourcePlayer.PlayerRemainingMoves = 0;
 
         }
 

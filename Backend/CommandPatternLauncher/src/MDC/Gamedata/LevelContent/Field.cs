@@ -9,41 +9,53 @@ namespace MDC.Gamedata.LevelContent
         private int _xPosition;
         private int _yPosition;
 
-        public FieldType FieldType { get; set; }
+        private FieldType _fieldType;
 
-        public Item Item 
+        public FieldType FieldType
         {
-            get { return Item; }
+            get { return _fieldType; }
 
-            set
+            set { _fieldType = value; }
+        }
+
+        private Item _item; 
+
+        public Item Item
+        {
+            get { return _item; }
+
+            set 
             {
-                if (this.FieldType is Floor)
+                if (FieldType is Floor)
                 {
-                    Item = value;
+                    _item = value; 
                 }
                 else
                 {
-                    //items can only set on fieldtype floor
                     throw new System.ArgumentException();
-                }
-
+                } 
             }
         }
-
 
         public Player Reserve(){
             return null;
         }
 
-        public int GetXPosition()
+        public int XPosition
         {
-            return _xPosition;
+            get { return _xPosition; }
+
+            set { _xPosition = value; }
         }
 
-          public int GetYPosition()
+          public int YPosition
         {
-            return _yPosition;
+            get { return _yPosition; }
+
+            set { _yPosition = value; }
         }
+
+
 
        public Field(int xPosition, int yPosition, FieldType fieldType){
             this._xPosition = xPosition;

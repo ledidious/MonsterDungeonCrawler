@@ -6,6 +6,8 @@ namespace MDC.Gamedata.PlayerType
     public class Hero : Player
     {
 
+        private Item _item; 
+
         public Hero(string playerName, CharacterType characterType, int xPosition, int yPosition)
         {
             this.PlayerName = playerName;
@@ -14,7 +16,7 @@ namespace MDC.Gamedata.PlayerType
             this.YPosition = yPosition;
         }
 
-        public override void CollectItem(Item item)
+        public void CollectItem(Item item)
         {
 
         }

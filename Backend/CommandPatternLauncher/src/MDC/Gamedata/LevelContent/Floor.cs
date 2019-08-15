@@ -8,6 +8,7 @@ namespace MDC.Gamedata.LevelContent
         public Boolean CanBeAccessed(){
             return true;
         }
+       
         public void Effects(Player player){
             //has no effect
             throw new NotImplementedException();

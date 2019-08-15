@@ -11,7 +11,6 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
-using MDC.Client;
 using MDC.Gamedata;
 using MDC.Server;
 
@@ -25,6 +24,9 @@ public class MasterServer
     static private Dictionary<string, TcpClient> _clients = new Dictionary<string, TcpClient>(); //clientID, TcpClient
     static private CommandManager scm = new CommandManager();
 
+    /// <summary>
+    /// Prepare the server for the connection of new clients.
+    /// </summary>
     public static void StartServer()
     {
         ReadConfig();
@@ -57,6 +59,9 @@ public class MasterServer
         listener.Stop();
     }
 
+    /// <summary>
+    /// Read the configuration from the config-file and store the value in the corresponding variables.
+    /// </summary>
     private static void ReadConfig()
     {
         var data = new Dictionary<string, string>();
@@ -67,21 +72,33 @@ public class MasterServer
         PORT_NO = Convert.ToInt32(data["PortNo"]);
     }
 
+    /// <summary>
+    /// [Only called by received commands] Creates a new game session and saves it in the dictionary.
+    /// </summary>
+    /// <param name="clientID"></param>
     public static void CreateNewGame(string clientID)
     {
         string sessionID = GenerateID();
-        SendStringToClient(_clients.GetValueOrDefault(clientID), sessionID);
-
         // _games.Add(sessionID, new Game(sessionID, _connectedClients.GetValueOrDefault(clientID)));
         _games.Add(sessionID, new Game(sessionID, _clients.GetValueOrDefault(clientID)));
 
-        // GetInputFromClient(clientID, sessionID);
+        SendCommandToClient(_clients.GetValueOrDefault(clientID), new CommandFeedbackActionExecutedSuccessfully(clientID));
+        SendStringToClient(_clients.GetValueOrDefault(clientID), sessionID);
     }
 
+    /// <summary>
+    /// [Only called by received commands] Connects a client to an existing game session.
+    /// </summary>
+    /// <param name="clientID"></param>
+    /// <param name="sessionID"></param>
+    /// <param name="playerName"></param>
     public static void ConnectToGame(string clientID, string sessionID, string playerName)
     {
         Console.WriteLine("Connecting to " + sessionID + " with client " + clientID + " and playerName " + playerName);
         _games.GetValueOrDefault(sessionID).AddClientToGame(_clients.GetValueOrDefault(clientID), playerName);
+
+        SendCommandToClient(_clients.GetValueOrDefault(clientID), new CommandFeedbackActionExecutedSuccessfully(clientID));
+        SendStringToClient(_clients.GetValueOrDefault(clientID), sessionID);
         // Game currentGame = _games.GetValueOrDefault(sessionID);
 
         // if (_clients.ContainsKey(clientID))
@@ -97,6 +114,10 @@ public class MasterServer
         // GetInputFromClient(clientID, sessionID);
     }
 
+    /// <summary>
+    /// [Only called by received commands] Starts the game round. Executable only when all players are connected.
+    /// </summary>
+    /// <param name="sessionID"></param>
     public static void StartGame(string sessionID)
     {
         _games.GetValueOrDefault(sessionID).StartGame();
@@ -113,7 +134,7 @@ public class MasterServer
     // }
 
     /// <summary>
-    /// 
+    /// Thread implementation for clients. Waits for commands from client. 
     /// </summary>
     /// <param name="client"></param>
     /// <param name="cm"></param>
@@ -181,5 +202,17 @@ public class MasterServer
         IFormatter formatter = new BinaryFormatter();
 
         return (Command)formatter.Deserialize(nwStream);
+    }
+
+    /// <summary>
+    /// Send Command to client
+    /// </summary>
+    /// <param name="server">TcpClient to which data is to be sent.</param>
+    /// <param name="command">Command you want to send</param>
+    private static void SendCommandToClient(TcpClient client, Command command)
+    {
+        NetworkStream nwStream = client.GetStream();
+        IFormatter formatter = new BinaryFormatter();
+        formatter.Serialize(nwStream, command);
     }
 }
