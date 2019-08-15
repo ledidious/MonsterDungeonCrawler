@@ -27,7 +27,7 @@ namespace test
         public void NullTargetPlayerCommand()
         {
             CommandManager cm = new CommandManager();
-            CommandMove cmove = new CommandMove("2f2de19a291c41b5ae950faa11162e07", 5);
+            CommandGameMove cmove = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 5);
 
             cm.AddCommand(cmove);
             cm.ProcessPendingTransactions();
@@ -49,7 +49,7 @@ namespace test
         public void AttackMyself()
         {
             CommandManager cm = new CommandManager();
-            CommandAttack cattack = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "2f2de19a291c41b5ae950faa11162e07");
+            CommandGameAttack cattack = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "2f2de19a291c41b5ae950faa11162e07");
 
         }
         
@@ -60,7 +60,7 @@ namespace test
             Monster player5 = new Monster("monster", new RangeFighter(), 30, 20);
             Monster player6 = new Monster("monster", new RangeFighter(), 30, 20);
             CommandManager cm2 = new CommandManager();
-            CommandAttack cattack2 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "2242342342343");
+            CommandGameAttack cattack2 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "2242342342343");
             cattack2.SourcePlayer = player5; 
             cattack2.TargetPlayer = player6;
             cm2.AddCommand(cattack2);
@@ -76,7 +76,7 @@ namespace test
             //test enemy in range on the right side
             Hero player7 = new Hero("hero", new RangeFighter(), 11, 9);
             Monster player8 = new Monster("monster", new MeleeFighter(), 14, 9);
-            CommandAttack cattack3 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "8582252885");
+            CommandGameAttack cattack3 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "8582252885");
             cattack3.SourcePlayer = player7;
             cattack3.TargetPlayer = player8;
            
@@ -84,7 +84,7 @@ namespace test
             
             //test out of range on the right side
             Monster player9 = new Monster("monster", new MeleeFighter(), 15, 9);
-            CommandAttack cattack4 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "zut85822asd52885");
+            CommandGameAttack cattack4 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "zut85822asd52885");
             cattack4.SourcePlayer = player7;
             cattack4.TargetPlayer = player9;
 
@@ -92,7 +92,7 @@ namespace test
 
             //test enemy in range on the bottom side
             Monster player10 = new Monster("monster", new MeleeFighter(), 11, 11);
-            CommandAttack cattack5 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "123124sdf2885");
+            CommandGameAttack cattack5 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "123124sdf2885");
             cattack5.SourcePlayer = player7;
             cattack5.TargetPlayer = player10;
 
@@ -100,7 +100,7 @@ namespace test
 
             //test out of range on the bottom side
             Monster player11 = new Monster("monster", new MeleeFighter(), 11, 5);
-            CommandAttack cattack6 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
+            CommandGameAttack cattack6 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
             cattack6.SourcePlayer = player7;
             cattack6.TargetPlayer = player11;
 
@@ -118,8 +118,8 @@ namespace test
 
             Assert.AreEqual(field8, Level.playingField[11, 9]);
 
-            Assert.IsInstanceOfType(Level.playingField[13, 9]._fieldType, typeof(Wall));
-            Assert.IsInstanceOfType(Level.playingField[11, 9]._fieldType, typeof(Floor));
+            Assert.IsInstanceOfType(Level.playingField[13, 9].FieldType, typeof(Wall));
+            Assert.IsInstanceOfType(Level.playingField[11, 9].FieldType, typeof(Floor));
         }
 
         [TestMethod]
@@ -133,7 +133,7 @@ namespace test
             Hero player12 = new Hero("hero", new MeleeFighter(), 11, 9);
             Monster player13 = new Monster("monster", new MeleeFighter(), 11, 12);
 
-            CommandAttack cattack7 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
+            CommandGameAttack cattack7 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
             cattack7.SourcePlayer = player12;
             cattack7.TargetPlayer = player13;
 
@@ -145,7 +145,7 @@ namespace test
             Hero player14 = new Hero("hero", new MeleeFighter(), 11, 12);
             Monster player15 = new Monster("monster", new MeleeFighter(), 11, 9);
 
-            CommandAttack cattack8 = new CommandAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
+            CommandGameAttack cattack8 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack8.SourcePlayer = player14;
             cattack8.TargetPlayer = player15;
 
@@ -157,7 +157,7 @@ namespace test
             Hero player16 = new Hero("hero", new MeleeFighter(), 1, 5);
             Monster player17 = new Monster("monster", new MeleeFighter(), 4, 5);
 
-            CommandAttack cattack9 = new CommandAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
+            CommandGameAttack cattack9 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack9.SourcePlayer = player16;
             cattack9.TargetPlayer = player17;
 
@@ -169,7 +169,7 @@ namespace test
             Hero player18 = new Hero("hero", new MeleeFighter(), 4, 5);
             Monster player19 = new Monster("monster", new MeleeFighter(), 1, 5);
 
-            CommandAttack cattack10 = new CommandAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
+            CommandGameAttack cattack10 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack10.SourcePlayer = player18;
             cattack10.TargetPlayer = player19;
 
@@ -188,7 +188,7 @@ namespace test
             Hero player19 = new Hero("hero", new MeleeFighter(), 4, 5);
             Monster player20 = new Monster("monster", new MeleeFighter(), 1, 5);
 
-            CommandAttack cattack11 = new CommandAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
+            CommandGameAttack cattack11 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack11.SourcePlayer = player19;
             cattack11.TargetPlayer = player20;
 
@@ -205,7 +205,7 @@ namespace test
 
             Hero player21 = new Hero("hero", new RangeFighter(), 11, 9);
             Monster player22 = new Monster("monster", new MeleeFighter(), 20, 12);
-            CommandAttack cattack12 = new CommandAttack("2f2de19a291c41b5ae950faa11162e07", "8582252885");
+            CommandGameAttack cattack12 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "8582252885");
             cattack12.SourcePlayer = player21;
             cattack12.TargetPlayer = player22;
 
@@ -220,20 +220,12 @@ namespace test
             Hero player21 = new Hero("hero", new RangeFighter(), 11, 9);
             Field field7 = new Field(11, 9, new Trapdoor());
 
-            field7._fieldType.Effects(player21);
+            field7.FieldType.Effects(player21);
 
             Assert.AreEqual(0, player21.Life);
             
         }
-
-        [TestMethod]
-        public void ItemList()
-        {
-            Field field8 = new Field(13, 13, new Floor());
-            field8.Item = new DefenseBoost();
-
-            Assert.IsTrue(Level.itemList.Contains(field8._item));
-        } 
+        
 
 
 
@@ -268,5 +260,28 @@ namespace test
         */
 
     }
+
+    [TestClass]
+    public class UnitTest2
+    {
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void ItemLevelInvalidLevel()
+        {
+            Field field8 = new Field(11, 11, new Floor());
+            field8.Item = new DefenseBoost(5);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void ItemAddedToInvalidFieldtype()
+        {
+            Field field9 = new Field(11, 11, new Wall());
+            field9.Item = new DefenseBoost(2);
+        }
+
+    }
+
 }
 
