@@ -3,6 +3,8 @@
 // Each session creates a new SessionID and then an instance of the class Game.  
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
@@ -13,10 +15,10 @@ using MDC.Client;
 using MDC.Gamedata;
 using MDC.Server;
 
-class MasterServer
+public class MasterServer
 {
-    const int PORT_NO = 5000;
-    const string SERVER_IP = "127.0.0.1";
+    static int PORT_NO;
+    static string SERVER_IP;
     public static Boolean Shutdown { get; set; }
 
     static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
@@ -25,7 +27,7 @@ class MasterServer
 
     public static void StartServer()
     {
-
+        ReadConfig();
         // CommandManager scm = new CommandManager();
 
         //---listen at the specified IP and port no.---
@@ -55,12 +57,19 @@ class MasterServer
         listener.Stop();
     }
 
+    private static void ReadConfig()
+    {
+        var data = new Dictionary<string, string>();
+        foreach (var row in File.ReadAllLines("game.config"))
+            data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
+
+        SERVER_IP = data["ServerIP"];
+        PORT_NO = Convert.ToInt32(data["PortNo"]);
+    }
+
     public static void CreateNewGame(string clientID)
     {
         string sessionID = GenerateID();
-
-        //TODO: Ausgabe entfernen
-        Console.WriteLine("Session ID: " + sessionID + "; Client ID: " + clientID);
         SendStringToClient(_clients.GetValueOrDefault(clientID), sessionID);
 
         // _games.Add(sessionID, new Game(sessionID, _connectedClients.GetValueOrDefault(clientID)));
@@ -113,16 +122,14 @@ class MasterServer
         string clientID = GenerateID();
         _clients.Add(clientID, client);
 
-        Console.WriteLine("No. of Clients: " + _clients.Count);
         //---write back the client ID to the client---
         SendStringToClient(client, clientID);
 
-        // while (true)
-        // {
-        cm.AddCommand(ReceiveCommandFromClient(client));
-        cm.ProcessPendingTransactions();
-        // }
-
+        while (true)
+        {
+            cm.AddCommand(ReceiveCommandFromClient(client));
+            cm.ProcessPendingTransactions();
+        }
         // client.Close();
     }
 
@@ -147,7 +154,7 @@ class MasterServer
         // Console.WriteLine("TYPE: " + bytesToRead.GetType());
         int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
 
-        return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead); ;
+        return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
     }
 
     /// <summary>
@@ -157,6 +164,7 @@ class MasterServer
     /// <param name="data">String you want to send</param>
     private static void SendStringToClient(TcpClient client, string data)
     {
+        Console.WriteLine("");
         NetworkStream nwStream = client.GetStream();
         byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
         nwStream.Write(bytesToSend, 0, bytesToSend.Length);
@@ -172,6 +180,6 @@ class MasterServer
         NetworkStream nwStream = client.GetStream();
         IFormatter formatter = new BinaryFormatter();
 
-        return (Command)formatter.Deserialize(nwStream); ;
+        return (Command)formatter.Deserialize(nwStream);
     }
 }

@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
 using MDC.Client;
 using MDC.Server;
 
@@ -10,22 +14,11 @@ class Launcher
     /// <param name="args"></param>
     static void Main(string[] args)
     {
-        Console.WriteLine("MDC Launcher 0.01\nChoose program to launch\n[1] Client\n[2] Server");
-        Console.Write("Number: ");
-        int decision = int.Parse(Console.ReadLine());
+        ClientProgram myClient = new ClientProgram();
+        // MasterServer myServer = new MasterServer();
 
-        switch (decision)
-        {
-            case 1:
-                Console.WriteLine("---------------------CLIENT---------------------");
-                ClientProgram.StartClient();
-                break;
-            case 2:
-                Console.WriteLine("---------------------SERVER---------------------");
-                MasterServer.StartServer();
-                break;
-            default:
-                break;
-        }
+        MasterServer.StartServer();
+        // myClient.StartClient();
+
     }
 }
