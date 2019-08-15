@@ -37,7 +37,11 @@ namespace MDC.Client
 
             //---get the client ID from the server---
             client_ID = ReceiveStringFromServer();
-            isConnected = true;
+
+            if (client_ID != null)
+            {
+                isConnected = true;
+            }
         }
 
         public void DisconnectFromServer()
@@ -45,6 +49,7 @@ namespace MDC.Client
             if (isConnected)
             {
                 server.Close();
+                client_ID = null;
                 isConnected = false;
             }
         }
@@ -78,10 +83,50 @@ namespace MDC.Client
                 CommandServerNewGame command = new CommandServerNewGame(client_ID);
                 SendCommandToServer(command);
 
-                gameSession_ID = ReceiveStringFromServer();
-                Console.WriteLine("ID of the new Game: " + gameSession_ID);
+                if (EvaluateFeedback())
+                {
+                    gameSession_ID = ReceiveStringFromServer();
+                    Console.WriteLine("ID of the new Game: " + gameSession_ID);
+                }
+
+                // CommandFeedback feedback = EvaluateFeedback();
+                // if (feedback is CommandFeedbackActionExecutedSuccessfully)
+                // {
+                //     gameSession_ID = ReceiveStringFromServer();
+                //     Console.WriteLine("ID of the new Game: " + gameSession_ID);
+                // }
+                // else
+                // {
+                //     Console.WriteLine(feedback.GetType());
+                // }
             }
         }
+
+        private Boolean EvaluateFeedback()
+        {
+            NetworkStream nwStream = server.GetStream();
+            IFormatter formatter = new BinaryFormatter();
+
+            CommandFeedback feedback = (CommandFeedback)formatter.Deserialize(nwStream);
+
+            if (feedback is CommandFeedbackActionExecutedSuccessfully)
+            {
+                return true;
+            } else {
+                Console.WriteLine(feedback.GetType());
+                return false;
+            }
+
+
+        }
+
+        /* private CommandFeedback EvaluateFeedback()
+        {
+            NetworkStream nwStream = server.GetStream();
+            IFormatter formatter = new BinaryFormatter();
+
+            return (CommandFeedback)formatter.Deserialize(nwStream);
+        }*/
 
         public void StartCreatedGame()
         {

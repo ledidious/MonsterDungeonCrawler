@@ -13,22 +13,48 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandFeedbackNotInRange : CommandFeedback
+    public class CommandFeedbackActionExecutedSuccessfully : CommandFeedback
     {
-        public CommandFeedbackNotInRange(string SourceClientID) : base(SourceClientID)
+        public CommandFeedbackActionExecutedSuccessfully(string SourceClientID) : base(SourceClientID)
         {
         }
 
         public override void Execute()
         {
-            MasterServer.CreateNewGame(SourceClientID);
-            // throw new NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 
+    [Serializable]
+    public class CommandFeedbackEnemyNotInRange : CommandFeedback
+    {
+        public CommandFeedbackEnemyNotInRange(string SourceClientID) : base(SourceClientID)
+        {
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
     public class CommandFeedbackPathIsBlocked : CommandFeedback
     {
         public CommandFeedbackPathIsBlocked(string SourceClientID) : base(SourceClientID)
+        {
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class CommandFeedbackCannotAttackThisObject : CommandFeedback
+    {
+        public CommandFeedbackCannotAttackThisObject(string SourceClientID) : base(SourceClientID)
         {
         }
 
