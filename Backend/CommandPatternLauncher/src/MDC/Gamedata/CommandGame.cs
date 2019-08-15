@@ -6,9 +6,9 @@ using MDC.Gamedata.LevelContent;
 namespace MDC.Gamedata
 {
     [Serializable]
-    public abstract class GameCommand : Command
+    public abstract class CommandGame : Command
     {
-        public GameCommand(string SourceClientID) : base(SourceClientID)
+        public CommandGame(string SourceClientID) : base(SourceClientID)
         {
         }
 
@@ -16,14 +16,14 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandMove : GameCommand //TODO: check if target fieldtype is a trap -> activate Effects method
+    public class CommandGameMove : CommandGame //TODO: check if target fieldtype is a trap -> activate Effects method
     {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
                                            //TODO: check if target fieldtype is a floor an then check if the floor contains a item, then activate Effects method, kill the object and create floor object
                                            
         // private readonly string _direction;
         private readonly int _moveAmount;
 
-        public CommandMove(string sourceClientID, int moveAmount) : base(sourceClientID)
+        public CommandGameMove(string sourceClientID, int moveAmount) : base(sourceClientID)
         {
             _moveAmount = moveAmount;
             IsCompleted = false;
@@ -57,12 +57,12 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandAttack : GameCommand
+    public class CommandGameAttack : CommandGame
     {
         public string TargetClientID { get; set; }
         public Player TargetPlayer { get; set; }
 
-        public CommandAttack(string SourceClientID, string targetClientID) : base(SourceClientID)
+        public CommandGameAttack(string SourceClientID, string targetClientID) : base(SourceClientID)
         {
             TargetClientID = targetClientID;
 

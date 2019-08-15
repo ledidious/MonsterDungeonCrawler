@@ -173,12 +173,12 @@ namespace MDC.Server
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received Command</returns>
-        private static GameCommand ReceiveCommandFromClient(TcpClient client)
+        private static CommandGame ReceiveCommandFromClient(TcpClient client)
         {
             NetworkStream nwStream = client.GetStream();
             IFormatter formatter = new BinaryFormatter();
 
-            return (GameCommand)formatter.Deserialize(nwStream); ;
+            return (CommandGame)formatter.Deserialize(nwStream); ;
         }
 
         public Player NextPlayer()

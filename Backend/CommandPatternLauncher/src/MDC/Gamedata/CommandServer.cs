@@ -5,19 +5,19 @@ using MDC.Server;
 namespace MDC.Gamedata
 {
     [Serializable]
-    public abstract class ServerCommand : Command
+    public abstract class CommandServer : Command
     {
         // public Game TargetGame { get; set; }
         // public MasterServer TargetServer {get; set;}
-        public ServerCommand(string SourceClientID) : base(SourceClientID)
+        public CommandServer(string SourceClientID) : base(SourceClientID)
         {
         }
     }
 
     [Serializable]
-    public class CommandNewGame : ServerCommand
+    public class CommandServerNewGame : CommandServer
     {
-        public CommandNewGame(string SourceClientID) : base(SourceClientID)
+        public CommandServerNewGame(string SourceClientID) : base(SourceClientID)
         {
         }
 
@@ -30,9 +30,9 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandJoinGame : ServerCommand
+    public class CommandServerJoinGame : CommandServer
     {
-        public CommandJoinGame(string SourceClientID, string sessionID, string playerName) : base(SourceClientID)
+        public CommandServerJoinGame(string SourceClientID, string sessionID, string playerName) : base(SourceClientID)
         {
             SessionID = sessionID;
             PlayerName = playerName;
@@ -48,9 +48,9 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandStartGame : ServerCommand
+    public class CommandServerStartGame : CommandServer
     {
-        public CommandStartGame(string SourceClientID, string sessionID) : base(SourceClientID)
+        public CommandServerStartGame(string SourceClientID, string sessionID) : base(SourceClientID)
         {
             SessionID = sessionID;
         }
@@ -65,9 +65,9 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandKillGame : ServerCommand
+    public class CommandServerAbortGame : CommandServer
     {
-        public CommandKillGame(string SourceClientID) : base(SourceClientID)
+        public CommandServerAbortGame(string SourceClientID) : base(SourceClientID)
         {
         }
 
