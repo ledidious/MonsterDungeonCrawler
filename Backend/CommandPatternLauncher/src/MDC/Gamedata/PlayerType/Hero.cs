@@ -6,6 +6,8 @@ namespace MDC.Gamedata.PlayerType
     public class Hero : Player
     {
 
+        private Item _item; 
+
         public Hero(string playerName, CharacterType characterType, int xPosition, int yPosition)
         {
             this.PlayerName = playerName;

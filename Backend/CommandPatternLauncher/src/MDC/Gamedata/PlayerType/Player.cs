@@ -13,13 +13,12 @@ namespace MDC.Gamedata.PlayerType
 
         public int XPosition;
         public int YPosition;
-        public int _playerRemainingMoves { get; set; }
-        public double _life { get; set; }
-        protected double _attackBoost { get; set; }
-        protected double _defenseBoost { get; set; }
-        public Item[] Items;
-        protected CharacterType _char { get; set; }
-        public string PlayerName { get; set; }
+        private int _playerRemainingMoves;
+        private double _life;
+        private double _attackBoost;
+        private double _defenseBoost;
+        private CharacterType _char;
+        public string PlayerName;
 
         public double Life
         {

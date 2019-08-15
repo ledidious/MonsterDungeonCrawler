@@ -18,8 +18,8 @@ namespace test
             Hero player1 = new Hero("hero", new MeleeFighter(), 20, 30);
             Monster player2 = new Monster("monster", new RangeFighter(), 30, 20);
 
-            Assert.AreEqual(5, player1._life);
-            Assert.AreEqual(3, player2._life);
+            Assert.AreEqual(5, player1.Life);
+            Assert.AreEqual(3, player2.Life);
         }
 
         [TestMethod]
@@ -41,7 +41,7 @@ namespace test
 
             player4.DecrementLife(player3.AttackBoost, player3.CharacterType);
 
-            Assert.AreEqual(2, player4._life);
+            Assert.AreEqual(2, player4.Life);
         }
 
         [TestMethod]
@@ -270,16 +270,68 @@ namespace test
         public void ItemLevelInvalidLevel()
         {
             Field field8 = new Field(11, 11, new Floor());
-            field8.Item = new DefenseBoost(5);
+            field8.Item = new DefenseBoost(8); 
         }
-
+        
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void ItemAddedToInvalidFieldtype()
         {
-            Field field9 = new Field(11, 11, new Wall());
-            field9.Item = new DefenseBoost(2);
+            Field field9 = new Field(11, 19, new Wall());
+            field9.Item = new DefenseBoost(2); 
         }
+
+        [TestMethod]
+        public void ItemDurationAndEffectValue()
+        {
+            Field field10 = new Field(19, 19, new Floor());
+            field10.Item = new ExtraLife(); 
+
+            Assert.AreEqual(1, field10.Item.EffectValue);
+
+
+            Field field11 = new Field(15, 19, new Floor());
+            field11.Item = new DefenseBoost(2); 
+
+            Assert.AreEqual(0.5, field11.Item.EffectValue);
+            Assert.AreEqual(3, field11.Item.Duration);
+
+
+            Field field12 = new Field(5, 9, new Floor());
+            field12.Item = new AttackBoost(3); 
+
+            Assert.AreEqual(0.75, field12.Item.EffectValue);
+            Assert.AreEqual(3, field12.Item.Duration);
+
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void CantSetDurationForExtralife()
+        {
+            Field field13 = new Field(1, 19, new Floor());
+            field13.Item = new ExtraLife();
+
+            field13.Item.Duration = 13; 
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void ExtralifeHasNoDuration()
+        {
+            Field field14 = new Field(11, 1, new Floor());
+            field14.Item = new ExtraLife();
+
+            int test = field14.Item.Duration; 
+        }
+
+        
+
+
+
+
+
 
     }
 

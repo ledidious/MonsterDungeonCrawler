@@ -6,7 +6,6 @@ namespace MDC.Gamedata.LevelContent
     {
         public ExtraLife()
         {
-            Duration = DURATION_EXTRALIFE;
             EffectValue = EFFECTVALUE_EXTRALIFE;
         }
     }

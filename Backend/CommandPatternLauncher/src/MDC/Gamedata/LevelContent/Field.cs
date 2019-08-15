@@ -11,25 +11,24 @@ namespace MDC.Gamedata.LevelContent
 
         public FieldType FieldType { get; set; }
 
-        public Item Item 
-        {
-            get { return Item; }
+        private Item _item; 
 
-            set
+        public Item Item
+        {
+            get { return _item; }
+
+            set 
             {
-                if (this.FieldType is Floor)
+                if (FieldType is Floor)
                 {
-                    Item = value;
+                    _item = value; 
                 }
                 else
                 {
-                    //items can only set on fieldtype floor
                     throw new System.ArgumentException();
-                }
-
+                } 
             }
         }
-
 
         public Player Reserve(){
             return null;
