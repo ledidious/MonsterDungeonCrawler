@@ -4,6 +4,9 @@ namespace MDC.Gamedata.LevelContent
 {
     public class DefenseBoost : Item
     {
-        public override double _effectValue => 0.25;
+        public DefenseBoost(int Level)
+        {
+            this.Level = Level;
+        }
     }
 }

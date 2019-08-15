@@ -1,54 +1,54 @@
 using System;
 using MDC.Gamedata.PlayerType;
+using MDC.Gamedata.LevelContent;
 
 namespace MDC.Gamedata.LevelContent
 {
     public class Field
     {
-        private int XPosition;
-        private int YPosition;
+        private int _xPosition;
+        private int _yPosition;
 
-        public FieldType _fieldType { get; set; }
+        public FieldType FieldType { get; set; }
 
-        public Item _item { get; set; }
-
-        public Player reserve(){
-            return null;
-        }
-
-        public int getXPosition()
+        public Item Item 
         {
-            return XPosition;
-        }
-
-          public int getYPosition()
-        {
-            return YPosition;
-        }
-
-        public Item Item
-        {
-            get { return _item; }
+            get { return Item; }
 
             set
             {
-                if (this._fieldType is Floor)
+                if (this.FieldType is Floor)
                 {
-                    _item = value;
-                    Level.itemList.Add(_item);
+                    Item = value;
                 }
                 else
                 {
                     //items can only set on fieldtype floor
                     throw new System.ArgumentException();
                 }
+
             }
         }
 
+
+        public Player Reserve(){
+            return null;
+        }
+
+        public int GetXPosition()
+        {
+            return _xPosition;
+        }
+
+          public int GetYPosition()
+        {
+            return _yPosition;
+        }
+
        public Field(int xPosition, int yPosition, FieldType fieldType){
-            this.XPosition = xPosition;
-            this.YPosition = yPosition;
-            this._fieldType = fieldType;
+            this._xPosition = xPosition;
+            this._yPosition = yPosition;
+            this.FieldType = fieldType;
             Level.AddFieldToLevel(this);
         }
         
