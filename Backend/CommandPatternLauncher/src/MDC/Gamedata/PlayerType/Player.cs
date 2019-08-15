@@ -69,8 +69,6 @@ namespace MDC.Gamedata.PlayerType
             }
         }
 
-        public abstract void CollectItem(Item item);
-
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
             double totalAttackPower = attackBoost + characterType._attackPower;

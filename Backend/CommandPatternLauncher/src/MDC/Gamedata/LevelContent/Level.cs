@@ -11,7 +11,7 @@ namespace MDC.Gamedata.LevelContent
          
         public static Field[,] playingField = new Field[WIDTH, HIGHT];
 
-        public static void AddFieldToLevel(Field field) => playingField[field.GetXPosition(), field.GetYPosition()] = field;
+        public static void AddFieldToLevel(Field field) => playingField[field.XPosition, field.YPosition] = field;
 
         enum landscape
         {

@@ -9,7 +9,14 @@ namespace MDC.Gamedata.LevelContent
         private int _xPosition;
         private int _yPosition;
 
-        public FieldType FieldType { get; set; }
+        private FieldType _fieldType;
+
+        public FieldType FieldType
+        {
+            get { return _fieldType; }
+
+            set { _fieldType = value; }
+        }
 
         private Item _item; 
 
@@ -34,15 +41,21 @@ namespace MDC.Gamedata.LevelContent
             return null;
         }
 
-        public int GetXPosition()
+        public int XPosition
         {
-            return _xPosition;
+            get { return _xPosition; }
+
+            set { _xPosition = value; }
         }
 
-          public int GetYPosition()
+          public int YPosition
         {
-            return _yPosition;
+            get { return _yPosition; }
+
+            set { _yPosition = value; }
         }
+
+
 
        public Field(int xPosition, int yPosition, FieldType fieldType){
             this._xPosition = xPosition;

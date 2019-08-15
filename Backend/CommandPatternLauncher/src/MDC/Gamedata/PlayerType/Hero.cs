@@ -16,7 +16,7 @@ namespace MDC.Gamedata.PlayerType
             this.YPosition = yPosition;
         }
 
-        public override void CollectItem(Item item)
+        public void CollectItem(Item item)
         {
 
         }
