@@ -42,7 +42,7 @@ namespace MDC.Gamedata
         public String SessionID { get; set; }
         public override void Execute()
         {
-            MasterServer.ConnectToGame(SourceClientID, SessionID , PlayerName);
+            MasterServer.ConnectToGame(SourceClientID, SessionID, PlayerName);
             // throw new NotImplementedException();
         }
     }
@@ -74,6 +74,22 @@ namespace MDC.Gamedata
         public override void Execute()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class CommandServerCreatePlayer : CommandServer
+    {
+        private string _playerName;
+
+        public CommandServerCreatePlayer(string SourceClientID, string playerName) : base(SourceClientID)
+        {
+            this._playerName = playerName;
+        }
+
+        public override void Execute()
+        {
+
         }
     }
 }

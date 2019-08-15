@@ -56,6 +56,10 @@ namespace MDC.Server
                 _clientsOfThisGame.Add(client);
                 // _players.Add()
             }
+            else
+            {
+                throw new NotImplementedException();
+            }
 
             throw new NotImplementedException();
         }

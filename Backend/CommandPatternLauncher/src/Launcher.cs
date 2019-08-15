@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using MDC.Client;
 using MDC.Server;
 
@@ -14,11 +15,37 @@ class Launcher
     /// <param name="args"></param>
     static void Main(string[] args)
     {
-        ClientProgram myClient = new ClientProgram();
+        ClientProgram myFirstClient = new ClientProgram();
         // MasterServer myServer = new MasterServer();
 
-        MasterServer.StartServer();
-        // myClient.StartClient();
+        Thread serverThread = new Thread(new ThreadStart(() => ServerInteraction()));
+        serverThread.Start();
 
+        myFirstClient.ConnectToServer();
+        myFirstClient.CreateNewGame();
+
+        ClientProgram mySecondClient = new ClientProgram();
+        mySecondClient.ConnectToServer();
+        mySecondClient.ConnectToGame(myFirstClient.GameSession_ID);
+
+        ClientProgram myThirdClient = new ClientProgram();
+        myThirdClient.ConnectToServer();
+        myThirdClient.ConnectToGame(myFirstClient.GameSession_ID);
+
+        ClientProgram myFourthClient = new ClientProgram();
+        myFourthClient.ConnectToServer();
+        myFourthClient.ConnectToGame(myFirstClient.GameSession_ID);
+
+        ClientProgram myFifthClient = new ClientProgram();
+        myFifthClient.ConnectToServer();
+        myFifthClient.ConnectToGame(myFirstClient.GameSession_ID);
+    }
+
+    /// <summary>
+    /// Thread implementation for clients. Waits for commands from client. 
+    /// </summary>
+    private static void ServerInteraction()
+    {
+        MasterServer.StartServer();
     }
 }
