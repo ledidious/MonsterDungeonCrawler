@@ -34,6 +34,25 @@ namespace test
         }
 
         [TestMethod]
+        public void LevelAddAllFieldObjects()
+        {
+            Field field1 = new Field(13, 9, new Wall()); 
+            Field field8 = new Field(11, 9, new Floor());
+
+            Assert.AreEqual(field1, Level.playingField[13, 9]);
+            Assert.AreNotEqual(field1, Level.playingField[10, 9]);
+
+            Assert.AreEqual(field8, Level.playingField[11, 9]);
+
+            Assert.IsInstanceOfType(Level.playingField[13, 9].FieldType, typeof(Wall));
+            Assert.IsInstanceOfType(Level.playingField[11, 9].FieldType, typeof(Floor));
+        }
+    }
+
+    [TestClass]
+    public class UnitTestAttack
+    {
+        [TestMethod]
         public void AttackEnemy()
         {
             Hero player3 = new Hero("hero", new MeleeFighter(), 20, 30);
@@ -107,20 +126,7 @@ namespace test
             Assert.IsFalse(cattack6.VerifyAttackRange());
         }
 
-        [TestMethod]
-        public void LevelAddAllFieldObjects()
-        {
-            Field field1 = new Field(13, 9, new Wall()); 
-            Field field8 = new Field(11, 9, new Floor());
 
-            Assert.AreEqual(field1, Level.playingField[13, 9]);
-            Assert.AreNotEqual(field1, Level.playingField[10, 9]);
-
-            Assert.AreEqual(field8, Level.playingField[11, 9]);
-
-            Assert.IsInstanceOfType(Level.playingField[13, 9].FieldType, typeof(Wall));
-            Assert.IsInstanceOfType(Level.playingField[11, 9].FieldType, typeof(Floor));
-        }
 
         [TestMethod]
         public void ObstacleInRange()
@@ -213,18 +219,70 @@ namespace test
             cm5.ProcessPendingTransactions();
       
         }
+    }
+    
+    [TestClass]
+    public class UnitTestTraps
+    {
 
         [TestMethod]
         public void ManualTrapAttack()
         {
-            Hero player21 = new Hero("hero", new RangeFighter(), 11, 9);
-            Field field7 = new Field(11, 9, new Trapdoor());
+            Hero player1 = new Hero("hero", new RangeFighter(), 11, 9);
+            Field field1 = new Field(11, 9, new SpikeField());
 
-            field7.FieldType.Effects(player21);
+            field1.FieldType.Effects(player1);
 
-            Assert.AreEqual(0, player21.Life);
+            Assert.AreEqual(4.5, player1.Life);
             
         }
+
+        [TestMethod]
+        public void ManualTrapdoorAttack()
+        {
+
+            Hero player2 = new Hero("hero", new RangeFighter(), 11, 9);
+            Field field2 = new Field(11, 9, new Trapdoor());
+
+            Field field3 = new Field(5, 5, new Wall());
+            Field field4 = new Field(6, 6, new Wall());
+            Field field5 = new Field(7, 7, new Floor());
+
+                    
+            player2.DecrementLife(0.25);
+
+            if (field2.FieldType is Trapdoor)
+            {
+                bool successfulMoving = false;
+                int randomX = 5; 
+                int randomY = 5;
+
+                while (successfulMoving == false)
+                {
+                    if (Level.playingField[randomX, randomY].FieldType is Floor)
+                    {
+                        successfulMoving = true;
+                        player2.MovePlayer(randomX, randomY);
+                    }
+                    else
+                    {
+                        randomX = randomX + 1; 
+                        randomY = randomY + 1; 
+                    }
+
+                }
+            }
+            else
+            {
+                //do not move the player
+            }
+
+            Assert.AreEqual(4.75, player2.Life);
+            Assert.AreEqual(7, player2.XPosition);
+            Assert.AreEqual(7, player2.YPosition);
+
+        }       
+    }
         
 
 
@@ -259,10 +317,10 @@ namespace test
         }
         */
 
-    }
+    
 
     [TestClass]
-    public class UnitTest2
+    public class UnitTestItems
     {
 
         [TestMethod]

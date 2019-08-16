@@ -86,6 +86,12 @@ namespace MDC.Gamedata.PlayerType
             this._defenseBoost = 0; 
         }
 
+        public void MovePlayer(int xPosition, int yPosition)
+        {
+            this.XPosition = xPosition;
+            this.YPosition = yPosition;
+        }
+
     }
 
 }
