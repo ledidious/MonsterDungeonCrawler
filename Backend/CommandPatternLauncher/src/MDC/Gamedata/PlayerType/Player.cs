@@ -11,14 +11,46 @@ namespace MDC.Gamedata.PlayerType
         protected const double LIFE_MONSTER = 3;
         protected const double LIFE_HERO = 5;
 
-        public int XPosition;
-        public int YPosition;
+        public int _xPosition;
+        public int _yPosition;
         private int _playerRemainingMoves;
         private double _life;
         private double _attackBoost;
         private double _defenseBoost;
         private CharacterType _char;
         public string PlayerName;
+
+        public int XPosition
+        {
+            get { return _xPosition; }
+            set 
+            {
+                if (value >= 0 && value <= 20)
+                {
+                    _xPosition = value;
+                }
+                else
+                {
+                    throw new System.ArgumentException();
+                }
+            }
+        }
+
+        public int YPosition
+        {
+            get { return _yPosition; }
+            set 
+            {
+                if (value >= 0 && value <= 20)
+                {
+                    _yPosition = value;
+                }
+                else
+                {
+                    throw new System.ArgumentException();
+                }
+            }
+        }
 
         public double Life
         {
@@ -88,8 +120,8 @@ namespace MDC.Gamedata.PlayerType
 
         public void MovePlayer(int xPosition, int yPosition)
         {
-            this.XPosition = xPosition;
-            this.YPosition = yPosition;
+            XPosition = xPosition;
+            YPosition = yPosition;
         }
 
     }

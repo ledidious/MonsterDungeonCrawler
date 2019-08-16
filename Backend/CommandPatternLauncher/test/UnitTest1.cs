@@ -15,8 +15,8 @@ namespace test
         [TestMethod]
         public void NumberOfLife()
         {
-            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 30);
-            Monster player2 = new Monster("monster", new RangeFighter(), 30, 20);
+            Hero player1 = new Hero("hero", new MeleeFighter(), 10, 10);
+            Monster player2 = new Monster("monster", new RangeFighter(), 10, 20);
 
             Assert.AreEqual(5, player1.Life);
             Assert.AreEqual(3, player2.Life);
@@ -46,6 +46,13 @@ namespace test
 
             Assert.IsInstanceOfType(Level.playingField[13, 9].FieldType, typeof(Wall));
             Assert.IsInstanceOfType(Level.playingField[11, 9].FieldType, typeof(Floor));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void PlayerPositionOutOfField()
+        {
+            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 30);
         }
     }
 
