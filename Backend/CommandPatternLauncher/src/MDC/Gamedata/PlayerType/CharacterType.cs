@@ -2,7 +2,7 @@ using System;
 
 namespace MDC.Gamedata.PlayerType
 {
-
+    [Serializable]
     public abstract class CharacterType
     {
         protected const int MOVE_RANGE = 2;

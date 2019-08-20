@@ -11,8 +11,8 @@ namespace MDC.Gamedata.PlayerType
         protected const double LIFE_MONSTER = 3;
         protected const double LIFE_HERO = 5;
 
-        public int _xPosition;
-        public int _yPosition;
+        public int _xPosition; //TODO: @Mario: Müsste das Attribut nicht private sein?
+        public int _yPosition; //TODO: @Mario: Müsste das Attribut nicht private sein?
         private int _playerRemainingMoves;
         private double _life;
         private double _attackBoost;

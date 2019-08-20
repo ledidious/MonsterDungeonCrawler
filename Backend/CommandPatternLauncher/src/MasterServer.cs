@@ -12,6 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using MDC.Gamedata;
+using MDC.Gamedata.PlayerType;
 using MDC.Server;
 
 public class MasterServer
@@ -75,63 +76,52 @@ public class MasterServer
     /// <summary>
     /// [Only called by received commands] Creates a new game session and saves it in the dictionary.
     /// </summary>
-    /// <param name="clientID"></param>
-    public static void CreateNewGame(string clientID)
+    /// <param name="client_ID"></param>
+    public static void CreateNewGame(string client_ID)
     {
-        string sessionID = GenerateID();
+        string session_ID = GenerateID();
         // _games.Add(sessionID, new Game(sessionID, _connectedClients.GetValueOrDefault(clientID)));
-        _games.Add(sessionID, new Game(sessionID, _clients.GetValueOrDefault(clientID)));
+        _games.Add(session_ID, new Game(session_ID, _clients.GetValueOrDefault(client_ID)));
 
-        SendCommandToClient(_clients.GetValueOrDefault(clientID), new CommandFeedbackActionExecutedSuccessfully(clientID));
-        SendStringToClient(_clients.GetValueOrDefault(clientID), sessionID);
+        SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
+        SendStringToClient(_clients.GetValueOrDefault(client_ID), session_ID);
     }
 
     /// <summary>
     /// [Only called by received commands] Connects a client to an existing game session.
     /// </summary>
-    /// <param name="clientID"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="client_ID"></param>
+    /// <param name="session_ID"></param>
     /// <param name="playerName"></param>
-    public static void ConnectToGame(string clientID, string sessionID, string playerName)
+    public static void ConnectToGame(string client_ID, string session_ID)
     {
-        Console.WriteLine("Connecting to " + sessionID + " with client " + clientID + " and playerName " + playerName);
-        _games.GetValueOrDefault(sessionID).AddClientToGame(_clients.GetValueOrDefault(clientID), playerName);
+        Console.WriteLine("Connecting to " + session_ID + " with client " + client_ID);
+        _games.GetValueOrDefault(session_ID).AddClientToGame(_clients.GetValueOrDefault(client_ID));
 
-        SendCommandToClient(_clients.GetValueOrDefault(clientID), new CommandFeedbackActionExecutedSuccessfully(clientID));
-        SendStringToClient(_clients.GetValueOrDefault(clientID), sessionID);
-        // Game currentGame = _games.GetValueOrDefault(sessionID);
+        SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
+        SendStringToClient(_clients.GetValueOrDefault(client_ID), session_ID);
+    }
 
-        // if (_clients.ContainsKey(clientID))
-        // {
-        //     TcpClient currentClient = _clients.GetValueOrDefault(clientID);
-        //     currentGame.AddClientToGame(currentClient, playerName);
-        // }
-        // else
-        // {
-        //     Console.WriteLine("Object not found");
-        // }
-
-        // GetInputFromClient(clientID, sessionID);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="client_ID"></param>
+    /// <param name="session_ID"></param>
+    /// <param name="player"></param>
+    public static void CreateNewPlayerForSession(string client_ID, string session_ID, Player player)
+    {
+        _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, player);
+        SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
     }
 
     /// <summary>
     /// [Only called by received commands] Starts the game round. Executable only when all players are connected.
     /// </summary>
-    /// <param name="sessionID"></param>
-    public static void StartGame(string sessionID)
+    /// <param name="session_ID"></param>
+    public static void StartGame(string session_ID)
     {
-        _games.GetValueOrDefault(sessionID).StartGame();
-        // GetInputFromClient(clientID, sessionID);
+        _games.GetValueOrDefault(session_ID).StartGame();
     }
-
-    // private static void GetInputFromClient(string clientID, string sessionID)
-    // {
-    //     ServerCommand command = (ServerCommand) ReceiveCommandFromClient(_clients.GetValueOrDefault(clientID));
-    //     command.TargetGame = _games.GetValueOrDefault(sessionID);
-
-    //     scm.AddCommand(command);
-    //     scm.ProcessPendingTransactions();
-    // }
 
     /// <summary>
     /// Thread implementation for clients. Waits for commands from client. 
@@ -140,11 +130,11 @@ public class MasterServer
     /// <param name="cm"></param>
     private static void ClientInteraction(TcpClient client, CommandManager cm)
     {
-        string clientID = GenerateID();
-        _clients.Add(clientID, client);
+        string client_ID = GenerateID();
+        _clients.Add(client_ID, client);
 
         //---write back the client ID to the client---
-        SendStringToClient(client, clientID);
+        SendStringToClient(client, client_ID);
 
         while (true)
         {
