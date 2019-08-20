@@ -98,13 +98,13 @@ namespace MDC.Gamedata.PlayerType
 
             set
             {
-                if (value > 0 && value <= 20)
+                if (value >= 0 && value <= 5)
                 {
                     this._playerRemainingMoves = value;
                 }
                 else
                 {
-                    this._playerRemainingMoves = -999;
+                    throw new System.ArgumentException();
                 }
             }
         }
@@ -112,18 +112,16 @@ namespace MDC.Gamedata.PlayerType
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
             double totalAttackPower = attackBoost + characterType._attackPower;
-            double totalDefensePower = this._defenseBoost + this._char._defensePower;
+            double totalDefensePower = this.DefenseBoost + this._char._defensePower;
 
-            _life -= totalAttackPower - totalDefensePower;
-
-            this._defenseBoost = 0; 
+            Life -= totalAttackPower - totalDefensePower;
         }
 
         public void DecrementLife(double _dealingDamage)
         {
-           _life -= _dealingDamage - (this._defenseBoost + this._char._defensePower);
+           Life -= _dealingDamage - (this.DefenseBoost + this._char._defensePower);
 
-            this._defenseBoost = 0; 
+            this.DefenseBoost = 0; 
         }
 
         public void MovePlayer(int xPosition, int yPosition)
