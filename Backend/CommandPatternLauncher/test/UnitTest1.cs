@@ -6,33 +6,31 @@ using MDC.Gamedata.PlayerType;
 using MDC.Server;
 using MDC.Exceptions;
 
-namespace test
+namespace MonsterdungeonCrawlerTests
 {
 
     [TestClass]
-    public class UnitTest1
+    public class UnitTestGeneral
     {
 
         [TestMethod]
         public void NumberOfLife()
         {
             Hero player1 = new Hero("hero", new MeleeFighter(), 10, 10);
-            Monster player2 = new Monster("monster", new RangeFighter(), 10, 20);
+            Monster player2 = new Monster("monster", new RangeFighter(), 10, 19);
 
             Assert.AreEqual(5, player1.Life);
             Assert.AreEqual(3, player2.Life);
         }
+     
 
-        [TestMethod]
-        [ExpectedException(typeof(System.NullReferenceException), "Object reference not set to an instance of an object.")]
-        public void NullTargetPlayerCommand()
-        {
-            CommandManager cm = new CommandManager();
-            CommandGameMove cmove = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 5);
 
-            cm.AddCommand(cmove);
-            cm.ProcessPendingTransactions();
-        }
+    }
+
+    [TestClass]
+    public class UnitTestLevelField
+    {
+        
 
         [TestMethod]
         public void LevelAddAllFieldObjects()
@@ -53,30 +51,43 @@ namespace test
         [ExpectedException(typeof(System.ArgumentException))]
         public void PlayerPositionOutOfField()
         {
-            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 30);
+            Hero player1 = new Hero("hero", new MeleeFighter(), 19, 30);
         }
 
         [TestMethod]
         public void LevelFieldBlockedByPlayer()
         {
-            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 19);
-            Monster player2 = new Monster("monster", new RangeFighter(), 10, 20); 
-            Monster player3 = new Monster("monster", new RangeFighter(), 11, 20);
+            Hero player1 = new Hero("hero", new MeleeFighter(), 19, 19);
+            Monster player2 = new Monster("monster", new RangeFighter(), 10, 19); 
+            Monster player3 = new Monster("monster", new RangeFighter(), 11, 19);
             
         
-            Assert.IsTrue(Level.FieldBlockedByPlayer(11, 20)); 
-            Assert.IsTrue(Level.FieldBlockedByPlayer(20, 19));
-            Assert.IsTrue(Level.FieldBlockedByPlayer(10, 20));
-            Assert.IsFalse(Level.FieldBlockedByPlayer(10, 19));
+            Assert.IsTrue(Level.FieldBlockedByPlayer(11, 19)); 
+            Assert.IsTrue(Level.FieldBlockedByPlayer(19, 19));
+            Assert.IsTrue(Level.FieldBlockedByPlayer(10, 19));
+            Assert.IsFalse(Level.FieldBlockedByPlayer(10, 3));
             Assert.IsFalse(Level.FieldBlockedByPlayer(10, 9));
             Assert.IsFalse(Level.FieldBlockedByPlayer(7, 7));
 
             Assert.AreEqual(3, Level.playerList.Count);
 
         }
-        
+    }
 
+    [TestClass]
+    public class UnitTestMove
+    {
 
+        [TestMethod]
+        [ExpectedException(typeof(System.NullReferenceException), "Object reference not set to an instance of an object.")]
+        public void NullTargetPlayerCommand()
+        {
+            CommandManager cm = new CommandManager();
+            CommandGameMove cmove = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 5);
+
+            cm.AddCommand(cmove);
+            cm.ProcessPendingTransactions();
+        }
     }
 
     [TestClass]
@@ -85,8 +96,8 @@ namespace test
         [TestMethod]
         public void AttackEnemy()
         {
-            Hero player3 = new Hero("hero", new MeleeFighter(), 20, 30);
-            Monster player4 = new Monster("monster", new RangeFighter(), 30, 20);
+            Hero player3 = new Hero("hero", new MeleeFighter(), 18, 18);
+            Monster player4 = new Monster("monster", new RangeFighter(), 19, 18);
 
             player4.DecrementLife(player3.AttackBoost, player3.CharacterType);
 
@@ -106,8 +117,8 @@ namespace test
         [ExpectedException(typeof(CantAttackException))]
         public void AttackATeammember()
         {
-            Monster player5 = new Monster("monster", new RangeFighter(), 30, 20);
-            Monster player6 = new Monster("monster", new RangeFighter(), 30, 20);
+            Monster player5 = new Monster("monster", new RangeFighter(), 10, 7);
+            Monster player6 = new Monster("monster", new RangeFighter(), 10, 7);
             CommandManager cm2 = new CommandManager();
             CommandGameAttack cattack2 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "2242342342343");
             cattack2.SourcePlayer = player5; 
@@ -240,7 +251,7 @@ namespace test
             CommandManager cm5 = new CommandManager();
 
             Hero player21 = new Hero("hero", new RangeFighter(), 11, 9);
-            Monster player22 = new Monster("monster", new MeleeFighter(), 20, 12);
+            Monster player22 = new Monster("monster", new MeleeFighter(), 19, 12);
             CommandGameAttack cattack12 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "8582252885");
             cattack12.SourcePlayer = player21;
             cattack12.TargetPlayer = player22;

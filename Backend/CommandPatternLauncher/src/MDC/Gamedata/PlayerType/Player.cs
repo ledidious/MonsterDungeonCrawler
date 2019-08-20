@@ -25,7 +25,7 @@ namespace MDC.Gamedata.PlayerType
             get { return _xPosition; }
             set 
             {
-                if (value >= 0 && value <= 20)
+                if (value >= 0 && value <= 19)
                 {
                     _xPosition = value;
                 }
@@ -41,7 +41,7 @@ namespace MDC.Gamedata.PlayerType
             get { return _yPosition; }
             set 
             {
-                if (value >= 0 && value <= 20)
+                if (value >= 0 && value <= 19)
                 {
                     _yPosition = value;
                 }
