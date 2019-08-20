@@ -31,8 +31,8 @@ namespace MDC.Client
 
             //---create a TCPClient object at the IP and port no.---
             _server = new TcpClient(_server_IP, _port_NO);
-            _server.ReceiveTimeout = 3000; // 3 Seconds
-            _server.SendTimeout = 3000; // 3 Seconds
+            _server.ReceiveTimeout = 3000; // 3 Seconds TODO: Nach Debugging wieder einbauen
+            _server.SendTimeout = 3000; // 3 Seconds TODO: Nach Debugging wieder einbauen
 
             //---get the client ID from the server---
             _client_ID = ReceiveStringFromServer();
@@ -78,12 +78,13 @@ namespace MDC.Client
             if (_isConnected)
             {
                 Console.WriteLine("Connecting to: " + sessionID);
-                CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, sessionID, "Luffy");
+                CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, sessionID);
                 SendCommandToServer(command);
 
                 if (EvaluateFeedback())
                 {
-                    _gameSession_ID = ReceiveStringFromServer();
+                    _gameSession_ID = sessionID;
+                    // _gameSession_ID = ReceiveStringFromServer(); //TODO: Das ist unötig, da der Client die ID bereits kennt.
                 }
             }
         }
@@ -143,13 +144,14 @@ namespace MDC.Client
             }
         }
 
-        public void CreateNewPlayerForSession(string playerName)
+        public void CreateNewPlayerForSession(string playerName, CharacterClasses pClass)
         {
             if (_isConnected)
             {
                 if (_gameSession_ID != null)
                 {
-                    
+                    CommandServerCreatePlayer command = new CommandServerCreatePlayer(_client_ID, _gameSession_ID, playerName, pClass);
+                    SendCommandToServer(command);
                 }
             }
         }

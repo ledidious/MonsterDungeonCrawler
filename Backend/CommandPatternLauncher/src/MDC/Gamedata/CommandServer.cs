@@ -1,9 +1,16 @@
 //Command
 using System;
+using MDC.Gamedata.PlayerType;
 using MDC.Server;
 
 namespace MDC.Gamedata
 {
+    // public enum CharacterClasses
+    // {
+    //     MeleeFighter,
+    //     RangeFighter
+    // }
+
     [Serializable]
     public abstract class CommandServer : Command
     {
@@ -25,24 +32,24 @@ namespace MDC.Gamedata
         public override void Execute()
         {
             MasterServer.CreateNewGame(SourceClientID);
-            // throw new NotImplementedException();
+            this.IsCompleted = true;
         }
     }
 
     [Serializable]
     public class CommandServerJoinGame : CommandServer
     {
-        public CommandServerJoinGame(string SourceClientID, string sessionID, string playerName) : base(SourceClientID)
+        public String SessionID { get; }
+
+        public CommandServerJoinGame(string SourceClientID, string sessionID) : base(SourceClientID)
         {
             SessionID = sessionID;
-            PlayerName = playerName;
         }
 
-        public String PlayerName { get; set; }
-        public String SessionID { get; set; }
         public override void Execute()
         {
-            MasterServer.ConnectToGame(SourceClientID, SessionID, PlayerName);
+            MasterServer.ConnectToGame(SourceClientID, SessionID);
+            this.IsCompleted = true;
             // throw new NotImplementedException();
         }
     }
@@ -59,8 +66,9 @@ namespace MDC.Gamedata
 
         public override void Execute()
         {
+            this.IsCompleted = true;
             MasterServer.StartGame(SessionID);
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 
@@ -81,15 +89,34 @@ namespace MDC.Gamedata
     public class CommandServerCreatePlayer : CommandServer
     {
         private string _playerName;
+        private string _sessionID;
+        private Player player;
 
-        public CommandServerCreatePlayer(string SourceClientID, string playerName) : base(SourceClientID)
+        public CommandServerCreatePlayer(string SourceClientID, string sessionID, string playerName, CharacterClasses characterClass) : base(SourceClientID)
         {
             this._playerName = playerName;
+            this._sessionID = sessionID;
+
+
+            switch (characterClass)
+            {
+                case CharacterClasses.MeleeFighter:
+                    player = new Hero(playerName, new MeleeFighter(), 0, 0);
+                    break;
+                case CharacterClasses.RangeFighter:
+                    player = new Hero(playerName, new RangeFighter(), 0, 0);
+                    break;
+                default:
+                    break;
+            }
         }
+
+
 
         public override void Execute()
         {
-
+            MasterServer.CreateNewPlayerForSession(SourceClientID, _sessionID, player);
+            this.IsCompleted = true;
         }
     }
 }

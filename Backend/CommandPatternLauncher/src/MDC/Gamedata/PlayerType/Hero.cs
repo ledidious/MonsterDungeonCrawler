@@ -3,6 +3,7 @@ using MDC.Gamedata.LevelContent;
 
 namespace MDC.Gamedata.PlayerType
 {
+    [Serializable]
     public class Hero : Player
     {
 

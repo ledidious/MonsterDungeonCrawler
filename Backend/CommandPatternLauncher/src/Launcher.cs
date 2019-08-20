@@ -36,9 +36,13 @@ class Launcher
         myFourthClient.ConnectToServer();
         myFourthClient.ConnectToGame(myFirstClient.GameSession_ID);
 
-        ClientProgram myFifthClient = new ClientProgram();
-        myFifthClient.ConnectToServer();
-        myFifthClient.ConnectToGame(myFirstClient.GameSession_ID);
+        myFirstClient.CreateNewPlayerForSession("Snoop Dog", MDC.CharacterClasses.MeleeFighter);
+        mySecondClient.CreateNewPlayerForSession("Tux", MDC.CharacterClasses.RangeFighter);
+        myThirdClient.CreateNewPlayerForSession("Franz", MDC.CharacterClasses.MeleeFighter);
+
+        // ClientProgram myFifthClient = new ClientProgram();
+        // myFifthClient.ConnectToServer();
+        // myFifthClient.ConnectToGame(myFirstClient.GameSession_ID);
     }
 
     /// <summary>
