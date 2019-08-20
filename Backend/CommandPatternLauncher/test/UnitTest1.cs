@@ -427,7 +427,22 @@ namespace MonsterdungeonCrawlerTests
             int test = field14.Item.Duration; 
         }
 
-        
+        [TestMethod]
+        public void HeroCollectItem()
+        {
+            Hero player1 = new Hero("hero", new RangeFighter(), 11, 9);
+            Field field15 = new Field(11, 1, new Floor());
+            field15.Item = new DefenseBoost(2);
+            
+            player1.CollectItem(field15.Item); 
+            
+            Assert.AreEqual(0.5, player1.DefenseBoost); 
+
+            player1.ResetBoost(); 
+
+            Assert.AreEqual(0, player1.DefenseBoost);
+            Assert.AreEqual(0, player1.AttackBoost);
+        }    
 
 
 
