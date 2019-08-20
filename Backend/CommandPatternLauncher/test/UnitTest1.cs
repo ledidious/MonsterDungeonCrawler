@@ -9,6 +9,38 @@ using MDC.Exceptions;
 namespace test
 {
     [TestClass]
+    public class UnitTest2
+    {
+
+        [TestMethod]
+        public void LevelAddPlayerObjects()
+        {
+            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 19);
+            Monster player2 = new Monster("monster", new RangeFighter(), 10, 20); 
+            Monster player3 = new Monster("monster", new RangeFighter(), 11, 20);
+
+            
+            bool fieldBlocked = false; 
+            
+            for (int i = 0; i < Level.playerList.Count; i++)
+            {                   
+                if (Level.playerList[i].XPosition == 11 && Level.playerList[i].YPosition == 20)
+                {
+                    fieldBlocked = true; 
+                }
+                else
+                {
+                    //position not blocked
+                }
+            }
+            
+            Assert.IsTrue(fieldBlocked); 
+            Assert.AreEqual(3, Level.playerList.Count);
+
+        }
+
+    }
+    [TestClass]
     public class UnitTest1
     {
 
@@ -54,6 +86,11 @@ namespace test
         {
             Hero player1 = new Hero("hero", new MeleeFighter(), 20, 30);
         }
+
+        
+        
+
+
     }
 
     [TestClass]
