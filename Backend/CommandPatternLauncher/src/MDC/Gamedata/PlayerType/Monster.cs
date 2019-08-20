@@ -13,6 +13,8 @@ namespace MDC.Gamedata.PlayerType
             this.CharacterType = characterType;
             this.XPosition = xPosition;
             this.YPosition = yPosition;
+
+            Level.AddPlayerToLevel(this); 
         }
     }
 }

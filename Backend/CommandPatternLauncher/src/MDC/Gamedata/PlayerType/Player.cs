@@ -20,12 +20,25 @@ namespace MDC.Gamedata.PlayerType
         private CharacterType _char;
         public string PlayerName;
 
+        public double AttackBoost
+        {
+            get { return _attackBoost; }
+            set => _attackBoost = value;
+        }
+
+        public double DefenseBoost
+        {
+            get { return _defenseBoost; }
+
+            set => _defenseBoost = value; 
+        }
+
         public int XPosition
         {
             get { return _xPosition; }
             set 
             {
-                if (value >= 0 && value <= 20)
+                if (value >= 0 && value <= 19)
                 {
                     _xPosition = value;
                 }
@@ -41,7 +54,7 @@ namespace MDC.Gamedata.PlayerType
             get { return _yPosition; }
             set 
             {
-                if (value >= 0 && value <= 20)
+                if (value >= 0 && value <= 19)
                 {
                     _yPosition = value;
                 }
@@ -57,11 +70,6 @@ namespace MDC.Gamedata.PlayerType
             get { return _life; }
 
             set => _life = value;
-        }
-
-        public double AttackBoost
-        {
-            get { return _attackBoost; }
         }
 
         public CharacterType CharacterType
