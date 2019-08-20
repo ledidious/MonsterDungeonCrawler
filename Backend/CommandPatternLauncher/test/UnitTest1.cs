@@ -8,38 +8,7 @@ using MDC.Exceptions;
 
 namespace test
 {
-    [TestClass]
-    public class UnitTest2
-    {
 
-        [TestMethod]
-        public void LevelAddPlayerObjects()
-        {
-            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 19);
-            Monster player2 = new Monster("monster", new RangeFighter(), 10, 20); 
-            Monster player3 = new Monster("monster", new RangeFighter(), 11, 20);
-
-            
-            bool fieldBlocked = false; 
-            
-            for (int i = 0; i < Level.playerList.Count; i++)
-            {                   
-                if (Level.playerList[i].XPosition == 11 && Level.playerList[i].YPosition == 20)
-                {
-                    fieldBlocked = true; 
-                }
-                else
-                {
-                    //position not blocked
-                }
-            }
-            
-            Assert.IsTrue(fieldBlocked); 
-            Assert.AreEqual(3, Level.playerList.Count);
-
-        }
-
-    }
     [TestClass]
     public class UnitTest1
     {
@@ -87,7 +56,24 @@ namespace test
             Hero player1 = new Hero("hero", new MeleeFighter(), 20, 30);
         }
 
+        [TestMethod]
+        public void LevelFieldBlockedByPlayer()
+        {
+            Hero player1 = new Hero("hero", new MeleeFighter(), 20, 19);
+            Monster player2 = new Monster("monster", new RangeFighter(), 10, 20); 
+            Monster player3 = new Monster("monster", new RangeFighter(), 11, 20);
+            
         
+            Assert.IsTrue(Level.FieldBlockedByPlayer(11, 20)); 
+            Assert.IsTrue(Level.FieldBlockedByPlayer(20, 19));
+            Assert.IsTrue(Level.FieldBlockedByPlayer(10, 20));
+            Assert.IsFalse(Level.FieldBlockedByPlayer(10, 19));
+            Assert.IsFalse(Level.FieldBlockedByPlayer(10, 9));
+            Assert.IsFalse(Level.FieldBlockedByPlayer(7, 7));
+
+            Assert.AreEqual(3, Level.playerList.Count);
+
+        }
         
 
 
@@ -286,12 +272,14 @@ namespace test
         {
 
             Hero player2 = new Hero("hero", new RangeFighter(), 11, 9);
+            Monster player22 = new Monster("monster", new MeleeFighter(), 7, 7);
             Field field2 = new Field(11, 9, new Trapdoor());
 
             Field field3 = new Field(5, 5, new Wall());
             Field field4 = new Field(6, 6, new Wall());
             Field field5 = new Field(7, 7, new Floor());
-
+            Field field6 = new Field(8, 8, new Floor());
+ 
                     
             player2.DecrementLife(0.25);
 
@@ -303,7 +291,7 @@ namespace test
 
                 while (successfulMoving == false)
                 {
-                    if (Level.playingField[randomX, randomY].FieldType is Floor)
+                    if (Level.playingField[randomX, randomY].FieldType is Floor && Level.FieldBlockedByPlayer(randomX, randomY) == false)
                     {
                         successfulMoving = true;
                         player2.MovePlayer(randomX, randomY);
@@ -322,8 +310,8 @@ namespace test
             }
 
             Assert.AreEqual(4.75, player2.Life);
-            Assert.AreEqual(7, player2.XPosition);
-            Assert.AreEqual(7, player2.YPosition);
+            Assert.AreEqual(8, player2.XPosition);
+            Assert.AreEqual(8, player2.YPosition);
 
         }       
     }

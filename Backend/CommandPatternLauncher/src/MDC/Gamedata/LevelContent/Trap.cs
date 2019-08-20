@@ -26,7 +26,7 @@ namespace MDC.Gamedata.LevelContent
                     randomX = new Random().Next(1, 20); 
                     randomY = new Random().Next(1, 20); 
 
-                    if (Level.playingField[randomX, randomY].FieldType is Floor)
+                    if (Level.playingField[randomX, randomY].FieldType is Floor && Level.FieldBlockedByPlayer(randomX, randomY) == false)
                     {
                         successfulMoving = true;
                         player.MovePlayer(randomX, randomY);

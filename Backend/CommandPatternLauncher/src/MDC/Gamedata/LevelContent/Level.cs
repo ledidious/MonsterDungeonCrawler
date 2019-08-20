@@ -31,6 +31,25 @@ namespace MDC.Gamedata.LevelContent
                 }
         }
 
+        public static Boolean FieldBlockedByPlayer(int xPosition, int yPosition)
+        {
+            Boolean FieldIsBlocked = false; 
+
+            for (int i = 0; i < playerList.Count; i++)
+            {
+                if (playerList[i].XPosition == xPosition && playerList[i].YPosition == yPosition)
+                {
+                    FieldIsBlocked = true; 
+                }
+                else
+                {
+                    //field is not blocked
+                }
+            }
+
+            return FieldIsBlocked;
+        }
+
         enum landscape
         {
             desert,
