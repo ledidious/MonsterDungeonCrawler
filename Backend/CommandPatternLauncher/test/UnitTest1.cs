@@ -88,6 +88,17 @@ namespace MonsterdungeonCrawlerTests
             cm.AddCommand(cmove);
             cm.ProcessPendingTransactions();
         }
+
+        [TestMethod]
+        public void MoveRangeCharactertypes()
+        {
+            Hero player1 = new Hero("hero", new MeleeFighter(), 18, 18);
+            Monster player2 = new Monster("monster", new RangeFighter(), 19, 18);
+
+            Assert.AreEqual(5, player1.CharacterType._moveRange);
+            Assert.AreEqual(2, player2.CharacterType._moveRange);
+        }
+
     }
 
     [TestClass]
@@ -404,7 +415,6 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(0.75, field12.Item.EffectValue);
             Assert.AreEqual(3, field12.Item.Duration);
 
-
         }
 
         [TestMethod]
@@ -428,9 +438,9 @@ namespace MonsterdungeonCrawlerTests
         }
 
         [TestMethod]
-        public void HeroCollectItem()
+        public void PlayerCollectItem()
         {
-            Hero player1 = new Hero("hero", new RangeFighter(), 11, 9);
+            Hero player1 = new Hero("hero", new RangeFighter(), 11, 1);
             Field field15 = new Field(11, 1, new Floor());
             field15.Item = new DefenseBoost(2);
             
@@ -442,10 +452,50 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.AreEqual(0, player1.DefenseBoost);
             Assert.AreEqual(0, player1.AttackBoost);
+
+        
+            Monster player2 = new Monster("monster", new MeleeFighter(), 7, 7);
+            Field field16 = new Field(7, 7, new Floor());
+            field16.Item = new DefenseBoost(2);
+
+            player2.CollectItem(field16.Item); 
+            
+            Assert.AreEqual(0.5, player2.DefenseBoost); 
+
+            player2.ResetBoost();
+
+            Assert.AreEqual(0, player2.DefenseBoost);
+            Assert.AreEqual(0, player2.AttackBoost);
+            
         }    
 
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentException))]
+        public void ItemOutOfRange()
+        {
+            Monster player3 = new Monster("monster", new MeleeFighter(), 6, 7);
+            Field field17 = new Field(7, 7, new Floor());
+            Field field18 = new Field(6, 7, new Floor());
+            field17.Item = new DefenseBoost(2);
 
+            player3.CollectItem(field17.Item);  
 
+        }
+
+        [TestMethod]
+        public void IgnoreExtralife()
+        {
+            Hero player4 = new Hero("hero", new RangeFighter(), 11, 1);
+            Field field19 = new Field(11, 1, new Floor());
+            field19.Item = new ExtraLife(); 
+
+            Assert.IsFalse(player4.CollectItem(field19.Item)); 
+
+            player4.Life--; 
+
+            Assert.IsTrue(player4.CollectItem(field19.Item)); 
+
+        }
 
 
 

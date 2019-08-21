@@ -20,7 +20,6 @@ namespace MDC.Gamedata
     {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
                                            //TODO: check if target fieldtype is a floor an then check if the floor contains a item, then activate Effects method, kill the object and create floor object
                                            
-        // private readonly string _direction;
         private readonly int _moveAmount;
 
         public CommandGameMove(string sourceClientID, int moveAmount) : base(sourceClientID)
@@ -62,8 +61,12 @@ namespace MDC.Gamedata
         public string TargetClientID { get; set; }
         public Player TargetPlayer { get; set; }
 
+       
+
         public CommandGameAttack(string SourceClientID, string targetClientID) : base(SourceClientID)
         {
+            IsCompleted = false; 
+
             TargetClientID = targetClientID;
 
             if (SourceClientID == TargetClientID)
@@ -196,14 +199,16 @@ namespace MDC.Gamedata
 
             if (SourcePlayer is Monster || TargetPlayer is Monster || VerifyAttackRange() == true || VerifyObstacleInRange() == true)
                 throw new Exceptions.CantAttackException();
+            else
+            {
+                IsCompleted = true;
+                double attackBoost = SourcePlayer.AttackBoost;
+                CharacterType characterType = SourcePlayer.CharacterType;
 
-            double attackBoost = SourcePlayer.AttackBoost;
-            CharacterType characterType = SourcePlayer.CharacterType;
+                TargetPlayer.DecrementLife(attackBoost, characterType);
 
-            TargetPlayer.DecrementLife(attackBoost, characterType);
-
-            SourcePlayer.PlayerRemainingMoves = 0;
-
+                SourcePlayer.PlayerRemainingMoves = 0;
+            }
         }
 
     }
