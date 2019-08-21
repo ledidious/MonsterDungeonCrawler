@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic; 
-using MDC.Gamedata.LevelContent;
 using MDC.Gamedata.PlayerType; 
 
 
@@ -15,8 +14,11 @@ namespace MDC.Gamedata.LevelContent
          
         public static Field[,] playingField = new Field[WIDTH, HIGHT];
 
-        public static List<Player> playerList = new List<Player>(); 
-    
+        public static List<Player> playerList = new List<Player>();
+
+        public static int GetMax_Clients()
+        { return MAX_CLIENTS; }
+
         public static void AddFieldToLevel(Field field) => playingField[field.XPosition, field.YPosition] = field;
 
         public static void AddPlayerToLevel(Player player)

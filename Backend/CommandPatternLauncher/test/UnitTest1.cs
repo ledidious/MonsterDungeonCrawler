@@ -77,7 +77,7 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestMove
     {
-
+        /*
         [TestMethod]
         [ExpectedException(typeof(System.NullReferenceException), "Object reference not set to an instance of an object.")]
         public void NullTargetPlayerCommand()
@@ -88,6 +88,7 @@ namespace MonsterdungeonCrawlerTests
             cm.AddCommand(cmove);
             cm.ProcessPendingTransactions();
         }
+        */
 
         [TestMethod]
         public void MoveRangeCharactertypes()
@@ -97,6 +98,61 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.AreEqual(5, player1.CharacterType._moveRange);
             Assert.AreEqual(2, player2.CharacterType._moveRange);
+
+            Assert.AreEqual(0, player1.PlayerRemainingMoves); 
+        }
+
+        [TestMethod]
+        public void InvalidTargetField()
+        {
+            //target field is equal current field
+            Hero player3 = new Hero("hero", new MeleeFighter(), 18, 18);
+            Field field1 = new Field(18, 18, new Floor());
+
+            CommandGameMove cmove1 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 18, 18);
+            cmove1.SourcePlayer = player3; 
+
+            player3.PlayerRemainingMoves = player3.CharacterType._moveRange; 
+
+            Assert.IsTrue(cmove1.TargetFieldIsInvalid()); 
+
+
+            //target field is a wall
+            Hero player4 = new Hero("hero", new MeleeFighter(), 8, 8);
+            Field field2 = new Field(8, 9, new Wall());      
+
+            CommandGameMove cmove2 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",8, 9);      
+            cmove2.SourcePlayer = player4; 
+
+            player4.PlayerRemainingMoves = player4.CharacterType._moveRange; 
+
+            Assert.IsTrue(cmove2.TargetFieldIsInvalid());
+
+
+            //target field is blocked by another player
+            Hero player5 = new Hero("hero", new MeleeFighter(), 2, 2);
+            Monster player6 = new Monster("monster", new RangeFighter(), 2, 3);
+            Field field3 = new Field(2, 3, new Floor());
+
+            CommandGameMove cmove3 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",2, 3);      
+            cmove3.SourcePlayer = player5;       
+
+            player5.PlayerRemainingMoves = player5.CharacterType._moveRange; 
+
+            Assert.IsTrue(cmove3.TargetFieldIsInvalid());
+
+
+            //target field is valid
+            Hero player7 = new Hero("hero", new MeleeFighter(), 1, 1);
+            Field field4 = new Field(1, 2, new Floor());
+
+            CommandGameMove cmove4 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",1, 2);      
+            cmove4.SourcePlayer = player7;       
+
+            player7.PlayerRemainingMoves = player7.CharacterType._moveRange; 
+
+            Assert.IsFalse(cmove4.TargetFieldIsInvalid());
+
         }
 
     }

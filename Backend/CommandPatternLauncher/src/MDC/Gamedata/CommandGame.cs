@@ -20,35 +20,55 @@ namespace MDC.Gamedata
     {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
                                            //TODO: check if target fieldtype is a floor an then check if the floor contains a item, then activate Effects method, kill the object and create floor object
                                            
-        private readonly int _moveAmount;
+        private readonly int _xPosition;
+        private readonly int _yPosition;
 
-        public CommandGameMove(string sourceClientID, int moveAmount) : base(sourceClientID)
+        public CommandGameMove(string sourceClientID, int xPosition, int yPosition) : base(sourceClientID)
         {
-            _moveAmount = moveAmount;
+            _xPosition = xPosition;
+            _yPosition = yPosition;
             IsCompleted = false;
         }
+
+        public Boolean TargetFieldIsInvalid()
+        {
+            Boolean fieldIsNotAccessable = false; 
+
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
+            {
+                fieldIsNotAccessable = true; 
+            }
+            else
+            {
+                 for (int i = 0; i < Level.GetMax_Clients(); i++)
+                {
+                    if (Level.playerList[i].XPosition == _xPosition && Level.playerList[i].YPosition == _yPosition)
+                    {
+                        fieldIsNotAccessable = true; 
+                    }
+                    else
+                    {
+                        //field is accessable
+                    }
+                }
+            }
+            return fieldIsNotAccessable; 
+        }
+
+
 
         /// <summary>
         /// set IsComplete on true if the TargetPlayer has more or equal remaining moves than the Input (_moveAmount)
         /// </summary>
         public override void Execute()
         {
-            try
-            {
-                if (SourcePlayer.PlayerRemainingMoves >= _moveAmount)
+ 
+                if (SourcePlayer.PlayerRemainingMoves < 1)
                 {
-                    SourcePlayer.PlayerRemainingMoves -= _moveAmount;
+                    SourcePlayer.PlayerRemainingMoves --;
 
                     IsCompleted = true;
                 }
-            }
-            catch (System.NullReferenceException e)
-            {
-                NullReferenceException ex = new NullReferenceException("The target object of the command is null", e);
-                throw ex;
-                // Console.WriteLine($"\n{e.GetType().FullName}\n{e.Message}\n{e.StackTrace}");
-                // throw e;
-            }
 
 
         }
@@ -197,17 +217,18 @@ namespace MDC.Gamedata
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
 
-            if (SourcePlayer is Monster || TargetPlayer is Monster || VerifyAttackRange() == true || VerifyObstacleInRange() == true)
+            if (SourcePlayer is Monster && TargetPlayer is Monster || VerifyAttackRange() == true || VerifyObstacleInRange() == true || SourcePlayer.PlayerRemainingMoves == 0)
                 throw new Exceptions.CantAttackException();
             else
             {
-                IsCompleted = true;
                 double attackBoost = SourcePlayer.AttackBoost;
                 CharacterType characterType = SourcePlayer.CharacterType;
 
                 TargetPlayer.DecrementLife(attackBoost, characterType);
 
                 SourcePlayer.PlayerRemainingMoves = 0;
+
+                IsCompleted = true;
             }
         }
 
