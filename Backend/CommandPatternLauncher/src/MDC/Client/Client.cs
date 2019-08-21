@@ -232,8 +232,15 @@ namespace MDC.Client
         private void SendCommandToServer(Command command)
         {
             NetworkStream nwStream = _server.GetStream();
+            MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(nwStream, command);
+
+            var ms = new MemoryStream();
+            formatter.Serialize(ms, command);
+
+            byte[] bytesToSend = ms.ToArray();
+
+            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
         }
 
         private Boolean EvaluateFeedback()

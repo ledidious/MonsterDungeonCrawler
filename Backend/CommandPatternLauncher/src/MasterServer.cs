@@ -3,7 +3,9 @@
 // Each session creates a new SessionID and then an instance of the class Game.  
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -138,6 +140,7 @@ public class MasterServer
 
         while (true)
         {
+            Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
             cm.AddCommand(ReceiveCommandFromClient(client));
             cm.ProcessPendingTransactions();
         }
@@ -175,7 +178,6 @@ public class MasterServer
     /// <param name="data">String you want to send</param>
     private static void SendStringToClient(TcpClient client, string data)
     {
-        Console.WriteLine("");
         NetworkStream nwStream = client.GetStream();
         byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
         nwStream.Write(bytesToSend, 0, bytesToSend.Length);
@@ -189,9 +191,17 @@ public class MasterServer
     private static Command ReceiveCommandFromClient(TcpClient client)
     {
         NetworkStream nwStream = client.GetStream();
+        MemoryStream dataStream = new MemoryStream();
         IFormatter formatter = new BinaryFormatter();
 
-        return (Command)formatter.Deserialize(nwStream);
+        byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+        int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+
+        dataStream.Write(bytesToRead, 0, bytesToRead.Length);
+        dataStream.Seek(0, SeekOrigin.Begin);
+
+        
+        return (Command)formatter.Deserialize(dataStream);
     }
 
     /// <summary>
