@@ -1,5 +1,5 @@
 using System;
-using MDC.Server;
+using MDC.Gamedata.PlayerType; 
 
 namespace MDC.Gamedata.LevelContent
 {
@@ -8,17 +8,42 @@ namespace MDC.Gamedata.LevelContent
 
         public override double _dealingDamage => 1; 
 
-        private Boolean _isActive; 
-        
-        public int _interval = 3;
+        protected Boolean _isActive = false; 
 
-        //TODO: Game class has to activate this attribute if roundcounter % 3 == 0
-        public Boolean ActivateLaser
+        public Boolean Activate
         {
             get { return _isActive; }
 
             set { _isActive = value; }
+        } 
+
+        //TODO: Game class has to call this method if roundcounter % 3 == 0
+        public override void OnNextRound()
+        {
+            if (_isActive == false)
+            {
+                Activate = true; 
+            }
+            else
+            {
+                Activate = false; 
+            }
+            
         }
+        
+        
+        public override void Effects(Player player)
+        {
+            if (this.Activate == true)
+            {
+                player.DecrementLife(this._dealingDamage);
+            }
+            else
+            {
+                //laser is not active 
+            }
+        }
+
         
          
   

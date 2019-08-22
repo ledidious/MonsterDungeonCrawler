@@ -11,37 +11,12 @@ namespace MDC.Gamedata.LevelContent
         public Boolean CanBeAccessed(){
             return true;
         }
-        public void Effects(Player player)
-        {
-            player.DecrementLife(this._dealingDamage);
 
-            if (this is Trapdoor)
-            {
-                Boolean successfulMoving = false;
-                int randomX; 
-                int randomY;
+        public abstract void OnNextRound(); 
 
-                while (successfulMoving == false)
-                {
-                    randomX = new Random().Next(1, 20); 
-                    randomY = new Random().Next(1, 20); 
+        public abstract void Effects(Player player);
 
-                    if (Level.playingField[randomX, randomY].FieldType is Floor && Level.FieldBlockedByPlayer(randomX, randomY) == false)
-                    {
-                        successfulMoving = true;
-                        player.MovePlayer(randomX, randomY);
-                    }
-                    else
-                    {
-                        //player can not move to a wall or another trap
-                    }
+      
 
-                }               
-            }
-            else
-            {
-                //do not move the player
-            }
-        }
     }
 }

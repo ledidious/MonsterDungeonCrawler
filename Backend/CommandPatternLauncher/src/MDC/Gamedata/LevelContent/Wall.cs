@@ -12,6 +12,11 @@ namespace MDC.Gamedata.LevelContent
 
         }
 
+        public void OnNextRound()
+        {
+
+        }
+
         
     }
 }

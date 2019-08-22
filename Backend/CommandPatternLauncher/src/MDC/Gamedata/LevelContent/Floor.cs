@@ -14,7 +14,7 @@ namespace MDC.Gamedata.LevelContent
             throw new NotImplementedException();
         }
 
-        public void Test()
+        public void OnNextRound()
         {
 
         }

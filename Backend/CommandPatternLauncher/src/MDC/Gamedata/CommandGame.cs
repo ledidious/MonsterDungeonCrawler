@@ -20,8 +20,8 @@ namespace MDC.Gamedata
     {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
                                            //TODO: check if target fieldtype is a floor an then check if the floor contains a item, then activate Effects method, kill the object and create floor object
                                            
-        private readonly int _xPosition;
-        private readonly int _yPosition;
+        public int _xPosition { get; set; }
+        public int _yPosition { get; set; }
 
         public CommandGameMove(string sourceClientID, int xPosition, int yPosition) : base(sourceClientID)
         {
@@ -55,6 +55,20 @@ namespace MDC.Gamedata
             return fieldIsNotAccessable; 
         }
 
+        public void TargetFieldIsTrap()
+        {   
+            
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Trap)
+            {
+                Level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
+            }
+            else
+            {
+                //field is not a trap
+            }
+
+        }
+
 
 
         /// <summary>
@@ -63,13 +77,13 @@ namespace MDC.Gamedata
         public override void Execute()
         {
  
-                if (SourcePlayer.PlayerRemainingMoves < 1)
+                if (SourcePlayer.PlayerRemainingMoves >= 1 && TargetFieldIsInvalid() == false)
                 {
+                    TargetFieldIsTrap();
                     SourcePlayer.PlayerRemainingMoves --;
-
-                    IsCompleted = true;
+                    IsCompleted = true;                    
                 }
-
+                    
 
         }
 
