@@ -49,6 +49,21 @@ namespace MonsterdungeonCrawlerTests
         }
 
         [TestMethod]
+        public void LevelAddTrapToTrapList()
+        {
+            Level.playerList.Clear();
+            Level.trapList.Clear(); 
+
+            Field field2 = new Field(3, 9, new Wall()); 
+            Field field3 = new Field(1, 9, new Floor());           
+            Field field4 = new Field(11, 8, new SpikeField()); 
+            Field field5 = new Field(8, 8, new LaserBeam()); 
+
+            Assert.AreEqual(2, Level.trapList.Count);
+
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void PlayerPositionOutOfField()
         {
