@@ -153,8 +153,44 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.IsFalse(cmove4.TargetFieldIsInvalid());
 
+            CommandManager cm1 = new CommandManager(); 
+            cm1.AddCommand(cmove4);
+            cm1.ProcessPendingTransactions();
+
+            Assert.AreEqual(4, player7.PlayerRemainingMoves);
+
         }
 
+        [TestMethod]
+        public void TrapTargetField()
+        {   //need number of max. clients
+            Monster player8 = new Monster("monster", new RangeFighter(), 2, 3);
+            Monster player9 = new Monster("monster", new RangeFighter(), 3, 3);
+            Monster player10 = new Monster("monster", new RangeFighter(), 4, 3);
+
+            Hero player11 = new Hero("hero", new MeleeFighter(), 10, 10);
+            Field field5 = new Field(10, 11, new SpikeField());
+            Field field6 = new Field(10, 12, new LaserBeam());
+
+            field6.FieldType.OnNextRound(); 
+              
+            CommandGameMove cmove5 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",10, 11);
+            cmove5.SourcePlayer = player11;
+            player11.PlayerRemainingMoves = player11.CharacterType._moveRange;
+
+            CommandManager cm2 = new CommandManager(); 
+            cm2.AddCommand(cmove5);
+            cm2.ProcessPendingTransactions();
+
+            Assert.AreEqual(4.75, player11.Life);
+
+            CommandGameMove cmove6 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",10, 12);
+            cmove6.SourcePlayer = player11; 
+            cm2.AddCommand(cmove6);
+            cm2.ProcessPendingTransactions();
+
+            Assert.AreEqual(4, player11.Life);
+        }
     }
 
     [TestClass]
