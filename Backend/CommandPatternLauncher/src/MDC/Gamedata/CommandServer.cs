@@ -1,26 +1,20 @@
 //Command
 using System;
 using MDC.Gamedata.PlayerType;
-using MDC.Server;
 
 namespace MDC.Gamedata
 {
-    // public enum CharacterClasses
-    // {
-    //     MeleeFighter,
-    //     RangeFighter
-    // }
-
     [Serializable]
     public abstract class CommandServer : Command
     {
-        // public Game TargetGame { get; set; }
-        // public MasterServer TargetServer {get; set;}
         public CommandServer(string SourceClientID) : base(SourceClientID)
         {
         }
     }
 
+    /// <summary>
+    /// Create a new game
+    /// </summary>
     [Serializable]
     public class CommandServerNewGame : CommandServer
     {
@@ -28,7 +22,6 @@ namespace MDC.Gamedata
         {
         }
 
-        // public String PlayerName {get; set;}
         public override void Execute()
         {
             MasterServer.CreateNewGame(SourceClientID);
@@ -36,6 +29,9 @@ namespace MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Join an existing game
+    /// </summary>
     [Serializable]
     public class CommandServerJoinGame : CommandServer
     {
@@ -54,6 +50,9 @@ namespace MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Start the round of an existing game
+    /// </summary>
     [Serializable]
     public class CommandServerStartGame : CommandServer
     {
@@ -72,6 +71,9 @@ namespace MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Cancel a current round of play
+    /// </summary>
     [Serializable]
     public class CommandServerAbortGame : CommandServer
     {
@@ -85,6 +87,9 @@ namespace MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Create a new player for an existing game session.
+    /// </summary>
     [Serializable]
     public class CommandServerCreatePlayer : CommandServer
     {

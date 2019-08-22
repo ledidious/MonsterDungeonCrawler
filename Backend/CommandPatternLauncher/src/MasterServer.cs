@@ -1,11 +1,8 @@
-//TODO: Implement this class
 // This class is automatically started on the server. Clients connect to the server via this class and can open new sessions (game rounds).
 // Each session creates a new SessionID and then an instance of the class Game.  
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -36,7 +33,7 @@ public class MasterServer
         // CommandManager scm = new CommandManager();
 
         //---listen at the specified IP and port no.---
-        IPAddress localAdd = IPAddress.Parse(SERVER_IP);
+        IPAddress localAdd = IPAddress.Any; //Parse(SERVER_IP);
         TcpListener listener = new TcpListener(localAdd, PORT_NO);
 
         Console.WriteLine("IP: " + SERVER_IP);
@@ -50,14 +47,11 @@ public class MasterServer
         {
             TcpClient tcpClient = listener.AcceptTcpClient();
 
-            //TODO: Hier evtl. direkt Command von Client empfangen und auswerten ob Neues Spiel starten oder mit Session verbinden. 
-            //      Erst dann neuen Thread erzeugen und diesen evtl an Game weiterreichen???
-            //      Nee das ist doch kacke: Da Clients sich dann für jedes neues Spiel reconnecten müssen
             Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
             clientThread.Start();
         }
 
-        Console.WriteLine("Shuting down Server");
+        Console.WriteLine("Shuting down Server...");
 
         listener.Stop();
     }
@@ -78,11 +72,10 @@ public class MasterServer
     /// <summary>
     /// [Only called by received commands] Creates a new game session and saves it in the dictionary.
     /// </summary>
-    /// <param name="client_ID"></param>
+    /// <param name="client_ID">ID of the executing client</param>
     public static void CreateNewGame(string client_ID)
     {
         string session_ID = GenerateID();
-        // _games.Add(sessionID, new Game(sessionID, _connectedClients.GetValueOrDefault(clientID)));
         _games.Add(session_ID, new Game(session_ID, _clients.GetValueOrDefault(client_ID)));
 
         SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
@@ -92,24 +85,24 @@ public class MasterServer
     /// <summary>
     /// [Only called by received commands] Connects a client to an existing game session.
     /// </summary>
-    /// <param name="client_ID"></param>
-    /// <param name="session_ID"></param>
-    /// <param name="playerName"></param>
+    /// <param name="client_ID">ID of the executing client</param>
+    /// <param name="session_ID">ID of the game the client wants to connect to</param>
     public static void ConnectToGame(string client_ID, string session_ID)
     {
         Console.WriteLine("Connecting to " + session_ID + " with client " + client_ID);
         _games.GetValueOrDefault(session_ID).AddClientToGame(_clients.GetValueOrDefault(client_ID));
 
+        //TODO: Auf Fehler prüfen, z.B. bei falscher ID
         SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
         SendStringToClient(_clients.GetValueOrDefault(client_ID), session_ID);
     }
 
     /// <summary>
-    /// 
+    /// Forwards a player object created by the command to the correct game session.
     /// </summary>
-    /// <param name="client_ID"></param>
-    /// <param name="session_ID"></param>
-    /// <param name="player"></param>
+    /// <param name="client_ID">ID of the executing client</param>
+    /// <param name="session_ID">ID of the game the client wants to connect to</param>
+    /// <param name="player">The player object to be forwarded</param>
     public static void CreateNewPlayerForSession(string client_ID, string session_ID, Player player)
     {
         _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, player);
@@ -119,7 +112,7 @@ public class MasterServer
     /// <summary>
     /// [Only called by received commands] Starts the game round. Executable only when all players are connected.
     /// </summary>
-    /// <param name="session_ID"></param>
+    /// <param name="session_ID">ID of the game session to be started</param>
     public static void StartGame(string session_ID)
     {
         _games.GetValueOrDefault(session_ID).StartGame();
@@ -128,8 +121,8 @@ public class MasterServer
     /// <summary>
     /// Thread implementation for clients. Waits for commands from client. 
     /// </summary>
-    /// <param name="client"></param>
-    /// <param name="cm"></param>
+    /// <param name="client">The TcpClient which belongs to this thread</param>
+    /// <param name="cm">The server-wide CommandManager</param>
     private static void ClientInteraction(TcpClient client, CommandManager cm)
     {
         string client_ID = GenerateID();
@@ -138,13 +131,21 @@ public class MasterServer
         //---write back the client ID to the client---
         SendStringToClient(client, client_ID);
 
-        while (true)
+        while (client.Connected)
         {
             Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
-            cm.AddCommand(ReceiveCommandFromClient(client));
-            cm.ProcessPendingTransactions();
+            Command leCommand = ReceiveCommandFromClient(client);
+            if (leCommand != null)
+            {
+                cm.AddCommand(leCommand);
+                cm.ProcessPendingTransactions();
+            }
+            else
+            {
+                client.Close();
+            }
         }
-        // client.Close();
+        client.Close();
     }
 
     /// <summary>
@@ -200,8 +201,21 @@ public class MasterServer
         dataStream.Write(bytesToRead, 0, bytesToRead.Length);
         dataStream.Seek(0, SeekOrigin.Begin);
 
-        
-        return (Command)formatter.Deserialize(dataStream);
+        try
+        {
+            var obj = formatter.Deserialize(dataStream);
+            Console.WriteLine(obj.GetType());
+            if (obj.GetType().IsSubclassOf(typeof(Command)))
+            {
+                return (Command)obj;
+            }
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        return null;
     }
 
     /// <summary>

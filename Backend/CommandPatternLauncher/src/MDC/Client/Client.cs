@@ -19,6 +19,7 @@ namespace MDC.Client
         private string _gameSession_ID;
         public string GameSession_ID { get { return _gameSession_ID; } }
         private Boolean _isConnected = false;
+        private Boolean _isHost = false;
 
         /// <summary>
         /// generates a tcp client and networkstream to send data or receive data from the server
@@ -48,11 +49,19 @@ namespace MDC.Client
         /// </summary>
         public void DisconnectFromServer()
         {
-            if (_isConnected)
+            if (_isConnected && _isHost == false)
             {
                 _server.Close();
                 _client_ID = null;
                 _isConnected = false;
+            }
+            else if (_isHost)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -72,7 +81,7 @@ namespace MDC.Client
         /// <summary>
         /// Establish a connection to the game session
         /// </summary>
-        /// <param name="sessionID"></param>
+        /// <param name="sessionID">The SessionID of the game to be joined</param>
         public void ConnectToGame(string sessionID)
         {
             if (_isConnected)
@@ -84,7 +93,6 @@ namespace MDC.Client
                 if (EvaluateFeedback())
                 {
                     _gameSession_ID = sessionID;
-                    // _gameSession_ID = ReceiveStringFromServer(); //TODO: Das ist unötig, da der Client die ID bereits kennt.
                 }
             }
         }
@@ -104,18 +112,8 @@ namespace MDC.Client
                 {
                     _gameSession_ID = ReceiveStringFromServer();
                     Console.WriteLine("ID of the new Game: " + _gameSession_ID);
+                    _isHost = true;
                 }
-
-                // CommandFeedback feedback = EvaluateFeedback();
-                // if (feedback is CommandFeedbackActionExecutedSuccessfully)
-                // {
-                //     gameSession_ID = ReceiveStringFromServer();
-                //     Console.WriteLine("ID of the new Game: " + gameSession_ID);
-                // }
-                // else
-                // {
-                //     Console.WriteLine(feedback.GetType());
-                // }
             }
         }
 
@@ -144,6 +142,11 @@ namespace MDC.Client
             }
         }
 
+        /// <summary>
+        /// Creates a new player for the client in the current session
+        /// </summary>
+        /// <param name="playerName">Name of the character</param>
+        /// <param name="pClass">The class of character of the character</param>
         public void CreateNewPlayerForSession(string playerName, CharacterClasses pClass)
         {
             if (_isConnected)
@@ -156,13 +159,16 @@ namespace MDC.Client
             }
         }
 
-        public void MovePlayer(int moveAmount)
-        {
+        /// <summary>
+        /// Creates a command to move your character on the playing field.
+        /// </summary>
+        public void MovePlayer()
+        { //TODO: Übergabe der Richtung und Anzahl Schritte
             if (_isConnected)
             {
                 if (_gameSession_ID != null)
                 {
-                    CommandGameMove command = new CommandGameMove(_client_ID, moveAmount);
+                    CommandGameMove command = new CommandGameMove(_client_ID, 0, 0); //TODO: Hier die korrekten x,y Koordinaten angeben
                     SendCommandToServer(command);
 
                     if (EvaluateFeedback())
@@ -177,6 +183,10 @@ namespace MDC.Client
             }
         }
 
+        /// <summary>
+        /// Creates a command that lets your character attack another character
+        /// </summary>
+        /// <param name="client_ID_From_Enemy">The ClientID of the opponent</param>
         public void AttackEnemy(string client_ID_From_Enemy)
         {
             if (_isConnected)
@@ -241,8 +251,14 @@ namespace MDC.Client
             byte[] bytesToSend = ms.ToArray();
 
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            nwStream.Flush();
         }
 
+        /// <summary>
+        /// Should be called after each command sent to the server: 
+        /// Evaluates feedback from the server.
+        /// </summary>
+        /// <returns>True: If the command was successfully processed by the server. False: If command could not be executed.</returns>
         private Boolean EvaluateFeedback()
         {
             NetworkStream nwStream = _server.GetStream();
@@ -262,13 +278,5 @@ namespace MDC.Client
 
 
         }
-
-        /* private CommandFeedback EvaluateFeedback()
-        {
-            NetworkStream nwStream = server.GetStream();
-            IFormatter formatter = new BinaryFormatter();
-
-            return (CommandFeedback)formatter.Deserialize(nwStream);
-        }*/
     }
 }
