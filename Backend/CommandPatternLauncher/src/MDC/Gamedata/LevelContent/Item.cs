@@ -12,60 +12,7 @@ namespace MDC.Gamedata.LevelContent
 
         private double _effectValue;
 
-        private int _level;
-
-        private int _duration;
-
-
-        public int Level
-        {
-
-            get { return _level; }
-
-            set
-            {
-                if (value >= 1 && value <= 3)
-                {
-                    _level = value;
-                }
-                else
-                {
-                    throw new System.ArgumentException();
-                }
-
-                //set duration because it must be a booster
-                Duration = DURATION_BOOSTER;
-                EffectValue = EFFECTVALUE_BOOST * _level;
-            }
-        }
-
-        public int Duration
-        {
-            get
-            {
-                if (this is AttackBoost || this is DefenseBoost)
-                {
-                    return _duration;
-                }
-                else
-                {
-                    throw new System.ArgumentException();
-                }
-            }
-
-            set
-            {
-                if (value >= 0 && value <= 5 && this is AttackBoost || this is DefenseBoost)
-                {
-                    _duration = value;
-                }
-                else
-                {
-                    throw new System.ArgumentException();
-                }
-            }
-
-        }
+        public abstract Boolean DecrementBoosterDuration(); 
 
         public double EffectValue
         {

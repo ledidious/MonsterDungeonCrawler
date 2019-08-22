@@ -17,7 +17,7 @@ namespace MDC.Gamedata.LevelContent
             set { _isActive = value; }
         } 
 
-        //TODO: Game class has to call this method if roundcounter % 3 == 0
+        //TODO: Game Class has to combine with these method
         public override void OnNextRound()
         {
             if (_isActive == false)
@@ -27,8 +27,7 @@ namespace MDC.Gamedata.LevelContent
             else
             {
                 Activate = false; 
-            }
-            
+            }           
         }
         
         

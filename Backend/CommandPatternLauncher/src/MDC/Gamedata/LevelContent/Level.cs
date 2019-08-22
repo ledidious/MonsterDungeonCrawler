@@ -16,10 +16,14 @@ namespace MDC.Gamedata.LevelContent
 
         public static List<Player> playerList = new List<Player>();
 
+        public static List<Field> trapList = new List<Field>(); 
+
         public static int GetMax_Clients()
         { return MAX_CLIENTS; }
 
         public static void AddFieldToLevel(Field field) => playingField[field.XPosition, field.YPosition] = field;
+
+        public static void AddTrapToList(Field field) => trapList.Add(field); 
 
         public static void AddPlayerToLevel(Player player)
         {

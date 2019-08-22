@@ -30,11 +30,12 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestLevelField
     {
-        
-
         [TestMethod]
         public void LevelAddAllFieldObjects()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear(); 
+
             Field field1 = new Field(13, 9, new Wall()); 
             Field field8 = new Field(11, 9, new Floor());
 
@@ -51,12 +52,18 @@ namespace MonsterdungeonCrawlerTests
         [ExpectedException(typeof(System.ArgumentException))]
         public void PlayerPositionOutOfField()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
             Hero player1 = new Hero("hero", new MeleeFighter(), 19, 30);
         }
 
         [TestMethod]
         public void LevelFieldBlockedByPlayer()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+             
             Hero player1 = new Hero("hero", new MeleeFighter(), 19, 19);
             Monster player2 = new Monster("monster", new RangeFighter(), 10, 19); 
             Monster player3 = new Monster("monster", new RangeFighter(), 11, 19);
@@ -91,20 +98,11 @@ namespace MonsterdungeonCrawlerTests
         */
 
         [TestMethod]
-        public void MoveRangeCharactertypes()
-        {
-            Hero player1 = new Hero("hero", new MeleeFighter(), 18, 18);
-            Monster player2 = new Monster("monster", new RangeFighter(), 19, 18);
-
-            Assert.AreEqual(5, player1.CharacterType._moveRange);
-            Assert.AreEqual(2, player2.CharacterType._moveRange);
-
-            Assert.AreEqual(0, player1.PlayerRemainingMoves); 
-        }
-
-        [TestMethod]
         public void InvalidTargetField()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
             //target field is equal current field
             Hero player3 = new Hero("hero", new MeleeFighter(), 18, 18);
             Field field1 = new Field(18, 18, new Floor());
@@ -162,8 +160,29 @@ namespace MonsterdungeonCrawlerTests
         }
 
         [TestMethod]
+        public void MoveRangeCharactertypes()
+        {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player1 = new Hero("hero", new MeleeFighter(), 18, 18);
+            Monster player2 = new Monster("monster", new RangeFighter(), 19, 18);
+
+            Assert.AreEqual(5, player1.CharacterType._moveRange);
+            Assert.AreEqual(2, player2.CharacterType._moveRange);
+
+            Assert.AreEqual(0, player1.PlayerRemainingMoves); 
+        }
+
+
+
+        [TestMethod]
         public void TrapTargetField()
         {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
             Monster player8 = new Monster("monster", new RangeFighter(), 2, 3);
             Monster player9 = new Monster("monster", new RangeFighter(), 3, 3);
             Monster player10 = new Monster("monster", new RangeFighter(), 4, 3);
@@ -372,6 +391,9 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void ManualTrapAttack()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
             Hero player1 = new Hero("hero", new RangeFighter(), 11, 9);
             Field field1 = new Field(11, 9, new SpikeField());
 
@@ -384,6 +406,8 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void ManualTrapdoorAttack()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
 
             Hero player2 = new Hero("hero", new RangeFighter(), 11, 9);
             Monster player22 = new Monster("monster", new MeleeFighter(), 7, 7);
@@ -468,11 +492,13 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestItems
     {
-
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void ItemLevelInvalidLevel()
         {
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
             Field field8 = new Field(11, 11, new Floor());
             field8.Item = new DefenseBoost(8); 
         }
@@ -498,17 +524,17 @@ namespace MonsterdungeonCrawlerTests
             field11.Item = new DefenseBoost(2); 
 
             Assert.AreEqual(0.5, field11.Item.EffectValue);
-            Assert.AreEqual(3, field11.Item.Duration);
+            //Assert.AreEqual(3, field11.Item.Duration);
 
 
             Field field12 = new Field(5, 9, new Floor());
             field12.Item = new AttackBoost(3); 
 
             Assert.AreEqual(0.75, field12.Item.EffectValue);
-            Assert.AreEqual(3, field12.Item.Duration);
+            //Assert.AreEqual(3, field12.Item.Duration);
 
         }
-
+        /*
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void CantSetDurationForExtralife()
@@ -519,6 +545,7 @@ namespace MonsterdungeonCrawlerTests
             field13.Item.Duration = 13; 
         }
 
+        
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void ExtralifeHasNoDuration()
@@ -528,6 +555,7 @@ namespace MonsterdungeonCrawlerTests
 
             int test = field14.Item.Duration; 
         }
+        */
 
         [TestMethod]
         public void PlayerCollectItem()
@@ -589,7 +617,23 @@ namespace MonsterdungeonCrawlerTests
 
         }
 
+        [TestMethod]
+        public void DeleteBooster()
+        {
+            Hero player5 = new Hero("hero", new RangeFighter(), 12, 1);
+            Field field20 = new Field(12, 1, new Floor());
+            field20.Item = new DefenseBoost(2); 
 
+            Assert.IsTrue(player5.CollectItem(field20.Item));
+
+            Assert.IsTrue(Level.playerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsTrue(Level.playerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsFalse(Level.playerList[0].DefenseItem.DecrementBoosterDuration());
+
+
+            Level.playerList[0].DefenseItem = null; 
+
+        }
 
     }
 

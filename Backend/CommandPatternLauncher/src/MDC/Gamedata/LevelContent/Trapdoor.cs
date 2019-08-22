@@ -35,7 +35,7 @@ namespace MDC.Gamedata.LevelContent
 
         public override void OnNextRound()
         {
-            
+
         }
     }
 }

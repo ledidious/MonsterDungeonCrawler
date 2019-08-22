@@ -22,6 +22,17 @@ namespace MDC.Gamedata.PlayerType
         private CharacterType _char;
         public string PlayerName;
 
+        public Item AttackItem
+        {
+            get { return _attackItem; }
+            set => _attackItem = value;
+        }
+        public Item DefenseItem
+        {
+            get { return _defenseItem; }
+            set => _defenseItem = value;
+        }
+
         public double AttackBoost
         {
             get { return _attackBoost; }

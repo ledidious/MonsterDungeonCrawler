@@ -8,5 +8,10 @@ namespace MDC.Gamedata.LevelContent
         {
             EffectValue = EFFECTVALUE_EXTRALIFE;
         }
+
+        public override Boolean DecrementBoosterDuration()
+        {
+            return true; 
+        }
     }
 }
