@@ -225,6 +225,57 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.AreEqual(4, player11.Life);
         }
+
+        [TestMethod]
+        public void MoveInRange()
+        {   
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player12 = new Hero("hero", new MeleeFighter(), 16, 12);
+
+            //move down
+            CommandGameMove cmove7 = new CommandGameMove("54s56s45df66s",16, 13);
+            cmove7.SourcePlayer = player12; 
+
+            Assert.IsTrue(cmove7.VerifyMoveRange()); 
+
+            //move up
+            CommandGameMove cmove8 = new CommandGameMove("54s56s45df66s",16, 11);
+            cmove8.SourcePlayer = player12; 
+
+            Assert.IsTrue(cmove8.VerifyMoveRange());
+
+            //move right
+            CommandGameMove cmove9 = new CommandGameMove("54s56s45df66s",17, 12);
+            cmove9.SourcePlayer = player12; 
+
+            Assert.IsTrue(cmove9.VerifyMoveRange());
+
+            //move left
+            CommandGameMove cmove10 = new CommandGameMove("54s56s45df66s",15, 12);
+            cmove10.SourcePlayer = player12; 
+
+            Assert.IsTrue(cmove10.VerifyMoveRange());
+
+            //move out of range
+            CommandGameMove cmove11 = new CommandGameMove("54s56s45df66s",16, 14);
+            cmove11.SourcePlayer = player12; 
+
+            Assert.IsFalse(cmove11.VerifyMoveRange()); 
+
+            //move out of range
+            CommandGameMove cmove12 = new CommandGameMove("54s56s45df66s",18, 12);
+            cmove12.SourcePlayer = player12; 
+
+            Assert.IsFalse(cmove12.VerifyMoveRange()); 
+
+            //move out of range
+            CommandGameMove cmove13 = new CommandGameMove("54s56s45df66s",18, 13);
+            cmove13.SourcePlayer = player12; 
+
+            Assert.IsFalse(cmove13.VerifyMoveRange()); 
+        }
     }
 
     [TestClass]

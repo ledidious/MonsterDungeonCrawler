@@ -19,7 +19,7 @@ namespace MDC.Gamedata
     public class CommandGameMove : CommandGame //TODO: check if target fieldtype is a trap -> activate Effects method
     {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
                                            //TODO: check if target fieldtype is a floor an then check if the floor contains a item, then activate Effects method, kill the object and create floor object
-                                           
+
         public int _xPosition { get; set; }
         public int _yPosition { get; set; }
 
@@ -32,19 +32,19 @@ namespace MDC.Gamedata
 
         public Boolean TargetFieldIsInvalid()
         {
-            Boolean fieldIsNotAccessable = false; 
+            Boolean fieldIsNotAccessable = false;
 
             if (Level.playingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
             {
-                fieldIsNotAccessable = true; 
+                fieldIsNotAccessable = true;
             }
             else
             {
-                 for (int i = 0; i < Level.GetMax_Clients(); i++)
+                for (int i = 0; i < Level.GetMax_Clients(); i++)
                 {
                     if (Level.playerList[i].XPosition == _xPosition && Level.playerList[i].YPosition == _yPosition)
                     {
-                        fieldIsNotAccessable = true; 
+                        fieldIsNotAccessable = true;
                     }
                     else
                     {
@@ -52,12 +52,12 @@ namespace MDC.Gamedata
                     }
                 }
             }
-            return fieldIsNotAccessable; 
+            return fieldIsNotAccessable;
         }
 
         public void TargetFieldIsTrap()
-        {   
-            
+        {
+
             if (Level.playingField[_xPosition, _yPosition].FieldType is Trap)
             {
                 Level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
@@ -69,6 +69,46 @@ namespace MDC.Gamedata
 
         }
 
+        public Boolean VerifyMoveRange()
+        {
+            Boolean MoveInRange = false;
+
+            //verify if targetfield is vertical in range
+            if (SourcePlayer.XPosition == _xPosition)
+            {
+                if (_yPosition == SourcePlayer.YPosition + 1 || _yPosition == SourcePlayer.YPosition - 1)
+                {
+                    MoveInRange = true;
+                }
+                else
+                {
+                    //targetfield out of range
+                }
+            }
+            else
+            {
+                //targetfield vertical out of range
+            }
+
+            //verify if targetfield is horizontal in range
+            if (SourcePlayer.YPosition == _yPosition)
+            {
+                if (_xPosition == SourcePlayer.XPosition + 1 || _xPosition == SourcePlayer.XPosition - 1)
+                {
+                    MoveInRange = true;
+                }
+                else
+                {
+                    //targetfield out of range
+                }
+            }
+            else
+            {
+                //enemy horizontal out of range
+            }
+            return MoveInRange;
+        }
+
 
 
         /// <summary>
@@ -76,14 +116,14 @@ namespace MDC.Gamedata
         /// </summary>
         public override void Execute()
         {
- 
-                if (SourcePlayer.PlayerRemainingMoves >= 1 && TargetFieldIsInvalid() == false)
-                {
-                    TargetFieldIsTrap();
-                    SourcePlayer.PlayerRemainingMoves --;
-                    IsCompleted = true;                    
-                }
-                    
+
+            if (SourcePlayer.PlayerRemainingMoves >= 1 && TargetFieldIsInvalid() == false)
+            {
+                TargetFieldIsTrap();
+                SourcePlayer.PlayerRemainingMoves--;
+                IsCompleted = true;
+            }
+
 
         }
 
@@ -95,11 +135,11 @@ namespace MDC.Gamedata
         public string TargetClientID { get; set; }
         public Player TargetPlayer { get; set; }
 
-       
+
 
         public CommandGameAttack(string SourceClientID, string targetClientID) : base(SourceClientID)
         {
-            IsCompleted = false; 
+            IsCompleted = false;
 
             TargetClientID = targetClientID;
 
@@ -131,7 +171,7 @@ namespace MDC.Gamedata
             {
                 //enemy vertical out of range
             }
-            
+
             //verify if an enemy is horizontal in range
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
@@ -168,8 +208,8 @@ namespace MDC.Gamedata
                     {
                         if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
-                            ObstacleInRange = true;  
-                            break;    
+                            ObstacleInRange = true;
+                            break;
                         }
                     }
                 }
@@ -179,8 +219,8 @@ namespace MDC.Gamedata
                     {
                         if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
-                            ObstacleInRange = true;  
-                            break;    
+                            ObstacleInRange = true;
+                            break;
                         }
                     }
                 }
