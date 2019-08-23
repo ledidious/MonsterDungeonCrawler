@@ -276,6 +276,47 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.IsFalse(cmove13.VerifyMoveRange()); 
         }
+
+[TestMethod]
+        public void ItemOnTargetField()
+        {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Monster player13 = new Monster("monster", new RangeFighter(), 2, 3);
+            Monster player14 = new Monster("monster", new RangeFighter(), 3, 3);
+            Monster player15 = new Monster("monster", new RangeFighter(), 4, 3);
+
+            Hero player16 = new Hero("hero", new MeleeFighter(), 10, 10);
+            Field field7 = new Field(10, 11, new Floor());
+            Field field8 = new Field(10, 13, new Floor());
+            Field field9 = new Field(10, 12, new Floor());
+
+            field7.Item = new DefenseBoost(2); 
+            field9.Item = new AttackBoost(3); 
+
+            CommandGameMove cmove14 = new CommandGameMove("234hug2haa1248325sdf5",10, 11);
+            cmove14.SourcePlayer = player16; 
+            player16.PlayerRemainingMoves = player16.CharacterType._moveRange; 
+
+            CommandManager cm3 = new CommandManager(); 
+            cm3.AddCommand(cmove14);
+            cm3.ProcessPendingTransactions();
+
+            Assert.AreEqual(0.5, player16.DefenseBoost);
+            Assert.AreEqual(null, field7.Item); 
+            Assert.AreEqual(null, field8.Item); 
+
+            CommandGameMove cmove16 = new CommandGameMove("234hug2haa1248325sdf5",10, 12);
+            cmove16.SourcePlayer = player16; 
+
+            cm3.AddCommand(cmove16); 
+            cm3.ProcessPendingTransactions();
+
+            Assert.AreEqual(0.75, player16.AttackBoost);
+            Assert.AreEqual(null, field9.Item); 
+        }
     }
 
     [TestClass]
@@ -653,8 +694,9 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(0, player2.DefenseBoost);
             Assert.AreEqual(0, player2.AttackBoost);
             
-        }    
+        } 
 
+        /*
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void ItemOutOfRange()
@@ -665,8 +707,8 @@ namespace MonsterdungeonCrawlerTests
             field17.Item = new DefenseBoost(2);
 
             player3.CollectItem(field17.Item);  
-
         }
+        */
 
         [TestMethod]
         public void IgnoreExtralife()

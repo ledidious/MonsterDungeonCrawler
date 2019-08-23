@@ -22,43 +22,33 @@ namespace MDC.Gamedata.PlayerType
         {
             Boolean collectSuccessfull = false;
 
-            if (item.Equals(Level.playingField[XPosition, YPosition].Item))
+            if (item is ExtraLife)
             {
-                if (item is ExtraLife)
+                if (Life < LIFE_HERO)
                 {
-                    if (Life < LIFE_HERO)
-                    {
-                        this.Life++;
-                        collectSuccessfull = true;
-                    }
-                    else
-                    {
-                        //maximal life    
-                    }
-
-                }
-                else if (item is DefenseBoost)
-                {
-                    DefenseItem = item;
-                    DefenseBoost = DefenseItem.EffectValue;
+                    this.Life++;
                     collectSuccessfull = true;
                 }
-                else if (item is AttackBoost)
+                else
                 {
-                    AttackItem = item;
-                    this.AttackBoost = AttackItem.EffectValue;
-                    collectSuccessfull = true;
+                    //maximal life    
                 }
 
-                return collectSuccessfull;
             }
-
-            else
+            else if (item is DefenseBoost)
             {
-                //item out of range
-                throw new System.ArgumentException();
+                DefenseItem = item;
+                DefenseBoost = DefenseItem.EffectValue;
+                collectSuccessfull = true;
+            }
+            else if (item is AttackBoost)
+            {
+                AttackItem = item;
+                this.AttackBoost = AttackItem.EffectValue;
+                collectSuccessfull = true;
             }
 
+            return collectSuccessfull;
         }
     }
 }

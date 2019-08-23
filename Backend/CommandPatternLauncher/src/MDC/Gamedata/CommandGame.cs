@@ -57,7 +57,6 @@ namespace MDC.Gamedata
 
         public void TargetFieldIsTrap()
         {
-
             if (Level.playingField[_xPosition, _yPosition].FieldType is Trap)
             {
                 Level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
@@ -66,7 +65,19 @@ namespace MDC.Gamedata
             {
                 //field is not a trap
             }
+        }
 
+        public void TargetFieldContainsItem()
+        {
+            if (Level.playingField[_xPosition, _yPosition].Item != null)
+            {
+                SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item);
+                Level.playingField[_xPosition, _yPosition].Item = null; 
+            }
+            else
+            {
+                //field is not a item
+            }
         }
 
         public Boolean VerifyMoveRange()
@@ -120,6 +131,7 @@ namespace MDC.Gamedata
             if (SourcePlayer.PlayerRemainingMoves >= 1 && TargetFieldIsInvalid() == false)
             {
                 TargetFieldIsTrap();
+                TargetFieldIsItem(); 
                 SourcePlayer.PlayerRemainingMoves--;
                 IsCompleted = true;
             }
