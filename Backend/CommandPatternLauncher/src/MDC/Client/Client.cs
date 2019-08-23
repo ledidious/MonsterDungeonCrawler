@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using MDC.Exceptions;
 using MDC.Gamedata;
 
 namespace MDC.Client
@@ -19,6 +20,7 @@ namespace MDC.Client
         private string _gameSession_ID;
         public string GameSession_ID { get { return _gameSession_ID; } }
         private Boolean _isConnected = false;
+        public Boolean IsConnected { get { return _isConnected; } }
         private Boolean _isHost = false;
 
         /// <summary>
@@ -30,13 +32,21 @@ namespace MDC.Client
             ReadConfig();
             Console.WriteLine("Connecting to: " + _server_IP);
 
-            //---create a TCPClient object at the IP and port no.---
-            _server = new TcpClient(_server_IP, _port_NO);
-            _server.ReceiveTimeout = 3000; // 3 Seconds TODO: Nach Debugging wieder einbauen
-            _server.SendTimeout = 3000; // 3 Seconds TODO: Nach Debugging wieder einbauen
+            try
+            {
+                //---create a TCPClient object at the IP and port no.---
+                _server = new TcpClient(_server_IP, _port_NO);
+                // _server.ReceiveTimeout = 3000; // 3 Seconds
+                // _server.SendTimeout = 3000; // 3 Seconds
 
-            //---get the client ID from the server---
-            _client_ID = ReceiveStringFromServer();
+                //---get the client ID from the server---
+                _client_ID = ReceiveStringFromServer();
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine(e.GetType().FullName);
+                Console.WriteLine("\t" + e.Message);
+            }
 
             if (_client_ID != null)
             {
@@ -58,24 +68,11 @@ namespace MDC.Client
             else if (_isHost)
             {
                 throw new NotImplementedException();
+                //TODO: Wenn Host disconnected, auf Serverseite alle Clients disconnecten.
             }
             else
             {
-                throw new NotImplementedException();
             }
-        }
-
-        /// <summary>
-        /// Read the configuration from the config-file and store the value in the corresponding variables.
-        /// </summary>
-        private void ReadConfig()
-        {
-            var data = new Dictionary<string, string>();
-            foreach (var row in File.ReadAllLines("game.config"))
-                data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
-
-            _server_IP = data["ServerIP"];
-            _port_NO = Convert.ToInt32(data["PortNo"]);
         }
 
         /// <summary>
@@ -90,9 +87,15 @@ namespace MDC.Client
                 CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, sessionID);
                 SendCommandToServer(command);
 
-                if (EvaluateFeedback())
+                CommandFeedback feedback = EvaluateFeedback();
+                if (feedback is CommandFeedbackOK)
                 {
                     _gameSession_ID = sessionID;
+                }
+                else
+                {
+                    feedback.Execute();
+                    throw feedback.FeedbackException;
                 }
             }
         }
@@ -108,12 +111,22 @@ namespace MDC.Client
                 CommandServerNewGame command = new CommandServerNewGame(_client_ID);
                 SendCommandToServer(command);
 
-                if (EvaluateFeedback())
+                CommandFeedback feedback = EvaluateFeedback();
+                if (feedback is CommandFeedbackOK)
                 {
                     _gameSession_ID = ReceiveStringFromServer();
                     Console.WriteLine("ID of the new Game: " + _gameSession_ID);
                     _isHost = true;
                 }
+                else
+                {
+                    // throw feedback.FeedbackException;
+                    feedback.Execute();
+                }
+            }
+            else
+            {
+                throw new ClientIsNotConnectedToServerException();
             }
         }
 
@@ -130,15 +143,20 @@ namespace MDC.Client
                     CommandServerStartGame command = new CommandServerStartGame(_client_ID, _gameSession_ID);
                     SendCommandToServer(command);
 
-                    if (EvaluateFeedback())
-                        Console.WriteLine("Command executed!");
+                    CommandFeedback feedback = EvaluateFeedback();
+                    if (feedback is CommandFeedbackOK)
+                    {
+                    }
                     else
-                        throw new NotImplementedException();
+                    {
+                        // throw feedback.FeedbackException;
+                        feedback.Execute();
+                    }
                 }
-                else
-                {
-                    throw new NotImplementedException();
-                }
+            }
+            else
+            {
+                throw new ClientIsNotConnectedToServerException();
             }
         }
 
@@ -155,6 +173,15 @@ namespace MDC.Client
                 {
                     CommandServerCreatePlayer command = new CommandServerCreatePlayer(_client_ID, _gameSession_ID, playerName, pClass);
                     SendCommandToServer(command);
+
+                    CommandFeedback feedback = EvaluateFeedback();
+                    if (feedback is CommandFeedbackOK) { }
+                    else
+                    {
+                        // throw feedback.FeedbackException;
+                        feedback.Execute();
+                    }
+
                 }
             }
         }
@@ -162,22 +189,21 @@ namespace MDC.Client
         /// <summary>
         /// Creates a command to move your character on the playing field.
         /// </summary>
-        public void MovePlayer()
+        public void MovePlayer(int x, int y)
         { //TODO: Übergabe der Richtung und Anzahl Schritte
             if (_isConnected)
             {
                 if (_gameSession_ID != null)
                 {
-                    CommandGameMove command = new CommandGameMove(_client_ID, 0, 0); //TODO: Hier die korrekten x,y Koordinaten angeben
+                    CommandGameMove command = new CommandGameMove(_client_ID, x, y);
                     SendCommandToServer(command);
 
-                    if (EvaluateFeedback())
-                    {
-                        Console.WriteLine("Command executed!");
-                    }
+                    CommandFeedback feedback = EvaluateFeedback();
+                    if (feedback is CommandFeedbackOK) { }
                     else
                     {
-                        throw new NotImplementedException();
+                        // throw feedback.FeedbackException;
+                        feedback.Execute();
                     }
                 }
             }
@@ -196,13 +222,12 @@ namespace MDC.Client
                     CommandGameAttack command = new CommandGameAttack(_client_ID, client_ID_From_Enemy);
                     SendCommandToServer(command);
 
-                    if (EvaluateFeedback())
-                    {
-                        Console.WriteLine("Command executed!");
-                    }
+                    CommandFeedback feedback = EvaluateFeedback();
+                    if (feedback is CommandFeedbackOK) { }
                     else
                     {
-                        throw new NotImplementedException();
+                        // throw feedback.FeedbackException;
+                        feedback.Execute();
                     }
                 }
             }
@@ -255,28 +280,58 @@ namespace MDC.Client
         }
 
         /// <summary>
+        /// Read the configuration from the config-file and store the value in the corresponding variables.
+        /// </summary>
+        private void ReadConfig()
+        {
+            var data = new Dictionary<string, string>();
+            foreach (var row in File.ReadAllLines("game.config"))
+                data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
+
+            _server_IP = data["ServerIP"];
+            _port_NO = Convert.ToInt32(data["PortNo"]);
+        }
+
+        /// <summary>
         /// Should be called after each command sent to the server: 
         /// Evaluates feedback from the server.
         /// </summary>
         /// <returns>True: If the command was successfully processed by the server. False: If command could not be executed.</returns>
-        private Boolean EvaluateFeedback()
+        private CommandFeedback EvaluateFeedback()
         {
+            // //TODO: MemoryStream-Konzept einbauen
+            // NetworkStream nwStream = _server.GetStream();
+            // IFormatter formatter = new BinaryFormatter();
+
+            // // CommandFeedback feedback = (CommandFeedback)formatter.Deserialize(nwStream);
+            // return (CommandFeedback)formatter.Deserialize(nwStream);
+
+
             NetworkStream nwStream = _server.GetStream();
+            MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
-            CommandFeedback feedback = (CommandFeedback)formatter.Deserialize(nwStream);
+            byte[] bytesToRead = new byte[_server.ReceiveBufferSize];
+            int bytesRead = nwStream.Read(bytesToRead, 0, _server.ReceiveBufferSize);
 
-            if (feedback is CommandFeedbackActionExecutedSuccessfully)
+            dataStream.Write(bytesToRead, 0, bytesToRead.Length);
+            dataStream.Seek(0, SeekOrigin.Begin);
+
+            try
             {
-                return true;
+                var obj = formatter.Deserialize(dataStream);
+                Console.WriteLine(obj.GetType());
+                if (obj is CommandFeedback)
+                {
+                    return (CommandFeedback)obj;
+                }
             }
-            else
+            catch (System.Runtime.Serialization.SerializationException e)
             {
-                Console.WriteLine(feedback.GetType());
-                return false;
+                Console.WriteLine(e.Message);
             }
 
-
+            return null;
         }
     }
 }

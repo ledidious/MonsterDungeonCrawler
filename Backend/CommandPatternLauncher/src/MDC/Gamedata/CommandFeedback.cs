@@ -1,5 +1,6 @@
 //Command
 using System;
+using MDC.Exceptions;
 using MDC.Server;
 
 namespace MDC.Gamedata
@@ -7,15 +8,17 @@ namespace MDC.Gamedata
     [Serializable]
     public abstract class CommandFeedback : Command
     {
+        public Exception FeedbackException { get; set; }
+
         public CommandFeedback(string SourceClientID) : base(SourceClientID)
         {
         }
     }
 
     [Serializable]
-    public class CommandFeedbackActionExecutedSuccessfully : CommandFeedback
+    public class CommandFeedbackOK : CommandFeedback
     {
-        public CommandFeedbackActionExecutedSuccessfully(string SourceClientID) : base(SourceClientID)
+        public CommandFeedbackOK(string SourceClientID) : base(SourceClientID)
         {
         }
 
@@ -61,6 +64,21 @@ namespace MDC.Gamedata
         public override void Execute()
         {
             throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class CommandFeedbackSessionIdIsInvalid : CommandFeedback
+    {
+        public CommandFeedbackSessionIdIsInvalid(string SourceClientID) : base(SourceClientID)
+        {
+            IsCompleted = false;
+        }
+
+        public override void Execute()
+        {
+            FeedbackException = new SessionIdIsInvalidException();
+            // throw new SessionIdIsInvalidException();
         }
     }
 }

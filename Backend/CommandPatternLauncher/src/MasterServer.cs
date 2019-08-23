@@ -13,11 +13,12 @@ using System.Threading;
 using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
 using MDC.Server;
+using MDC.Exceptions;
 
 public class MasterServer
 {
     static int PORT_NO;
-    static string SERVER_IP;
+    // static string SERVER_IP;
     public static Boolean Shutdown { get; set; }
 
     static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
@@ -36,7 +37,8 @@ public class MasterServer
         IPAddress localAdd = IPAddress.Any; //Parse(SERVER_IP);
         TcpListener listener = new TcpListener(localAdd, PORT_NO);
 
-        Console.WriteLine("IP: " + SERVER_IP);
+        // Console.WriteLine("IP: " + SERVER_IP);
+        Console.WriteLine("##################\n MDC MasterServer \n##################");
         Console.WriteLine("Port: " + PORT_NO);
         Console.WriteLine("Listening...");
         listener.Start();
@@ -65,7 +67,7 @@ public class MasterServer
         foreach (var row in File.ReadAllLines("game.config"))
             data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
 
-        SERVER_IP = data["ServerIP"];
+        // SERVER_IP = data["ServerIP"];
         PORT_NO = Convert.ToInt32(data["PortNo"]);
     }
 
@@ -78,7 +80,7 @@ public class MasterServer
         string session_ID = GenerateID();
         _games.Add(session_ID, new Game(session_ID, _clients.GetValueOrDefault(client_ID)));
 
-        SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
+        SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackOK(client_ID));
         SendStringToClient(_clients.GetValueOrDefault(client_ID), session_ID);
     }
 
@@ -90,11 +92,16 @@ public class MasterServer
     public static void ConnectToGame(string client_ID, string session_ID)
     {
         Console.WriteLine("Connecting to " + session_ID + " with client " + client_ID);
-        _games.GetValueOrDefault(session_ID).AddClientToGame(_clients.GetValueOrDefault(client_ID));
 
-        //TODO: Auf Fehler prüfen, z.B. bei falscher ID
-        SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
-        SendStringToClient(_clients.GetValueOrDefault(client_ID), session_ID);
+        if (_games.ContainsKey(session_ID))
+        {
+            _games.GetValueOrDefault(session_ID).AddClientToGame(_clients.GetValueOrDefault(client_ID));
+            SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackOK(client_ID));
+        }
+        else
+        {
+            SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackSessionIdIsInvalid(client_ID));
+        }
     }
 
     /// <summary>
@@ -106,7 +113,7 @@ public class MasterServer
     public static void CreateNewPlayerForSession(string client_ID, string session_ID, Player player)
     {
         _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, player);
-        SendCommandToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackActionExecutedSuccessfully(client_ID));
+        SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackOK(client_ID));
     }
 
     /// <summary>
@@ -223,10 +230,22 @@ public class MasterServer
     /// </summary>
     /// <param name="server">TcpClient to which data is to be sent.</param>
     /// <param name="command">Command you want to send</param>
-    private static void SendCommandToClient(TcpClient client, Command command)
+    private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
     {
+        // NetworkStream nwStream = client.GetStream();
+        // IFormatter formatter = new BinaryFormatter();
+        // formatter.Serialize(nwStream, command);
+
         NetworkStream nwStream = client.GetStream();
+        MemoryStream dataStream = new MemoryStream();
         IFormatter formatter = new BinaryFormatter();
-        formatter.Serialize(nwStream, command);
+
+        var ms = new MemoryStream();
+        formatter.Serialize(ms, command);
+
+        byte[] bytesToSend = ms.ToArray();
+
+        nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+        nwStream.Flush();
     }
 }

@@ -22,4 +22,57 @@ namespace MDC.Exceptions
         }
     }
 
+    [Serializable]
+    public class CannotConnectToServerException : Exception
+    {
+        public CannotConnectToServerException()
+        {
+        }
+
+        public CannotConnectToServerException(string message)
+            : base(message)
+        {
+        }
+
+
+        public CannotConnectToServerException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
+
+    [Serializable]
+    public class ClientIsNotConnectedToServerException : Exception
+    {
+        public ClientIsNotConnectedToServerException()
+        {
+        }
+
+        public ClientIsNotConnectedToServerException(string message)
+            : base(message)
+        {
+        }
+
+        public ClientIsNotConnectedToServerException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
+    [Serializable]
+    public class SessionIdIsInvalidException : Exception
+    {
+        public SessionIdIsInvalidException()
+        {
+        }
+
+        public SessionIdIsInvalidException(string message)
+            : base(message)
+        {
+        }
+
+        public SessionIdIsInvalidException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
 }

@@ -41,6 +41,11 @@ namespace MDC.Server
             // }
         }
 
+        /// <summary>
+        /// Adds a player object to the game
+        /// </summary>
+        /// <param name="client_ID">ID of the owner of the player</param>
+        /// <param name="player">The player to add</param>
         public void AddPlayerToGame(string client_ID, Player player)
         {
             player.XPosition = 0; player.YPosition = 1;
@@ -49,6 +54,12 @@ namespace MDC.Server
             _players.Add(client_ID, main);
         }
 
+        /// <summary>
+        /// Creates a new player and adds it to the game
+        /// </summary>
+        /// <param name="client_ID">ID of the owner of the player</param>
+        /// <param name="playerName">Name of the new player</param>
+        /// <param name="characterClass">The class of character of the character</param>
         public void AddPlayerToGame(string client_ID, string playerName, string characterClass)
         {
             // switch (characterClass)
@@ -60,6 +71,10 @@ namespace MDC.Server
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Adds a TcpClient to the game
+        /// </summary>
+        /// <param name="client">The TcpClient</param>
         public void AddClientToGame(TcpClient client)
         {
             if (_clientsOfThisGame.Count < MAX_CLIENTS)
@@ -74,6 +89,9 @@ namespace MDC.Server
             // throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// [Call only when all players are ready] Starts the game round
+        /// </summary>
         public void StartGame()
         {
             // gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
@@ -131,6 +149,10 @@ namespace MDC.Server
             return (CommandGame)formatter.Deserialize(nwStream); ;
         }
 
+        /// <summary>
+        /// Ends the turn of a client
+        /// </summary>
+        /// <returns>TODO: Muss hier etwas zurückgegeben werden, oder muss nur auf den nächsten Client gehorcht werden?</returns>
         public Player NextPlayer()
         {
             // _currentClient = _clientsOfThisGame.FindIndex();
