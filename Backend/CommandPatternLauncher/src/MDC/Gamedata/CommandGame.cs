@@ -16,9 +16,8 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
-    public class CommandGameMove : CommandGame //TODO: check if target fieldtype is a trap -> activate Effects method
-    {                                      //TODO: check if Player XYPosition is equal then trap XYPosition
-                                           //TODO: check if target fieldtype is a floor an then check if the floor contains a item, then activate Effects method, kill the object and create floor object
+    public class CommandGameMove : CommandGame 
+    {                                    
 
         public int _xPosition { get; set; }
         public int _yPosition { get; set; }
@@ -69,7 +68,7 @@ namespace MDC.Gamedata
 
         public void TargetFieldContainsItem()
         {
-            if (Level.playingField[_xPosition, _yPosition].Item != null)
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null)
             {
                 SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item);
                 Level.playingField[_xPosition, _yPosition].Item = null; 
@@ -128,10 +127,15 @@ namespace MDC.Gamedata
         public override void Execute()
         {
 
-            if (SourcePlayer.PlayerRemainingMoves >= 1 && TargetFieldIsInvalid() == false)
+            if (SourcePlayer.PlayerRemainingMoves < 1 || TargetFieldIsInvalid() == true)
+            {
+                throw new Exceptions.CantMoveException(); 
+            }
+            else
             {
                 TargetFieldIsTrap();
-                TargetFieldIsItem(); 
+                TargetFieldContainsItem(); 
+                SourcePlayer.MovePlayer(_xPosition, _yPosition);
                 SourcePlayer.PlayerRemainingMoves--;
                 IsCompleted = true;
             }
@@ -209,7 +213,7 @@ namespace MDC.Gamedata
 
         public Boolean VerifyObstacleInRange()
         {
-            Boolean ObstacleInRange = true;
+            Boolean ObstacleInRange = false;
 
             //verify if an obstacle is vertical between the players
             if (SourcePlayer.XPosition == TargetPlayer.XPosition)
@@ -245,7 +249,7 @@ namespace MDC.Gamedata
             //verify if an obstacle is horizontal between the players
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
-                if (TargetPlayer.XPosition > SourcePlayer.YPosition)
+                if (TargetPlayer.XPosition > SourcePlayer.XPosition)
                 {
                     for (int i = TargetPlayer.XPosition - 1; i > SourcePlayer.XPosition; i--)
                     {
@@ -283,7 +287,7 @@ namespace MDC.Gamedata
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
 
-            if (SourcePlayer is Monster && TargetPlayer is Monster || VerifyAttackRange() == true || VerifyObstacleInRange() == true || SourcePlayer.PlayerRemainingMoves == 0)
+            if (SourcePlayer is Monster && TargetPlayer is Monster || VerifyAttackRange() == false || VerifyObstacleInRange() == true || SourcePlayer.PlayerRemainingMoves == 0)
                 throw new Exceptions.CantAttackException();
             else
             {
@@ -297,6 +301,5 @@ namespace MDC.Gamedata
                 IsCompleted = true;
             }
         }
-
     }
 }

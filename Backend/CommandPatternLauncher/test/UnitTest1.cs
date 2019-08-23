@@ -22,9 +22,73 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(5, player1.Life);
             Assert.AreEqual(3, player2.Life);
         }
-     
+
+        /// <summary>
+        /// move 2 fields (trap, item) and then attack enemy
+        /// </summary>
+        [TestMethod]
+        public void GameSzenario1()
+        {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player3 = new Hero("hero", new MeleeFighter(), 10, 18); 
+            Monster player4 = new Monster("monster", new RangeFighter(), 8, 16);
+            Monster player5 = new Monster("monster", new MeleeFighter(), 13, 1);   
+            Monster player6 = new Monster("monster", new RangeFighter(), 2, 2);  
+            Field field1 = new Field(10, 17, new Floor());
+            Field field2 = new Field(9, 17, new SpikeField());
+            Field field3 = new Field(8, 17, new Floor());
+            field3.Item = new AttackBoost(3); 
+
+            CommandManager cm1 = new CommandManager(); 
 
 
+            //move to field (10, 17)
+            CommandGameMove cmove1 = new CommandGameMove("adua5as7da5sd5", 10, 17); 
+            cmove1.SourcePlayer = player3; 
+            cm1.AddCommand(cmove1); 
+            cm1.ProcessPendingTransactions(); 
+
+            Assert.AreEqual(4, player3.PlayerRemainingMoves);
+            Assert.IsTrue(10 == player3.XPosition && 17 == player3.YPosition); 
+
+
+            //move to field with trap (9, 17)
+            CommandGameMove cmove2 = new CommandGameMove("adua5as7da5sd5", 9, 17); 
+            cmove2.SourcePlayer = player3; 
+            cm1.AddCommand(cmove2); 
+            cm1.ProcessPendingTransactions();   
+
+            Assert.AreEqual(3, player3.PlayerRemainingMoves);
+            Assert.IsTrue(9 == player3.XPosition && 17 == player3.YPosition);
+            Assert.AreEqual(4.75, player3.Life);
+
+
+            //move to field with item (8, 17)
+            CommandGameMove cmove3 = new CommandGameMove("adua5as7da5sd5", 8, 17); 
+            cmove3.SourcePlayer = player3; 
+            cm1.AddCommand(cmove3); 
+            cm1.ProcessPendingTransactions();   
+
+            Assert.AreEqual(2, player3.PlayerRemainingMoves);
+            Assert.IsTrue(8 == player3.XPosition && 17 == player3.YPosition);
+            Assert.AreEqual(0.75, player3.AttackBoost);
+
+
+            //attack monster (8, 16)
+            CommandGameAttack cattack1 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
+            cattack1.SourcePlayer = player3; 
+            cattack1.TargetPlayer = player4; 
+            cm1.AddCommand(cattack1); 
+            cm1.ProcessPendingTransactions();  
+
+            Assert.AreEqual(0, player3.PlayerRemainingMoves);
+            Assert.IsTrue(8 == player3.XPosition && 17 == player3.YPosition);
+            Assert.IsTrue(8 == player4.XPosition && 16 == player4.YPosition);
+            Assert.AreEqual(1.25, player4.Life);
+        } 
     }
 
     [TestClass]
@@ -118,31 +182,27 @@ namespace MonsterdungeonCrawlerTests
             Level.playerList.Clear();
             Level.trapList.Clear();
 
-            //target field is equal current field
+            //targetfield is equal current field
             Hero player3 = new Hero("hero", new MeleeFighter(), 18, 18);
             Field field1 = new Field(18, 18, new Floor());
 
             CommandGameMove cmove1 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 18, 18);
-            cmove1.SourcePlayer = player3; 
-
-            player3.PlayerRemainingMoves = player3.CharacterType._moveRange; 
+            cmove1.SourcePlayer = player3;  
 
             Assert.IsTrue(cmove1.TargetFieldIsInvalid()); 
 
 
-            //target field is a wall
+            //targetfield is a wall
             Hero player4 = new Hero("hero", new MeleeFighter(), 8, 8);
             Field field2 = new Field(8, 9, new Wall());      
 
             CommandGameMove cmove2 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",8, 9);      
             cmove2.SourcePlayer = player4; 
 
-            player4.PlayerRemainingMoves = player4.CharacterType._moveRange; 
-
             Assert.IsTrue(cmove2.TargetFieldIsInvalid());
 
 
-            //target field is blocked by another player
+            //targetfield is blocked by another player
             Hero player5 = new Hero("hero", new MeleeFighter(), 2, 2);
             Monster player6 = new Monster("monster", new RangeFighter(), 2, 3);
             Field field3 = new Field(2, 3, new Floor());
@@ -150,19 +210,15 @@ namespace MonsterdungeonCrawlerTests
             CommandGameMove cmove3 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",2, 3);      
             cmove3.SourcePlayer = player5;       
 
-            player5.PlayerRemainingMoves = player5.CharacterType._moveRange; 
-
             Assert.IsTrue(cmove3.TargetFieldIsInvalid());
 
 
-            //target field is valid
+            //targetfield is valid
             Hero player7 = new Hero("hero", new MeleeFighter(), 1, 1);
             Field field4 = new Field(1, 2, new Floor());
 
-            CommandGameMove cmove4 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",1, 2);      
+            CommandGameMove cmove4 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 1, 2);      
             cmove4.SourcePlayer = player7;       
-
-            player7.PlayerRemainingMoves = player7.CharacterType._moveRange; 
 
             Assert.IsFalse(cmove4.TargetFieldIsInvalid());
 
@@ -172,6 +228,15 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.AreEqual(4, player7.PlayerRemainingMoves);
 
+
+            //targetfield is diagonal
+            Hero player8 = new Hero("hero", new MeleeFighter(), 5, 5);
+            Field field5 = new Field(6, 6, new Floor());
+
+            CommandGameMove cmove5 = new CommandGameMove("5a45dsf5s4as5d4as8", 6, 6);   
+            cmove5.SourcePlayer = player8; 
+
+            Assert.IsFalse(cmove5.VerifyMoveRange()); 
         }
 
         [TestMethod]
@@ -186,7 +251,7 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(5, player1.CharacterType._moveRange);
             Assert.AreEqual(2, player2.CharacterType._moveRange);
 
-            Assert.AreEqual(0, player1.PlayerRemainingMoves); 
+            Assert.AreEqual(5, player1.PlayerRemainingMoves); 
         }
 
 
@@ -210,7 +275,6 @@ namespace MonsterdungeonCrawlerTests
               
             CommandGameMove cmove5 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",10, 11);
             cmove5.SourcePlayer = player11;
-            player11.PlayerRemainingMoves = player11.CharacterType._moveRange;
 
             CommandManager cm2 = new CommandManager(); 
             cm2.AddCommand(cmove5);
@@ -277,7 +341,7 @@ namespace MonsterdungeonCrawlerTests
             Assert.IsFalse(cmove13.VerifyMoveRange()); 
         }
 
-[TestMethod]
+        [TestMethod]
         public void ItemOnTargetField()
         {   //need number of max. clients
 
@@ -298,7 +362,6 @@ namespace MonsterdungeonCrawlerTests
 
             CommandGameMove cmove14 = new CommandGameMove("234hug2haa1248325sdf5",10, 11);
             cmove14.SourcePlayer = player16; 
-            player16.PlayerRemainingMoves = player16.CharacterType._moveRange; 
 
             CommandManager cm3 = new CommandManager(); 
             cm3.AddCommand(cmove14);
@@ -317,6 +380,7 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(0.75, player16.AttackBoost);
             Assert.AreEqual(null, field9.Item); 
         }
+
     }
 
     [TestClass]
@@ -399,7 +463,7 @@ namespace MonsterdungeonCrawlerTests
 
 
         [TestMethod]
-        public void ObstacleInRange()
+        public void ObstacleInRange1()
         {
 
             //test obstacle in range on the bottom side
@@ -487,7 +551,89 @@ namespace MonsterdungeonCrawlerTests
 
             cm5.AddCommand(cattack12);
             cm5.ProcessPendingTransactions();
-      
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CantAttackException))]
+        public void AttackWithoutRemainingMoves()
+        {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player3 = new Hero("hero", new MeleeFighter(), 10, 18); 
+            Monster player4 = new Monster("monster", new RangeFighter(), 8, 14);
+            Monster player5 = new Monster("monster", new MeleeFighter(), 13, 1);   
+            Monster player6 = new Monster("monster", new RangeFighter(), 2, 2);  
+            Field field1 = new Field(10, 17, new Floor());
+            Field field2 = new Field(9, 17, new SpikeField());
+            Field field3 = new Field(8, 17, new Floor());
+            Field field4 = new Field(8, 16, new Floor());
+            Field field5 = new Field(8, 15, new Floor());
+            field3.Item = new AttackBoost(3); 
+
+            CommandManager cm1 = new CommandManager(); 
+
+            //move to field (10, 17)
+            CommandGameMove cmove1 = new CommandGameMove("adua5as7da5sd5", 10, 17); 
+            cmove1.SourcePlayer = player3; 
+            cm1.AddCommand(cmove1); 
+            cm1.ProcessPendingTransactions(); 
+
+            //move to field with trap (9, 17)
+            CommandGameMove cmove2 = new CommandGameMove("adua5as7da5sd5", 9, 17); 
+            cmove2.SourcePlayer = player3; 
+            cm1.AddCommand(cmove2); 
+            cm1.ProcessPendingTransactions();   
+
+            //move to field with item (8, 17)
+            CommandGameMove cmove3 = new CommandGameMove("adua5as7da5sd5", 8, 17); 
+            cmove3.SourcePlayer = player3; 
+            cm1.AddCommand(cmove3); 
+            cm1.ProcessPendingTransactions(); 
+
+            //move to field with item (8, 16)
+            CommandGameMove cmove4 = new CommandGameMove("adua5as7da5sd5", 8, 16); 
+            cmove4.SourcePlayer = player3; 
+            cm1.AddCommand(cmove4); 
+            cm1.ProcessPendingTransactions();
+
+            //move to field with item (8, 15)
+            CommandGameMove cmove5 = new CommandGameMove("adua5as7da5sd5", 8, 15); 
+            cmove5.SourcePlayer = player3; 
+            cm1.AddCommand(cmove5); 
+            cm1.ProcessPendingTransactions();
+
+            //attack monster (8, 14)
+            CommandGameAttack cattack1 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
+            cattack1.SourcePlayer = player3; 
+            cattack1.TargetPlayer = player4; 
+            cm1.AddCommand(cattack1); 
+            cm1.ProcessPendingTransactions();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(CantAttackException))]
+        public void ObstacleInRange2()
+        {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player7 = new Hero("hero", new MeleeFighter(), 1, 5); 
+            Monster player8 = new Monster("monster", new RangeFighter(), 4, 5);
+            Monster player9 = new Monster("monster", new MeleeFighter(), 13, 1);   
+            Monster player10 = new Monster("monster", new RangeFighter(), 2, 2);  
+            Field field1 = new Field(2, 5, new Wall());
+            Field field2 = new Field(3, 4, new Floor());
+
+            CommandManager cm2 = new CommandManager(); 
+
+            CommandGameAttack cattack1 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
+            cattack1.SourcePlayer = player7; 
+            cattack1.TargetPlayer = player8; 
+            cm2.AddCommand(cattack1); 
+            cm2.ProcessPendingTransactions();
         }
     }
     
