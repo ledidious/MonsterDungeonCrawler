@@ -6,9 +6,6 @@ namespace MDC.Gamedata.LevelContent
     [Serializable]
     public abstract class Item
     {
-        protected const int DURATION_BOOSTER = 3;
-        protected const double EFFECTVALUE_BOOST = 0.25;
-        protected const double EFFECTVALUE_EXTRALIFE = 1;
 
         private double _effectValue;
 

@@ -5,8 +5,9 @@ namespace MDC.Gamedata.LevelContent
     public class AttackBoost : Item
     {
         private int _level;
-
         private int _duration; 
+        protected const int DURATION_ATTACKBOOSTER = 3;
+        protected const double EFFECTVALUE_ATTACKBOOST = 0.25;
 
         public int Duration
         {
@@ -42,8 +43,8 @@ namespace MDC.Gamedata.LevelContent
                 }
 
                 //set duration because it must be a booster
-                Duration = DURATION_BOOSTER;
-                EffectValue = EFFECTVALUE_BOOST * _level;
+                Duration = DURATION_ATTACKBOOSTER;
+                EffectValue = EFFECTVALUE_ATTACKBOOST * _level;
             }
         }
 

@@ -8,9 +8,6 @@ namespace MDC.Gamedata.PlayerType
     public abstract class Player
     {
 
-        protected const double LIFE_MONSTER = 3;
-        protected const double LIFE_HERO = 5;
-
         private int _xPosition;
         private int _yPosition;
         private int _playerRemainingMoves;
@@ -89,20 +86,8 @@ namespace MDC.Gamedata.PlayerType
         {
             get { return _char; }
 
-            set
-            {
+            set =>_char = value;
 
-                _char = value;
-
-                if (this is Monster)
-                {
-                    _life = LIFE_MONSTER;
-                }
-                else if (this is Hero)
-                {
-                    _life = LIFE_HERO;
-                }
-            }
         }
 
         public int PlayerRemainingMoves
@@ -143,54 +128,7 @@ namespace MDC.Gamedata.PlayerType
             YPosition = yPosition;
         }
 
-        public Boolean CollectItem(Item item)
-        {
-            Boolean collectSuccessfull = false; 
-
-            if (item.Equals(Level.playingField[XPosition, YPosition].Item))
-            {
-
-                if (item is ExtraLife)
-                {
-                    if (this is Monster && Life < LIFE_MONSTER)
-                    {
-                        this.Life++;
-                        collectSuccessfull = true;
-                    }
-                    else if (this is Hero && Life < LIFE_HERO)
-                    {
-                        this.Life++;
-                        collectSuccessfull = true;
-                    }
-                    else
-                    {
-                        //maximal life    
-                    }
-                    
-                }
-                else if (item is DefenseBoost)
-                {
-                    _defenseItem = item;
-                    this.DefenseBoost = _defenseItem.EffectValue;
-                    collectSuccessfull = true;
-                }
-                else if (item is AttackBoost)
-                {
-                    _attackItem = item;
-                    this.AttackBoost = _attackItem.EffectValue;
-                    collectSuccessfull = true;
-                }
-
-                return collectSuccessfull; 
-            }
-
-            else
-            {
-                //item out of range
-                throw new System.ArgumentException();
-            }
-
-        }
+        public abstract Boolean CollectItem(Item item); 
 
         public void ResetBoost()
         {
