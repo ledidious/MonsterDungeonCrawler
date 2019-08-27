@@ -635,6 +635,31 @@ namespace MonsterdungeonCrawlerTests
             cm2.AddCommand(cattack1); 
             cm2.ProcessPendingTransactions();
         }
+
+        [TestMethod]
+        public void ObstacleInRange3()
+        {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player11 = new Hero("hero", new RangeFighter(), 3, 13); 
+            Monster player12 = new Monster("monster", new RangeFighter(), 4, 13);
+            Monster player13 = new Monster("monster", new MeleeFighter(), 13, 1);   
+            Monster player14 = new Monster("monster", new RangeFighter(), 15, 2);  
+            Field field1 = new Field(4, 13, new Floor());
+            Field field2 = new Field(3, 12, new Wall());
+            Field field3 = new Field(2, 13, new Wall());
+            Field field4 = new Field(3, 14, new Wall());
+
+            CommandManager cm3 = new CommandManager(); 
+
+            CommandGameAttack cattack2 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
+            cattack2.SourcePlayer = player11; 
+            cattack2.TargetPlayer = player12; 
+            cm3.AddCommand(cattack2); 
+            cm3.ProcessPendingTransactions();
+        }
     }
     
     [TestClass]
