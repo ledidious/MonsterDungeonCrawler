@@ -127,9 +127,13 @@ namespace MDC.Gamedata
         public override void Execute()
         {
 
-            if (SourcePlayer.PlayerRemainingMoves < 1 || TargetFieldIsInvalid() == true)
+            if (SourcePlayer.PlayerRemainingMoves < 1)
             {
-                throw new Exceptions.CantMoveException(); 
+                throw new Exceptions.CantMoveException("No more moves left"); 
+            }
+            else if (TargetFieldIsInvalid() == true)
+            {
+                throw new Exceptions.CantMoveException("Targetfield is blocked by another player or is a wall"); 
             }
             else
             {
@@ -139,10 +143,7 @@ namespace MDC.Gamedata
                 SourcePlayer.PlayerRemainingMoves--;
                 IsCompleted = true;
             }
-
-
         }
-
     }
 
     [Serializable]
@@ -170,9 +171,9 @@ namespace MDC.Gamedata
             //verify if an enemy is vertical in range
             if (SourcePlayer.XPosition == TargetPlayer.XPosition)
             {
-                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                for (int i = 0; i <= SourcePlayer.CharacterType.Attackrange * 2; i++)
                 {
-                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.YPosition)
+                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType.Attackrange + i == TargetPlayer.YPosition)
                     {
                         TargetInRange = true;
                         break;
@@ -191,9 +192,9 @@ namespace MDC.Gamedata
             //verify if an enemy is horizontal in range
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
-                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                for (int i = 0; i <= SourcePlayer.CharacterType.Attackrange * 2; i++)
                 {
-                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.XPosition)
+                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType.Attackrange + i == TargetPlayer.XPosition)
                     {
                         TargetInRange = true;
                         break;
@@ -287,8 +288,22 @@ namespace MDC.Gamedata
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
 
-            if (SourcePlayer is Monster && TargetPlayer is Monster || VerifyAttackRange() == false || VerifyObstacleInRange() == true || SourcePlayer.PlayerRemainingMoves == 0)
-                throw new Exceptions.CantAttackException();
+            if (SourcePlayer is Monster && TargetPlayer is Monster)
+            {
+                throw new Exceptions.CantAttackException("Do not attack your teammember");
+            }
+            else if (VerifyAttackRange() == false )
+            {
+                throw new Exceptions.CantAttackException("Enemy is not in attack range");
+            }
+            else if (VerifyObstacleInRange() == true)
+            {
+                throw new Exceptions.CantAttackException("An obstacle is in attack range");
+            }
+            else if (SourcePlayer.PlayerRemainingMoves < 1)
+            {
+                throw new Exceptions.CantAttackException("No more moves left");
+            }
             else
             {
                 double attackBoost = SourcePlayer.AttackBoost;

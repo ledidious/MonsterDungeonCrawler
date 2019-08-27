@@ -32,8 +32,16 @@ namespace MDC.Server
         public void ProcessPendingTransactions()
         {
             foreach (Command command in _transactions.Where(x => !x.IsCompleted))
-            {
-                command.Execute();
+            {   
+                try
+                {
+                    command.Execute();
+                }
+                catch (System.Exception)
+                {
+                    
+                    throw;
+                }
             }
         }
     }

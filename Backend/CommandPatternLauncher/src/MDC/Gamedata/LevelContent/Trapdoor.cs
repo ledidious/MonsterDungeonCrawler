@@ -5,7 +5,7 @@ namespace MDC.Gamedata.LevelContent
 {
     public class Trapdoor : Trap
     {
-        public override double _dealingDamage => 0.25; 
+        protected override double _dealingDamage => 0.25; 
 
         public override void Effects(Player player)
         {
@@ -29,13 +29,12 @@ namespace MDC.Gamedata.LevelContent
                     {
                         //player can not move to a wall or another trap
                     }
-
                 }               
         }
 
         public override void OnNextRound()
         {
-
+            //has no effect
         }
     }
 }

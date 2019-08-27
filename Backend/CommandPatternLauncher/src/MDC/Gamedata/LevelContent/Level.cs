@@ -52,7 +52,6 @@ namespace MDC.Gamedata.LevelContent
                     //field is not blocked
                 }
             }
-
             return FieldIsBlocked;
         }
 

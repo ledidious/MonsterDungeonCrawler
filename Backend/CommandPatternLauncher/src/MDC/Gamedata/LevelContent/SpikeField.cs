@@ -5,7 +5,7 @@ namespace MDC.Gamedata.LevelContent
 {
     public class SpikeField : Trap
     {
-        public override double _dealingDamage => 0.5;
+        protected override double _dealingDamage => 0.5;
 
         public override void Effects(Player player)
         {

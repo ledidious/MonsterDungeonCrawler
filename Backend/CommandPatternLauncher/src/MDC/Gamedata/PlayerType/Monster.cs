@@ -36,7 +36,6 @@ namespace MDC.Gamedata.PlayerType
                     {
                         //maximal life    
                     }
-
                 }
                 else if (item is DefenseBoost)
                 {
@@ -50,18 +49,13 @@ namespace MDC.Gamedata.PlayerType
                     this.AttackBoost = AttackItem.EffectValue;
                     collectSuccessfull = true;
                 }
-
                 return collectSuccessfull;
             }
-
             else
             {
                 //item out of range
                 throw new System.ArgumentException();
             }
-
         }
-
     }
-
 }

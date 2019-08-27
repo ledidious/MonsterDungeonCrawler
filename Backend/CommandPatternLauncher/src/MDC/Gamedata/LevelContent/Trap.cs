@@ -6,7 +6,7 @@ namespace MDC.Gamedata.LevelContent
 {
     public abstract class Trap : FieldType
     {
-        public abstract double _dealingDamage { get; } 
+        protected abstract double _dealingDamage { get; } 
 
         public Boolean CanBeAccessed(){
             return true;
@@ -14,9 +14,7 @@ namespace MDC.Gamedata.LevelContent
 
         public abstract void OnNextRound(); 
 
-        public abstract void Effects(Player player);
-
-      
+        public abstract void Effects(Player player); 
 
     }
 }

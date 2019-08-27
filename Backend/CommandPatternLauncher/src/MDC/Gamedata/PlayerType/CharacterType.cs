@@ -8,11 +8,30 @@ namespace MDC.Gamedata.PlayerType
         protected const int MOVE_RANGE = 2;
         protected const int MOVE_MELEE = 5;
         
-        public abstract double _attackPower { get; }
-        public abstract double _defensePower { get; }
-        public abstract int _attackRange { get; }
-        public abstract int _moveRange { get; }
+        private double _attackPower;
+        private double _defensePower;
+        private int _attackRange;
+        private int _moveRange;
 
+        public double Attackpower
+        {
+            get { return _attackPower; }
+        }
+
+        public double Defensepower
+        {
+            get { return _defensePower; }
+        }
+
+        public int Attackrange
+        {
+            get { return _attackRange; }
+        }
+        
+        public int MoveRange
+        {
+            get { return _moveRange; }
+        }
     }    
 }
 

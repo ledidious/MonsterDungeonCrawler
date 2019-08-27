@@ -7,7 +7,6 @@ namespace MDC.Gamedata.PlayerType
     [Serializable]
     public abstract class Player
     {
-
         private int _xPosition;
         private int _yPosition;
         private int _playerRemainingMoves;
@@ -17,7 +16,13 @@ namespace MDC.Gamedata.PlayerType
         private Item _attackItem;
         private Item _defenseItem;
         private CharacterType _char;
-        public string PlayerName;
+        private string _playerName;
+
+        public string PlayerName
+        {
+            get { return _playerName; }
+            set => _playerName = value;
+        }
 
         public Item AttackItem
         {
@@ -39,7 +44,6 @@ namespace MDC.Gamedata.PlayerType
         public double DefenseBoost
         {
             get { return _defenseBoost; }
-
             set => _defenseBoost = value;
         }
 
@@ -87,7 +91,6 @@ namespace MDC.Gamedata.PlayerType
             get { return _char; }
 
             set =>_char = value;
-
         }
 
         public int PlayerRemainingMoves
@@ -109,15 +112,15 @@ namespace MDC.Gamedata.PlayerType
 
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
-            double totalAttackPower = attackBoost + characterType._attackPower;
-            double totalDefensePower = this.DefenseBoost + this._char._defensePower;
+            double totalAttackPower = attackBoost + characterType.Attackpower;
+            double totalDefensePower = this.DefenseBoost + this._char.Defensepower;
 
             Life -= totalAttackPower - totalDefensePower;
         }
 
         public void DecrementLife(double _dealingDamage)
         {
-            Life -= _dealingDamage - (this.DefenseBoost + this._char._defensePower);
+            Life -= _dealingDamage - (this.DefenseBoost + this._char.Defensepower);
 
             this.DefenseBoost = 0;
         }
@@ -135,8 +138,6 @@ namespace MDC.Gamedata.PlayerType
             this.AttackBoost = 0;
             this.DefenseBoost = 0;
         }
-
     }
-
 }
 
