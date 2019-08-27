@@ -170,6 +170,7 @@ namespace MDC.Server
             return null;
         }
 
+        //TODO: call after every round
         private void ItemManagement()
          {
              for (int i = 0; i < MAX_CLIENTS; i++)
