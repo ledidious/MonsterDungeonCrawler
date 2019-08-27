@@ -14,7 +14,7 @@ namespace MDC.Gamedata.PlayerType
             this.XPosition = xPosition;
             this.YPosition = yPosition;
             this.Life = LIFE_HERO;
-            this.PlayerRemainingMoves = characterType.MoveRange; 
+            this.PlayerRemainingMoves = characterType._moveRange; 
 
             Level.AddPlayerToLevel(this);
         }

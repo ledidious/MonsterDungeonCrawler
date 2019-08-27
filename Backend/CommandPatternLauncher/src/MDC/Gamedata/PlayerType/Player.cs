@@ -112,15 +112,15 @@ namespace MDC.Gamedata.PlayerType
 
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
-            double totalAttackPower = attackBoost + characterType.Attackpower;
-            double totalDefensePower = this.DefenseBoost + this._char.Defensepower;
+            double totalAttackPower = attackBoost + characterType._attackPower;
+            double totalDefensePower = this.DefenseBoost + this._char._defensePower;
 
             Life -= totalAttackPower - totalDefensePower;
         }
 
         public void DecrementLife(double _dealingDamage)
         {
-            Life -= _dealingDamage - (this.DefenseBoost + this._char.Defensepower);
+            Life -= _dealingDamage - (this.DefenseBoost + this._char._defensePower);
 
             this.DefenseBoost = 0;
         }

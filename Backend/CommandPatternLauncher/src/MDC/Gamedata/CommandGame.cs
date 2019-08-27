@@ -171,9 +171,9 @@ namespace MDC.Gamedata
             //verify if an enemy is vertical in range
             if (SourcePlayer.XPosition == TargetPlayer.XPosition)
             {
-                for (int i = 0; i <= SourcePlayer.CharacterType.Attackrange * 2; i++)
+                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
                 {
-                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType.Attackrange + i == TargetPlayer.YPosition)
+                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.YPosition)
                     {
                         TargetInRange = true;
                         break;
@@ -192,9 +192,9 @@ namespace MDC.Gamedata
             //verify if an enemy is horizontal in range
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
-                for (int i = 0; i <= SourcePlayer.CharacterType.Attackrange * 2; i++)
+                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
                 {
-                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType.Attackrange + i == TargetPlayer.XPosition)
+                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.XPosition)
                     {
                         TargetInRange = true;
                         break;
