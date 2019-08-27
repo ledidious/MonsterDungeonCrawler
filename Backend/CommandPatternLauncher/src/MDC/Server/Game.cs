@@ -9,6 +9,16 @@ using System.Threading;
 using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
 
+//TODO: LaserBeam mit ROUNDCOUNTER verbinden von der Gameklasse alle % 3 Attribut IsActive auf true setzen -> OnNextRound() bei FieldType
+//TODO: nach jeder Runde schauen, ob Held ein DefenseItem und/oder AttackItem hat und -- auf Duration, wenn 0 dann Property null setzen und defenseBoost bzw. attackBoost beim Spieler (Hero hat Methode ResetBoost()) zurücksetzen
+//TODO: Item vom Level löschen, wenn CollectItem() true zurückliefert
+//TODO: für die Spieler feste Startpositionen vergeben (Konstruktor sieht XYPositionen bereits vor)
+//TODO: Game Klasse muss am Ende jeden AttackCommands prüfen, ob alle noch Leben haben
+//TODO: immer wenn Spieler an die Reihe kommt, muss Player.PlayerRemainingMoves auf Player.CharacterType._moveRange gesetzt werden
+//TODO: bevor Spieler dran ist RemainingMoves auf moverange (CharacterType) setzen
+//TODO: OnNextRound() bei FieldType muss nach jeder Runde bei allen Traps und Items aufgerufen werden - wenn false zurückgeliefert wird, dann muss Item gelöscht werden
+//TODO: nach jeder Runde muss PlayerList durchlaufen werden und DecrementBoostDuration für DefenseItem und AttackItem vom Player durchgehen, sobald false zurückkommt null setzen
+
 namespace MDC.Server
 {
     public class Game
