@@ -39,6 +39,11 @@ namespace MDC.Gamedata.PlayerType
                 }
                 else if (item is DefenseBoost)
                 {
+                    if (this.DefenseItem != null)
+                    {
+                        this.ResetDefenseItem();
+                        this.ResetDefenseBooster(); 
+                    }
                     DefenseItem = item;
                     DefenseBoost = DefenseItem.EffectValue;
                     collectSuccessfull = true;

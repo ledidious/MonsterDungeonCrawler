@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
+using MDC.Gamedata.LevelContent;
 
 //TODO: LaserBeam mit ROUNDCOUNTER verbinden von der Gameklasse alle % 3 Attribut IsActive auf true setzen -> OnNextRound() bei FieldType
 //TODO: nach jeder Runde schauen, ob Held ein DefenseItem und/oder AttackItem hat und -- auf Duration, wenn 0 dann Property null setzen und defenseBoost bzw. attackBoost beim Spieler (Hero hat Methode ResetBoost()) zurücksetzen
@@ -169,6 +170,46 @@ namespace MDC.Server
             return null;
         }
 
+        private void ItemManagement()
+         {
+             for (int i = 0; i < MAX_CLIENTS; i++)
+             {
+                 if (Level.playerList[i].AttackItem != null)
+                 {
+                    if (Level.playerList[i].AttackItem.DecrementBoosterDuration() == false)
+                    {
+                        Level.playerList[i].ResetAttackBooster();
+                        Level.playerList[i].ResetAttackItem();
+                    }
+                    else
+                    {
+                        //itemduration is not 0
+                    }
+                 }
+                 else
+                 {
+                     //no attackitem available
+                 }
+
+                 if (Level.playerList[i].DefenseItem != null)
+                 {
+                    if (Level.playerList[i].DefenseItem.DecrementBoosterDuration() == false)
+                    {
+                        Level.playerList[i].ResetDefenseBooster();
+                        Level.playerList[i].ResetDefenseItem();
+                    }
+                    else
+                    {
+                        //itemduration is not 0
+                    }
+                 }
+                 else
+                 {
+                     //no defenseitem available
+                 }
+             }
+         }
+
         // ############
         // # OLD CODE #
         // ############
@@ -318,4 +359,6 @@ namespace MDC.Server
 
     //     return "Player " + p.playerName + " has " + p.playerRemainingMoves.ToString() + " Moves left.";
     // }
+
+
 }

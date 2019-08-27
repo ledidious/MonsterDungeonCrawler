@@ -133,10 +133,24 @@ namespace MDC.Gamedata.PlayerType
 
         public abstract Boolean CollectItem(Item item); 
 
-        public void ResetBoost()
+        public void ResetAttackItem()
         {
-            this.AttackBoost = 0;
-            this.DefenseBoost = 0;
+            this.AttackItem = null;
+        }
+
+        public void ResetDefenseItem()
+        {
+            this.DefenseItem = null;
+        }
+
+        public void ResetAttackBooster()
+        {
+            this.AttackBoost = 0; 
+        }
+
+        public void ResetDefenseBooster()
+        {
+            this.DefenseBoost = 0; 
         }
     }
 }
