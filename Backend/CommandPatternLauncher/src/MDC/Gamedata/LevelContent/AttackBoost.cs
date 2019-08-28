@@ -21,14 +21,13 @@ namespace MDC.Gamedata.LevelContent
                 }
                 else
                 {
-                    throw new System.ArgumentException();
+                    throw new System.ArgumentException("Duration must be between 0 and 5");
                 }
             }
         }
 
         public int Level
         {
-
             get { return _level; }
 
             set
@@ -39,7 +38,7 @@ namespace MDC.Gamedata.LevelContent
                 }
                 else
                 {
-                    throw new System.ArgumentException();
+                    throw new System.ArgumentException("Level must be between 1 and 3");
                 }
 
                 //set duration because it must be a booster
@@ -66,7 +65,6 @@ namespace MDC.Gamedata.LevelContent
             {
                 BoosterActive = true; 
             }
-
             return BoosterActive; 
         }
     }

@@ -11,12 +11,12 @@ namespace MDC.Gamedata.LevelContent
        
         public void Effects(Player player){
             //has no effect
-            throw new NotImplementedException();
+            throw new NotImplementedException("Floor has no effect");
         }
 
         public void OnNextRound()
         {
-
+            //has no effect
         }
  
     }

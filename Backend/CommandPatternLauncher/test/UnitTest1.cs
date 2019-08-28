@@ -5,6 +5,7 @@ using MDC.Gamedata.LevelContent;
 using MDC.Gamedata.PlayerType;
 using MDC.Server;
 using MDC.Exceptions;
+using System.Net.Sockets;
 
 namespace MonsterdungeonCrawlerTests
 {
@@ -635,6 +636,31 @@ namespace MonsterdungeonCrawlerTests
             cm2.AddCommand(cattack1); 
             cm2.ProcessPendingTransactions();
         }
+
+        [TestMethod]
+        public void ObstacleInRange3()
+        {   //need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player11 = new Hero("hero", new RangeFighter(), 3, 13); 
+            Monster player12 = new Monster("monster", new RangeFighter(), 4, 13);
+            Monster player13 = new Monster("monster", new MeleeFighter(), 13, 1);   
+            Monster player14 = new Monster("monster", new RangeFighter(), 15, 2);  
+            Field field1 = new Field(4, 13, new Floor());
+            Field field2 = new Field(3, 12, new Wall());
+            Field field3 = new Field(2, 13, new Wall());
+            Field field4 = new Field(3, 14, new Wall());
+
+            CommandManager cm3 = new CommandManager(); 
+
+            CommandGameAttack cattack2 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
+            cattack2.SourcePlayer = player11; 
+            cattack2.TargetPlayer = player12; 
+            cm3.AddCommand(cattack2); 
+            cm3.ProcessPendingTransactions();
+        }
     }
     
     [TestClass]
@@ -821,7 +847,7 @@ namespace MonsterdungeonCrawlerTests
             
             Assert.AreEqual(0.5, player1.DefenseBoost); 
 
-            player1.ResetBoost(); 
+            player1.ResetDefenseBooster(); 
 
             Assert.AreEqual(0, player1.DefenseBoost);
             Assert.AreEqual(0, player1.AttackBoost);
@@ -835,7 +861,7 @@ namespace MonsterdungeonCrawlerTests
             
             Assert.AreEqual(0.5, player2.DefenseBoost); 
 
-            player2.ResetBoost();
+            player2.ResetDefenseBooster();
 
             Assert.AreEqual(0, player2.DefenseBoost);
             Assert.AreEqual(0, player2.AttackBoost);
@@ -891,5 +917,62 @@ namespace MonsterdungeonCrawlerTests
 
     }
 
+    [TestClass]
+    public class UnitTestGame
+    {
+       [TestMethod]
+        public void DecrementItemDurationAndDelete()
+        {//need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player1 = new Hero("hero", new RangeFighter(), 12, 1);
+            Monster player2 = new Monster("monster", new RangeFighter(), 2, 3);
+            Monster player3 = new Monster("monster", new RangeFighter(), 3, 3);
+            Monster player4 = new Monster("monster", new RangeFighter(), 4, 3);
+            Field field1 = new Field(12, 2, new Floor());
+            Field field2 = new Field(3, 3, new Floor());
+            field1.Item = new DefenseBoost(2);
+            field2.Item = new AttackBoost(3);  
+
+            CommandGameMove cmove1 = new CommandGameMove("1jhb2h48325sdf5", 12, 2);
+            cmove1.SourcePlayer = player1; 
+
+            CommandManager cm1 = new CommandManager(); 
+            cm1.AddCommand(cmove1);
+
+            CommandGameMove cmove2 = new CommandGameMove("1jhb2h48325sdf5", 3, 3);
+            cmove2.SourcePlayer = player2; 
+
+            cm1.AddCommand(cmove2);
+
+            cm1.ProcessPendingTransactions();
+
+            Assert.AreEqual(0.5, player1.DefenseBoost); 
+            Assert.AreEqual(0.75, player2.AttackBoost); 
+
+            TcpClient tcp1 = new TcpClient(); 
+            Game game1 = new Game("asdasd", tcp1); 
+
+            game1.ItemManagement();
+            Assert.AreNotEqual(null, player1.DefenseItem);
+            Assert.AreEqual(0.5, player1.DefenseBoost);
+            Assert.AreNotEqual(null, player2.AttackItem);
+            Assert.AreEqual(0.75, player2.AttackBoost);
+
+            game1.ItemManagement();
+            Assert.AreNotEqual(null, player1.DefenseItem);
+            Assert.AreEqual(0.5, player1.DefenseBoost);
+            Assert.AreNotEqual(null, player2.AttackItem);
+            Assert.AreEqual(0.75, player2.AttackBoost);
+
+            game1.ItemManagement();
+            Assert.AreEqual(null, player1.DefenseItem);
+            Assert.AreEqual(0, player1.DefenseBoost);
+            Assert.AreEqual(null, player2.AttackItem);
+            Assert.AreEqual(0, player2.AttackBoost);
+        }
+    }
 }
 

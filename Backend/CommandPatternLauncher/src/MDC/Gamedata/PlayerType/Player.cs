@@ -7,7 +7,6 @@ namespace MDC.Gamedata.PlayerType
     [Serializable]
     public abstract class Player
     {
-
         private int _xPosition;
         private int _yPosition;
         private int _playerRemainingMoves;
@@ -17,7 +16,13 @@ namespace MDC.Gamedata.PlayerType
         private Item _attackItem;
         private Item _defenseItem;
         private CharacterType _char;
-        public string PlayerName;
+        private string _playerName;
+
+        public string PlayerName
+        {
+            get { return _playerName; }
+            set => _playerName = value;
+        }
 
         public Item AttackItem
         {
@@ -39,7 +44,6 @@ namespace MDC.Gamedata.PlayerType
         public double DefenseBoost
         {
             get { return _defenseBoost; }
-
             set => _defenseBoost = value;
         }
 
@@ -87,7 +91,6 @@ namespace MDC.Gamedata.PlayerType
             get { return _char; }
 
             set =>_char = value;
-
         }
 
         public int PlayerRemainingMoves
@@ -130,13 +133,25 @@ namespace MDC.Gamedata.PlayerType
 
         public abstract Boolean CollectItem(Item item); 
 
-        public void ResetBoost()
+        public void ResetAttackItem()
         {
-            this.AttackBoost = 0;
-            this.DefenseBoost = 0;
+            this.AttackItem = null;
         }
 
-    }
+        public void ResetDefenseItem()
+        {
+            this.DefenseItem = null;
+        }
 
+        public void ResetAttackBooster()
+        {
+            this.AttackBoost = 0; 
+        }
+
+        public void ResetDefenseBooster()
+        {
+            this.DefenseBoost = 0; 
+        }
+    }
 }
 

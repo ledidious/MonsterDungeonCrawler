@@ -5,8 +5,7 @@ namespace MDC.Gamedata.LevelContent
 {
     public class LaserBeam : Trap
     {
-
-        public override double _dealingDamage => 1; 
+        protected override double _dealingDamage => 1; 
 
         protected Boolean _isActive = false; 
 
@@ -28,8 +27,7 @@ namespace MDC.Gamedata.LevelContent
             {
                 Activate = false; 
             }           
-        }
-        
+        }    
         
         public override void Effects(Player player)
         {
@@ -42,9 +40,5 @@ namespace MDC.Gamedata.LevelContent
                 //laser is not active 
             }
         }
-
-        
-         
-  
     }
 }

@@ -23,7 +23,7 @@ namespace MDC.Gamedata.LevelContent
                 }
                 else
                 {
-                    throw new System.ArgumentException();
+                    throw new System.ArgumentException("Effectvalue must be between 0 and 1");
                 }
 
             }

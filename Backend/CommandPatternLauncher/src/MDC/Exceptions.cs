@@ -7,7 +7,17 @@ namespace MDC.Exceptions
     public class CantAttackException : Exception
     {
         public CantAttackException()
-           : base("You can't attack yourself, a teammember or an enemy out of range!")
+        {
+        }
+
+        public CantAttackException(string message)
+            : base(message)
+        {
+        }
+
+
+        public CantAttackException(string message, Exception inner)
+            : base(message, inner)
         {
         }
     }
@@ -17,7 +27,17 @@ namespace MDC.Exceptions
     public class CantMoveException : Exception
     {
         public CantMoveException()
-           : base("Invalid move!")
+        {
+        }
+
+        public CantMoveException(string message)
+            : base(message)
+        {
+        }
+
+
+        public CantMoveException(string message, Exception inner)
+            : base(message, inner)
         {
         }
     }

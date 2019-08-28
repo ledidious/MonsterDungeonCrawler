@@ -14,7 +14,7 @@ namespace MDC.Gamedata.LevelContent
 
         public void OnNextRound()
         {
-
+            //has no effect
         }
 
         

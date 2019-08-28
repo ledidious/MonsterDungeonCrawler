@@ -8,7 +8,6 @@ namespace MDC.Gamedata.LevelContent
     {
         private int _xPosition;
         private int _yPosition;
-
         private FieldType _fieldType;
 
         public FieldType FieldType
@@ -32,13 +31,9 @@ namespace MDC.Gamedata.LevelContent
                 }
                 else
                 {
-                    throw new System.ArgumentException();
+                    throw new System.ArgumentException("Only fieldtype floor can contain an item");
                 } 
             }
-        }
-
-        public Player Reserve(){
-            return null;
         }
 
         public int XPosition
@@ -55,8 +50,6 @@ namespace MDC.Gamedata.LevelContent
             set { _yPosition = value; }
         }
 
-
-
        public Field(int xPosition, int yPosition, FieldType fieldType){
             this._xPosition = xPosition;
             this._yPosition = yPosition;
@@ -69,6 +62,5 @@ namespace MDC.Gamedata.LevelContent
                 Level.AddTrapToList(this); 
             }
         }
-        
     }
 }

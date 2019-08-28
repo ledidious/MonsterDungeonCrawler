@@ -34,21 +34,29 @@ namespace MDC.Gamedata.PlayerType
                 {
                     //maximal life    
                 }
-
             }
             else if (item is DefenseBoost)
             {
+                if (this.DefenseItem != null)
+                   {
+                       this.ResetDefenseItem();
+                       this.ResetDefenseBooster(); 
+                   }
                 DefenseItem = item;
                 DefenseBoost = DefenseItem.EffectValue;
                 collectSuccessfull = true;
             }
             else if (item is AttackBoost)
             {
+                if (this.AttackItem != null)
+                   {
+                       this.ResetAttackItem();
+                       this.ResetAttackBooster(); 
+                }
                 AttackItem = item;
                 this.AttackBoost = AttackItem.EffectValue;
                 collectSuccessfull = true;
             }
-
             return collectSuccessfull;
         }
     }
