@@ -28,7 +28,7 @@ namespace MDC.Server
     public class Game
     {
         public int RoundCounter;
-        public const int MAX_CLIENTS = 4;
+        const int MAX_CLIENTS = 4;
         private int PORT_NO_SESSION;
 
         // Player/Client mapping: the string represents the clientID
@@ -42,6 +42,7 @@ namespace MDC.Server
         private int _lapsRemaining;
         private String _sessionID;
         CommandManager gcm = new CommandManager();
+        protected Level _board;
 
         public Game(String sessionID, GameClient firstClient)
         {
@@ -173,14 +174,7 @@ namespace MDC.Server
             }
             else
             {
-                // Level board = new Level();
-                for (int x = 0; x < 19; x++)
-                {
-                    for (int y = 0; y < 19; y++)
-                    {
-                        
-                    }
-                }
+                board = new Level(MAX_CLIENTS);
 
                 //TODO: Vor Eintritt in die Schleife, den Host erst eine Runde spielen lassen
                 while (_clientsOfThisGame[0].TcpClient.Connected)
@@ -314,12 +308,12 @@ namespace MDC.Server
         {
             for (int i = 0; i < MAX_CLIENTS; i++)
             {
-                if (Level.playerList[i].AttackItem != null)
+                if (_board.playerList[i].AttackItem != null)
                 {
-                    if (Level.playerList[i].AttackItem.DecrementBoosterDuration() == false)
+                    if (_board.playerList[i].AttackItem.DecrementBoosterDuration() == false)
                     {
-                        Level.playerList[i].ResetAttackBooster();
-                        Level.playerList[i].ResetAttackItem();
+                        _board.playerList[i].ResetAttackBooster();
+                        _board.playerList[i].ResetAttackItem();
                     }
                     else
                     {
@@ -331,12 +325,12 @@ namespace MDC.Server
                     //no attackitem available
                 }
 
-                if (Level.playerList[i].DefenseItem != null)
+                if (_board.playerList[i].DefenseItem != null)
                 {
-                    if (Level.playerList[i].DefenseItem.DecrementBoosterDuration() == false)
+                    if (_board.playerList[i].DefenseItem.DecrementBoosterDuration() == false)
                     {
-                        Level.playerList[i].ResetDefenseBooster();
-                        Level.playerList[i].ResetDefenseItem();
+                        _board.playerList[i].ResetDefenseBooster();
+                        _board.playerList[i].ResetDefenseItem();
                     }
                     else
                     {
@@ -349,7 +343,6 @@ namespace MDC.Server
                 }
             }
         }
-
         // ############
         // # OLD CODE #
         // ############
