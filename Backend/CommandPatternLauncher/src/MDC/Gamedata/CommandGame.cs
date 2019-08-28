@@ -61,6 +61,28 @@ namespace MDC.Gamedata
             if (level.playingField[_xPosition, _yPosition].FieldType is Trap)
             {
                 level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
+                if(level.playingField[_xPosition, _yPosition].FieldType is Trapdoor)
+                {
+                    Boolean successfulMoving = false;
+                    int randomX; 
+                    int randomY;
+
+                    while (successfulMoving == false)
+                    {
+                        randomX = new Random().Next(0, 19); 
+                        randomY = new Random().Next(0, 19); 
+
+                        if (level.playingField[randomX, randomY].FieldType is Floor && level.FieldBlockedByPlayer(randomX, randomY) == false)
+                        {
+                            successfulMoving = true;
+                            SourcePlayer.MovePlayer(randomX, randomY);
+                        }
+                        else
+                        {
+                            //player can not move to a wall or another trap
+                        }
+                    }
+                }
             }
             else
             {

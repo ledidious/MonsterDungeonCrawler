@@ -54,13 +54,6 @@ namespace MDC.Gamedata.LevelContent
             this._xPosition = xPosition;
             this._yPosition = yPosition;
             this.FieldType = fieldType;
-
-            Level.AddFieldToLevel(this);
-
-            if (fieldType is Trap)
-            {
-                Level.AddTrapToList(this); 
-            }
         }
     }
 }

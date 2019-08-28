@@ -15,8 +15,6 @@ namespace MDC.Gamedata.PlayerType
             this.YPosition = yPosition;
             this.Life = LIFE_HERO;
             this.PlayerRemainingMoves = characterType._moveRange; 
-
-            Level.AddPlayerToLevel(this);
         }
 
         public override Boolean CollectItem(Item item)
