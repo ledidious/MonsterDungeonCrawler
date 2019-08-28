@@ -23,57 +23,62 @@ namespace MDC.Gamedata.PlayerType
         {
             Boolean collectSuccessfull = false;
 
-            if (item.Equals(Level.playingField[XPosition, YPosition].Item))
+            if (item is ExtraLife)
             {
-                if (item is ExtraLife)
+                if (Life < LIFE_MONSTER)
                 {
-                    if (Life < LIFE_MONSTER)
-                    {
-                        this.Life++;
-                        collectSuccessfull = true;
-                    }
-                    else
-                    {
-                        //maximal life    
-                    }
+                    this.Life++;
+                    collectSuccessfull = true;
                 }
-                else if (item is DefenseBoost)
+                else
                 {
-                    if (this.DefenseItem != null)
-                    {
+                    //maximal life    
+                }
+            }
+            else if (item is DefenseBoost)
+            {
+                if (this.DefenseItem == null)
+                   {
+                       DefenseItem = item;
+                       DefenseBoost = DefenseItem.EffectValue;
+                       collectSuccessfull = true; 
+                   }
+                else if (this.DefenseItem != null && this.DefenseBoost < item.EffectValue)
+                {
                         this.ResetDefenseItem();
                         this.ResetDefenseBooster(); 
-                    }
-                    else
-                    {
-                        //not equipped with a defenseitem
-                    }
-                    DefenseItem = item;
-                    DefenseBoost = DefenseItem.EffectValue;
-                    collectSuccessfull = true;
+                        DefenseItem = item;
+                        DefenseBoost = DefenseItem.EffectValue;
+                        collectSuccessfull = true; 
                 }
-                else if (item is AttackBoost)
+                else
                 {
-                    if (this.AttackItem != null)
-                    {
+                    //ignore this item
+                }
+
+            }
+            else if (item is AttackBoost)
+            {
+                if (this.AttackItem == null)
+                   {
+                       AttackItem = item;
+                       AttackBoost = AttackItem.EffectValue;
+                       collectSuccessfull = true; 
+                   }
+                else if (this.AttackItem != null && this.AttackBoost < item.EffectValue)
+                {
                         this.ResetAttackItem();
                         this.ResetAttackBooster(); 
-                    }
-                    else
-                    {
-                        //not equipped with a defenseitem
-                    }
-                    AttackItem = item;
-                    this.AttackBoost = AttackItem.EffectValue;
-                    collectSuccessfull = true;
+                        AttackItem = item;
+                        AttackBoost = AttackItem.EffectValue;
+                        collectSuccessfull = true; 
                 }
-                return collectSuccessfull;
+                else
+                {
+                    //ignore this item
+                }
             }
-            else
-            {
-                //item out of range
-                throw new System.ArgumentException();
-            }
+            return collectSuccessfull;
         }
     }
 }

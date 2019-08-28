@@ -70,8 +70,14 @@ namespace MDC.Gamedata
         {
             if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null)
             {
-                SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item);
-                Level.playingField[_xPosition, _yPosition].Item = null; 
+                if (SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item))
+                {
+                    Level.playingField[_xPosition, _yPosition].Item = null; 
+                }
+                else
+                {
+                    //player has already a higher level boost
+                }
             }
             else
             {

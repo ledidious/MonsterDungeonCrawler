@@ -920,7 +920,7 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestGame
     {
-       [TestMethod]
+        [TestMethod]
         public void DecrementItemDurationAndDelete()
         {//need number of max. clients
 
@@ -929,24 +929,25 @@ namespace MonsterdungeonCrawlerTests
 
             Hero player1 = new Hero("hero", new RangeFighter(), 12, 1);
             Monster player2 = new Monster("monster", new RangeFighter(), 2, 3);
-            Monster player3 = new Monster("monster", new RangeFighter(), 3, 3);
-            Monster player4 = new Monster("monster", new RangeFighter(), 4, 3);
+            Monster player3 = new Monster("monster", new RangeFighter(), 10, 11);
+            Monster player4 = new Monster("monster", new RangeFighter(), 11, 10);
             Field field1 = new Field(12, 2, new Floor());
-            Field field2 = new Field(3, 3, new Floor());
+            Field field2 = new Field(2, 4, new Floor());
             field1.Item = new DefenseBoost(2);
             field2.Item = new AttackBoost(3);  
 
             CommandGameMove cmove1 = new CommandGameMove("1jhb2h48325sdf5", 12, 2);
             cmove1.SourcePlayer = player1; 
+            player1.PlayerRemainingMoves = player1.CharacterType._moveRange; 
 
             CommandManager cm1 = new CommandManager(); 
             cm1.AddCommand(cmove1);
 
-            CommandGameMove cmove2 = new CommandGameMove("1jhb2h48325sdf5", 3, 3);
+            CommandGameMove cmove2 = new CommandGameMove("1jhb2h48325sdf5", 2, 4);
             cmove2.SourcePlayer = player2; 
+            player2.PlayerRemainingMoves = player2.CharacterType._moveRange; 
 
             cm1.AddCommand(cmove2);
-
             cm1.ProcessPendingTransactions();
 
             Assert.AreEqual(0.5, player1.DefenseBoost); 
@@ -956,22 +957,71 @@ namespace MonsterdungeonCrawlerTests
             Game game1 = new Game("asdasd", tcp1); 
 
             game1.ItemManagement();
-            Assert.AreNotEqual(null, player1.DefenseItem);
+            Assert.IsNotNull(player1.DefenseItem);
             Assert.AreEqual(0.5, player1.DefenseBoost);
-            Assert.AreNotEqual(null, player2.AttackItem);
+            Assert.IsNotNull(player2.AttackItem);
             Assert.AreEqual(0.75, player2.AttackBoost);
 
             game1.ItemManagement();
-            Assert.AreNotEqual(null, player1.DefenseItem);
+            Assert.IsNotNull(player1.DefenseItem);
             Assert.AreEqual(0.5, player1.DefenseBoost);
-            Assert.AreNotEqual(null, player2.AttackItem);
+            Assert.IsNotNull(player2.AttackItem);
             Assert.AreEqual(0.75, player2.AttackBoost);
 
             game1.ItemManagement();
-            Assert.AreEqual(null, player1.DefenseItem);
+            Assert.IsNull(player1.DefenseItem);
             Assert.AreEqual(0, player1.DefenseBoost);
-            Assert.AreEqual(null, player2.AttackItem);
+            Assert.IsNull(player2.AttackItem);
             Assert.AreEqual(0, player2.AttackBoost);
+        }
+
+        [TestMethod]
+        public void SwappingItems()
+        {//need number of max. clients
+
+            Level.playerList.Clear();
+            Level.trapList.Clear();
+
+            Hero player5 = new Hero("hero", new MeleeFighter(), 12, 1);
+            Monster player6 = new Monster("monster", new RangeFighter(), 2, 3);
+            Monster player7 = new Monster("monster", new RangeFighter(), 10, 11);
+            Monster player8 = new Monster("monster", new RangeFighter(), 11, 10);
+            Field field3 = new Field(12, 2, new Floor());
+            Field field4 = new Field(12, 3, new Floor());
+            Field field5 = new Field(12, 4, new Floor());
+            field3.Item = new DefenseBoost(2);
+            field4.Item = new DefenseBoost(3);  
+            field5.Item = new DefenseBoost(1); 
+
+            CommandGameMove cmove3 = new CommandGameMove("1jhb2h48325sdf5", 12, 2);
+            cmove3.SourcePlayer = player5; 
+            player5.PlayerRemainingMoves = player5.CharacterType._moveRange; 
+
+            CommandManager cm2 = new CommandManager(); 
+            cm2.AddCommand(cmove3);
+            cm2.ProcessPendingTransactions();
+
+            Assert.IsNotNull(player5.DefenseItem); 
+            Assert.AreEqual(0.5, player5.DefenseBoost);
+            Assert.IsNull(field3.Item);
+
+            CommandGameMove cmove4 = new CommandGameMove("1jhb2h48325sdf5", 12, 3);
+            cmove4.SourcePlayer = player5; 
+            cm2.AddCommand(cmove4);
+            cm2.ProcessPendingTransactions();
+
+            Assert.IsNotNull(player5.DefenseItem); 
+            Assert.AreEqual(0.75, player5.DefenseBoost);
+            Assert.IsNull(field4.Item);
+
+            CommandGameMove cmove5 = new CommandGameMove("1jhb2h48325sdf5", 12, 4);
+            cmove5.SourcePlayer = player5; 
+            cm2.AddCommand(cmove5);
+            cm2.ProcessPendingTransactions();
+
+            Assert.IsNotNull(player5.DefenseItem); 
+            Assert.AreEqual(0.75, player5.DefenseBoost);
+            Assert.IsNotNull(field5.Item);
         }
     }
 }

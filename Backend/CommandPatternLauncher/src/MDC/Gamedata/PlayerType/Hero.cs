@@ -37,25 +37,46 @@ namespace MDC.Gamedata.PlayerType
             }
             else if (item is DefenseBoost)
             {
-                if (this.DefenseItem != null)
+                if (this.DefenseItem == null)
                    {
-                       this.ResetDefenseItem();
-                       this.ResetDefenseBooster(); 
+                       DefenseItem = item;
+                       DefenseBoost = DefenseItem.EffectValue;
+                       collectSuccessfull = true; 
                    }
-                DefenseItem = item;
-                DefenseBoost = DefenseItem.EffectValue;
-                collectSuccessfull = true;
+                else if (this.DefenseItem != null && this.DefenseBoost < item.EffectValue)
+                {
+                        this.ResetDefenseItem();
+                        this.ResetDefenseBooster(); 
+                        DefenseItem = item;
+                        DefenseBoost = DefenseItem.EffectValue;
+                        collectSuccessfull = true; 
+                }
+                else
+                {
+                    //ignore this item
+                }
+
             }
             else if (item is AttackBoost)
             {
-                if (this.AttackItem != null)
+                if (this.AttackItem == null)
                    {
-                       this.ResetAttackItem();
-                       this.ResetAttackBooster(); 
+                       AttackItem = item;
+                       AttackBoost = AttackItem.EffectValue;
+                       collectSuccessfull = true; 
+                   }
+                else if (this.AttackItem != null && this.AttackBoost < item.EffectValue)
+                {
+                        this.ResetAttackItem();
+                        this.ResetAttackBooster(); 
+                        AttackItem = item;
+                        AttackBoost = AttackItem.EffectValue;
+                        collectSuccessfull = true; 
                 }
-                AttackItem = item;
-                this.AttackBoost = AttackItem.EffectValue;
-                collectSuccessfull = true;
+                else
+                {
+                    //ignore this item
+                }
             }
             return collectSuccessfull;
         }
