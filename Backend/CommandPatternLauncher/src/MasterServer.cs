@@ -14,6 +14,7 @@ using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
 using MDC.Server;
 using MDC.Exceptions;
+using MDC;
 
 public class MasterServer
 {
@@ -22,7 +23,7 @@ public class MasterServer
     public static Boolean Shutdown { get; set; }
 
     static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
-    static private Dictionary<string, TcpClient> _clients = new Dictionary<string, TcpClient>(); //clientID, TcpClient
+    static private Dictionary<string, GameClient> _gClients = new Dictionary<string, GameClient>(); //clientID, TcpClient
     static private CommandManager scm = new CommandManager();
 
     /// <summary>
@@ -78,10 +79,10 @@ public class MasterServer
     public static void CreateNewGame(string client_ID)
     {
         string session_ID = GenerateID();
-        _games.Add(session_ID, new Game(session_ID, _clients.GetValueOrDefault(client_ID)));
+        _games.Add(session_ID, new Game(session_ID, _gClients.GetValueOrDefault(client_ID)));
 
-        SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackOK(client_ID));
-        SendStringToClient(_clients.GetValueOrDefault(client_ID), session_ID);
+        SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+        SendStringToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, session_ID);
     }
 
     /// <summary>
@@ -89,18 +90,18 @@ public class MasterServer
     /// </summary>
     /// <param name="client_ID">ID of the executing client</param>
     /// <param name="session_ID">ID of the game the client wants to connect to</param>
-    public static void ConnectToGame(string client_ID, string session_ID)
+    public static void ConnectClientToGame(string client_ID, string session_ID)
     {
         Console.WriteLine("Connecting to " + session_ID + " with client " + client_ID);
 
         if (_games.ContainsKey(session_ID))
         {
-            _games.GetValueOrDefault(session_ID).AddClientToGame(_clients.GetValueOrDefault(client_ID));
-            SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackOK(client_ID));
+            _games.GetValueOrDefault(session_ID).AddClientToGame(_gClients.GetValueOrDefault(client_ID));
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
         }
         else
         {
-            SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackSessionIdIsInvalid(client_ID));
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackSessionIdIsInvalid(client_ID));
         }
     }
 
@@ -110,19 +111,36 @@ public class MasterServer
     /// <param name="client_ID">ID of the executing client</param>
     /// <param name="session_ID">ID of the game the client wants to connect to</param>
     /// <param name="player">The player object to be forwarded</param>
-    public static void CreateNewPlayerForSession(string client_ID, string session_ID, Player player)
+    public static void CreateNewPlayerForSession(string client_ID, string session_ID, string playerName, CharacterClass characterClass)
     {
-        _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, player);
-        SendFeedbackToClient(_clients.GetValueOrDefault(client_ID), new CommandFeedbackOK(client_ID));
+        _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, playerName, characterClass);
+        SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
     }
 
     /// <summary>
     /// [Only called by received commands] Starts the game round. Executable only when all players are connected.
     /// </summary>
     /// <param name="session_ID">ID of the game session to be started</param>
-    public static void StartGame(string session_ID)
+    public static void StartGame(string client_ID, string session_ID)
     {
-        _games.GetValueOrDefault(session_ID).StartGame();
+        try
+        {
+            // _gClients.GetValueOrDefault(client_ID).IsInGame = true; //TODO: !!!!
+
+            foreach (var item in _games.GetValueOrDefault(session_ID).ClientsOfThisGame)
+            {
+                item.IsInGame = true;
+            }
+            Thread gameThread = new Thread(new ThreadStart(() => _games.GetValueOrDefault(session_ID).StartGame()));
+            gameThread.Start();
+            // _games.GetValueOrDefault(session_ID).StartGame();
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+        }
+        catch (NotEnoughPlayerInGameException e)
+        {
+            //TODO: Evtl. noch andere Excepptions abfangen, da alles über diese Methode läuft?!
+            throw e;
+        }
     }
 
     /// <summary>
@@ -132,27 +150,29 @@ public class MasterServer
     /// <param name="cm">The server-wide CommandManager</param>
     private static void ClientInteraction(TcpClient client, CommandManager cm)
     {
-        string client_ID = GenerateID();
-        _clients.Add(client_ID, client);
+        // string client_ID = GenerateID();
+        GameClient gClient = new GameClient(client, GenerateID());
+        _gClients.Add(gClient.Client_ID, gClient);
 
         //---write back the client ID to the client---
-        SendStringToClient(client, client_ID);
+        SendStringToClient(gClient.TcpClient, gClient.Client_ID);
 
-        while (client.Connected)
+        //TODO: GameClient in dieser Klasse implementieren. Sobald StartGame aufgerufen wird, verlassen die zum Spiel gehörenden Clients diesen loop
+        while (gClient.TcpClient.Connected)
         {
-            Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
-            Command leCommand = ReceiveCommandFromClient(client);
-            if (leCommand != null)
+            while (gClient.IsInGame == false)
             {
-                cm.AddCommand(leCommand);
-                cm.ProcessPendingTransactions();
-            }
-            else
-            {
-                client.Close();
+                Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
+                Command leCommand = ReceiveCommandFromClient(gClient.TcpClient);
+                if (leCommand != null)
+                {
+                    // leCommand.Execute();
+                    cm.AddCommand(leCommand);
+                    cm.ProcessPendingTransactions();
+                }
             }
         }
-        client.Close();
+        gClient.TcpClient.Close();
     }
 
     /// <summary>

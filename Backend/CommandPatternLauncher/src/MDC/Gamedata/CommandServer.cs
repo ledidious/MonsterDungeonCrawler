@@ -44,7 +44,7 @@ namespace MDC.Gamedata
 
         public override void Execute()
         {
-            MasterServer.ConnectToGame(SourceClientID, SessionID);
+            MasterServer.ConnectClientToGame(SourceClientID, SessionID);
             this.IsCompleted = true;
             // throw new NotImplementedException();
         }
@@ -66,7 +66,7 @@ namespace MDC.Gamedata
         public override void Execute()
         {
             this.IsCompleted = true;
-            MasterServer.StartGame(SessionID);
+            MasterServer.StartGame(SourceClientID, SessionID);
             // throw new NotImplementedException();
         }
     }
@@ -94,33 +94,20 @@ namespace MDC.Gamedata
     public class CommandServerCreatePlayer : CommandServer
     {
         private string _playerName;
-        private string _sessionID;
+        private string _session_ID;
+        private CharacterClass _characterClass;
         private Player player;
 
-        public CommandServerCreatePlayer(string SourceClientID, string sessionID, string playerName, CharacterClasses characterClass) : base(SourceClientID)
+        public CommandServerCreatePlayer(string SourceClientID, string session_ID, string playerName, CharacterClass characterClass) : base(SourceClientID)
         {
             this._playerName = playerName;
-            this._sessionID = sessionID;
-
-
-            switch (characterClass)
-            {
-                case CharacterClasses.MeleeFighter:
-                    player = new Hero(playerName, new MeleeFighter(), 0, 0);
-                    break;
-                case CharacterClasses.RangeFighter:
-                    player = new Hero(playerName, new RangeFighter(), 0, 0);
-                    break;
-                default:
-                    break;
-            }
+            this._session_ID = session_ID;
+            this._characterClass = characterClass;
         }
-
-
 
         public override void Execute()
         {
-            MasterServer.CreateNewPlayerForSession(SourceClientID, _sessionID, player);
+            MasterServer.CreateNewPlayerForSession(SourceClientID, _session_ID, _playerName, _characterClass);
             this.IsCompleted = true;
         }
     }

@@ -20,6 +20,7 @@ namespace MDC.Gamedata
     {
         public CommandFeedbackOK(string SourceClientID) : base(SourceClientID)
         {
+            IsCompleted = true;
         }
 
         public override void Execute()
@@ -33,6 +34,7 @@ namespace MDC.Gamedata
     {
         public CommandFeedbackEnemyNotInRange(string SourceClientID) : base(SourceClientID)
         {
+            IsCompleted = true;
         }
 
         public override void Execute()
@@ -46,6 +48,7 @@ namespace MDC.Gamedata
     {
         public CommandFeedbackPathIsBlocked(string SourceClientID) : base(SourceClientID)
         {
+            IsCompleted = true;
         }
 
         public override void Execute()
@@ -59,6 +62,7 @@ namespace MDC.Gamedata
     {
         public CommandFeedbackCannotAttackThisObject(string SourceClientID) : base(SourceClientID)
         {
+            IsCompleted = true;
         }
 
         public override void Execute()
@@ -78,6 +82,7 @@ namespace MDC.Gamedata
         public override void Execute()
         {
             FeedbackException = new SessionIdIsInvalidException();
+            IsCompleted = true;
             // throw new SessionIdIsInvalidException();
         }
     }

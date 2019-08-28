@@ -16,7 +16,7 @@ namespace MDC.Client
         private int _port_NO;
         private string _server_IP;
         private string _client_ID;
-        private TcpClient _server;
+        private TcpClient _masterServer;
         private string _gameSession_ID;
         public string GameSession_ID { get { return _gameSession_ID; } }
         private Boolean _isConnected = false;
@@ -30,14 +30,14 @@ namespace MDC.Client
         public void ConnectToServer()
         {
             ReadConfig();
-            Console.WriteLine("Connecting to: " + _server_IP);
+            // Console.WriteLine("Connecting to: " + _server_IP);
 
             try
             {
                 //---create a TCPClient object at the IP and port no.---
-                _server = new TcpClient(_server_IP, _port_NO);
-                // _server.ReceiveTimeout = 3000; // 3 Seconds
-                // _server.SendTimeout = 3000; // 3 Seconds
+                _masterServer = new TcpClient(_server_IP, _port_NO);
+                // _server.ReceiveTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
+                // _server.SendTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
 
                 //---get the client ID from the server---
                 _client_ID = ReceiveStringFromServer();
@@ -61,7 +61,7 @@ namespace MDC.Client
         {
             if (_isConnected && _isHost == false)
             {
-                _server.Close();
+                _masterServer.Close();
                 _client_ID = null;
                 _isConnected = false;
             }
@@ -78,19 +78,19 @@ namespace MDC.Client
         /// <summary>
         /// Establish a connection to the game session
         /// </summary>
-        /// <param name="sessionID">The SessionID of the game to be joined</param>
-        public void ConnectToGame(string sessionID)
+        /// <param name="session_ID">The SessionID of the game to be joined</param>
+        public void ConnectToGame(string session_ID)
         {
             if (_isConnected)
             {
-                Console.WriteLine("Connecting to: " + sessionID);
-                CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, sessionID);
+                Console.WriteLine("Connecting to: " + session_ID);
+                CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, session_ID);
                 SendCommandToServer(command);
 
                 CommandFeedback feedback = EvaluateFeedback();
                 if (feedback is CommandFeedbackOK)
                 {
-                    _gameSession_ID = sessionID;
+                    _gameSession_ID = session_ID;
                 }
                 else
                 {
@@ -145,8 +145,7 @@ namespace MDC.Client
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK)
-                    {
-                    }
+                    { }
                     else
                     {
                         // throw feedback.FeedbackException;
@@ -165,7 +164,7 @@ namespace MDC.Client
         /// </summary>
         /// <param name="playerName">Name of the character</param>
         /// <param name="pClass">The class of character of the character</param>
-        public void CreateNewPlayerForSession(string playerName, CharacterClasses pClass)
+        public void CreateNewPlayerForSession(string playerName, CharacterClass pClass)
         {
             if (_isConnected)
             {
@@ -240,9 +239,9 @@ namespace MDC.Client
         /// <returns>Returns the received string</returns>
         private string ReceiveStringFromServer()
         {
-            NetworkStream nwStream = _server.GetStream();
-            byte[] bytesToRead = new byte[_server.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, _server.ReceiveBufferSize);
+            NetworkStream nwStream = _masterServer.GetStream();
+            byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
+            int bytesRead = nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);
 
             return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
         }
@@ -254,7 +253,7 @@ namespace MDC.Client
         /// <param name="data">String you want to send</param>
         private void SendStringToServer(string data)
         {
-            NetworkStream nwStream = _server.GetStream();
+            NetworkStream nwStream = _masterServer.GetStream();
             byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
         }
@@ -266,7 +265,7 @@ namespace MDC.Client
         /// <param name="command">Command you want to send</param>
         private void SendCommandToServer(Command command)
         {
-            NetworkStream nwStream = _server.GetStream();
+            NetworkStream nwStream = _masterServer.GetStream();
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
@@ -307,12 +306,12 @@ namespace MDC.Client
             // return (CommandFeedback)formatter.Deserialize(nwStream);
 
 
-            NetworkStream nwStream = _server.GetStream();
+            NetworkStream nwStream = _masterServer.GetStream();
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
-            byte[] bytesToRead = new byte[_server.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, _server.ReceiveBufferSize);
+            byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
+            int bytesRead = nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);
 
             dataStream.Write(bytesToRead, 0, bytesToRead.Length);
             dataStream.Seek(0, SeekOrigin.Begin);
