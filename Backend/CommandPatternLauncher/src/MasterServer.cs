@@ -83,6 +83,7 @@ public class MasterServer
 
         SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
         SendStringToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, session_ID);
+        _gClients.GetValueOrDefault(client_ID).IsHost = true;
     }
 
     /// <summary>
@@ -115,6 +116,11 @@ public class MasterServer
     {
         _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, playerName, characterClass);
         SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+
+        if (_gClients.GetValueOrDefault(client_ID).IsHost == false)
+        {
+            _gClients.GetValueOrDefault(client_ID).IsInGame = true;
+        }
     }
 
     /// <summary>
@@ -125,16 +131,15 @@ public class MasterServer
     {
         try
         {
-            // _gClients.GetValueOrDefault(client_ID).IsInGame = true; //TODO: !!!!
-
-            foreach (var item in _games.GetValueOrDefault(session_ID).ClientsOfThisGame)
-            {
-                item.IsInGame = true;
-            }
+            // foreach (var item in _games.GetValueOrDefault(session_ID).ClientsOfThisGame)
+            // {
+            //     item.IsInGame = true;
+            // }
             Thread gameThread = new Thread(new ThreadStart(() => _games.GetValueOrDefault(session_ID).StartGame()));
             gameThread.Start();
             // _games.GetValueOrDefault(session_ID).StartGame();
             SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+            _gClients.GetValueOrDefault(client_ID).IsInGame = true;
         }
         catch (NotEnoughPlayerInGameException e)
         {
