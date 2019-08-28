@@ -4,7 +4,8 @@ using MDC.Gamedata.PlayerType;
 
 
 namespace MDC.Gamedata.LevelContent
-{
+{  
+    [Serializable]
     public class Level
     {
         protected const int WIDTH = 20; 

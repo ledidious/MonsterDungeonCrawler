@@ -50,6 +50,17 @@ namespace MDC.Server
             this._sessionID = sessionID;
             this._currentClient = _clientsOfThisGame[0];
 
+
+            _board = new Level(MAX_CLIENTS);
+
+            //TODO: Loader einbauen
+            for (int x = 0; x < 19; x++)
+            {
+                for (int y = 0; y < 19; y++)
+                {
+                    _board.AddFieldToLevel(new Field(x, y, new Floor()));
+                }
+            }
             // CommandManager gcm = new CommandManager();
 
             // while (true)
@@ -67,23 +78,46 @@ namespace MDC.Server
         public void AddPlayerToGame(string client_ID, Player player)
         {
             //TODO: Richtige Positionen vergeben!!!
-            player.XPosition = 0; player.YPosition = 1;
 
             if (_clientsOfThisGame[0].Player == null)
             {
                 Hero main = (Hero)player;
                 _clientsOfThisGame[0].Player = main;
+                _clientsOfThisGame[0].Player.XPosition = 1; _clientsOfThisGame[0].Player.YPosition = 1;
+                _board.AddPlayerToLevel(_clientsOfThisGame[0].Player);
                 // _players.Add(client_ID, main);
             }
             else
             {
                 Monster main = (Monster)player;
+
+                int index = 0;
                 foreach (var client in _clientsOfThisGame)
                 {
                     if (client.Client_ID == client_ID)
                     {
                         client.Player = main;
+                        switch (index)
+                        {
+                            case 1:
+                                client.Player.XPosition = 18;
+                                client.Player.YPosition = 1;
+                                break;
+                            case 2:
+                                client.Player.XPosition = 18;
+                                client.Player.YPosition = 1;
+                                break;
+                            case 3:
+                                client.Player.XPosition = 18;
+                                client.Player.YPosition = 18;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        _board.AddPlayerToLevel(client.Player);
                     }
+                    index++;
                 }
                 // _players.Add(client_ID, main);
             }
@@ -174,7 +208,10 @@ namespace MDC.Server
             }
             else
             {
-                board = new Level(MAX_CLIENTS);
+                // foreach (var gClient in _clientsOfThisGame)
+                // {
+                //     _board.AddPlayerToLevel(gClient.Player);
+                // }
 
                 //TODO: Vor Eintritt in die Schleife, den Host erst eine Runde spielen lassen
                 while (_clientsOfThisGame[0].TcpClient.Connected)
@@ -182,11 +219,15 @@ namespace MDC.Server
                     Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
                     while (_currentClient.Player.PlayerRemainingMoves > 0)
                     {
+                        Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
+                        Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
                         CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
-                        Console.WriteLine("CCC");
                         // command.SourcePlayer = _players.GetValueOrDefault(command.SourceClientID);
                         command.SourcePlayer = _currentClient.Player;
+                        command.level = _board;
+
                         command.Execute();
+                        SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
                     }
                     NextPlayer();
 
@@ -259,7 +300,7 @@ namespace MDC.Server
             try
             {
                 var obj = formatter.Deserialize(dataStream);
-                Console.WriteLine(obj.GetType());
+                Console.WriteLine("GAME: " + obj.GetType());
                 if (obj.GetType().IsSubclassOf(typeof(CommandGame)))
                 {
                     return (CommandGame)obj;
@@ -271,6 +312,26 @@ namespace MDC.Server
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Send Command to client
+        /// </summary>
+        /// <param name="server">TcpClient to which data is to be sent.</param>
+        /// <param name="command">Command you want to send</param>
+        private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
+        {
+            NetworkStream nwStream = client.GetStream();
+            MemoryStream dataStream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+
+            var ms = new MemoryStream();
+            formatter.Serialize(ms, command);
+
+            byte[] bytesToSend = ms.ToArray();
+
+            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            nwStream.Flush();
         }
 
         /// <summary>

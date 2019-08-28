@@ -319,7 +319,7 @@ namespace MDC.Client
             try
             {
                 var obj = formatter.Deserialize(dataStream);
-                Console.WriteLine(obj.GetType());
+                Console.WriteLine("CLIENT: " + obj.GetType());
                 if (obj is CommandFeedback)
                 {
                     return (CommandFeedback)obj;
