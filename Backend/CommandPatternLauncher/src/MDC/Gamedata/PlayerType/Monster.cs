@@ -15,8 +15,6 @@ namespace MDC.Gamedata.PlayerType
             this.XPosition = xPosition;
             this.YPosition = yPosition;
             this.Life = LIFE_MONSTER;
-
-            Level.AddPlayerToLevel(this);
         }
 
         public override Boolean CollectItem(Item item)

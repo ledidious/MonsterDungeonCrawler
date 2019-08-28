@@ -13,6 +13,8 @@ namespace MDC.Gamedata
         }
 
         public Player SourcePlayer { get; set; }
+
+        public Level level { get; set; }
     }
 
     [Serializable]
@@ -33,15 +35,15 @@ namespace MDC.Gamedata
         {
             Boolean fieldIsNotAccessable = false;
 
-            if (Level.playingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
+            if (level.playingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
             {
                 fieldIsNotAccessable = true;
             }
             else
             {
-                for (int i = 0; i < Level.GetMax_Clients(); i++)
+                for (int i = 0; i < level.playerList.Count; i++)
                 {
-                    if (Level.playerList[i].XPosition == _xPosition && Level.playerList[i].YPosition == _yPosition)
+                    if (level.playerList[i].XPosition == _xPosition && level.playerList[i].YPosition == _yPosition)
                     {
                         fieldIsNotAccessable = true;
                     }
@@ -56,9 +58,9 @@ namespace MDC.Gamedata
 
         public void TargetFieldIsTrap()
         {
-            if (Level.playingField[_xPosition, _yPosition].FieldType is Trap)
+            if (level.playingField[_xPosition, _yPosition].FieldType is Trap)
             {
-                Level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
+                level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
             }
             else
             {
@@ -68,11 +70,11 @@ namespace MDC.Gamedata
 
         public void TargetFieldContainsItem()
         {
-            if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null)
+            if (level.playingField[_xPosition, _yPosition].FieldType is Floor && level.playingField[_xPosition, _yPosition].Item != null)
             {
-                if (SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item))
+                if (SourcePlayer.CollectItem(level.playingField[_xPosition, _yPosition].Item))
                 {
-                    Level.playingField[_xPosition, _yPosition].Item = null; 
+                    level.playingField[_xPosition, _yPosition].Item = null; 
                 }
                 else
                 {
@@ -229,7 +231,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.YPosition - 1; i > SourcePlayer.YPosition; i--)
                     {
-                        if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
+                        if (level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -240,7 +242,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.YPosition + 1; i < SourcePlayer.YPosition; i++)
                     {
-                        if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
+                        if (level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -260,7 +262,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.XPosition - 1; i > SourcePlayer.XPosition; i--)
                     {
-                        if (Level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
+                        if (level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -271,7 +273,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.XPosition + 1; i < SourcePlayer.XPosition; i++)
                     {
-                        if (Level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
+                        if (level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;

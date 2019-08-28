@@ -28,7 +28,7 @@ namespace MDC.Server
     public class Game
     {
         public int RoundCounter;
-        const int MAX_CLIENTS = 4;
+        public const int MAX_CLIENTS = 4;
         private int PORT_NO_SESSION;
 
         // Player/Client mapping: the string represents the clientID

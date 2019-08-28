@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic; 
 using MDC.Gamedata.PlayerType; 
 
@@ -10,24 +9,35 @@ namespace MDC.Gamedata.LevelContent
     {
         protected const int WIDTH = 20; 
         protected const int HIGHT = 20;
-        private const int MAX_CLIENTS = 4;
-         
-        public static Field[,] playingField = new Field[WIDTH, HIGHT];
 
-        public static List<Player> playerList = new List<Player>();
+        protected int _maxPlayer; 
 
-        public static List<Field> trapList = new List<Field>(); 
+        public Field[,] playingField = new Field[WIDTH, HIGHT];
 
-        public static int GetMax_Clients()
-        { return MAX_CLIENTS; }
+        public List<Player> playerList = new List<Player>();
 
-        public static void AddFieldToLevel(Field field) => playingField[field.XPosition, field.YPosition] = field;
+        public List<Field> trapList = new List<Field>(); 
 
-        public static void AddTrapToList(Field field) => trapList.Add(field); 
-
-        public static void AddPlayerToLevel(Player player)
+        public Level(int maxPlayer)
         {
-                if (playerList.Count <= MAX_CLIENTS)
+            _maxPlayer = maxPlayer; 
+        }
+
+
+        public void AddFieldToLevel(Field field)
+        {
+            playingField[field.XPosition, field.YPosition] = field;
+            if (field.FieldType is Trap)
+            {
+                trapList.Add(field); 
+            }
+        }
+
+        public void AddTrapToList(Field field) => trapList.Add(field); 
+
+        public void AddPlayerToLevel(Player player)
+        {
+                if (playerList.Count <= _maxPlayer)
                 {
                     playerList.Add(player);     
                 }
@@ -37,7 +47,7 @@ namespace MDC.Gamedata.LevelContent
                 }
         }
 
-        public static Boolean FieldBlockedByPlayer(int xPosition, int yPosition)
+        public Boolean FieldBlockedByPlayer(int xPosition, int yPosition)
         {
             Boolean FieldIsBlocked = false; 
 
