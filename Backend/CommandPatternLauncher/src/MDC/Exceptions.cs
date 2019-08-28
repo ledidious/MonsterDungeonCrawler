@@ -95,4 +95,21 @@ namespace MDC.Exceptions
         {
         }
     }
+
+    public class NotEnoughPlayerInGameException : Exception
+    {
+        public NotEnoughPlayerInGameException()
+        {
+        }
+
+        public NotEnoughPlayerInGameException(string message)
+            : base(message)
+        {
+        }
+
+        public NotEnoughPlayerInGameException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+    }
 }

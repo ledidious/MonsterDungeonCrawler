@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
+using MDC.Exceptions;
 using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
 using MDC.Gamedata.LevelContent;
@@ -25,23 +28,26 @@ namespace MDC.Server
     public class Game
     {
         public int RoundCounter;
-        const int MAX_CLIENTS = 4; //Vorher 4, aber da Game vom Hauptclient gehostet wird nur 3
+        const int MAX_CLIENTS = 4;
+        private int PORT_NO_SESSION;
 
         // Player/Client mapping: the string represents the clientID
-        private Dictionary<string, Player> _players = new Dictionary<string, Player>();
+        // private Dictionary<string, Player> _players = new Dictionary<string, Player>(); TODO: !!!
         // private Dictionary<string, TcpClient> _clientsOfThisGame = new Dictionary<string, TcpClient>();
-        private List<TcpClient> _clientsOfThisGame = new List<TcpClient>();
-        private TcpClient _currentClient;
-        private Player _currentPlayer;
+        private List<GameClient> _clientsOfThisGame = new List<GameClient>();
+        public List<GameClient> ClientsOfThisGame { get { return _clientsOfThisGame; } }
+        private GameClient _currentClient;
+        // private List<TcpListener> _test = new List<TcpClient>();
+        // private Player _currentPlayer;
         private int _lapsRemaining;
         private String _sessionID;
         CommandManager gcm = new CommandManager();
 
-        public Game(String sessionID, TcpClient firstClient)
+        public Game(String sessionID, GameClient firstClient)
         {
             _clientsOfThisGame.Add(firstClient);
             this._sessionID = sessionID;
-            this._currentClient = firstClient;
+            this._currentClient = _clientsOfThisGame[0];
 
             // CommandManager gcm = new CommandManager();
 
@@ -59,10 +65,27 @@ namespace MDC.Server
         /// <param name="player">The player to add</param>
         public void AddPlayerToGame(string client_ID, Player player)
         {
+            //TODO: Richtige Positionen vergeben!!!
             player.XPosition = 0; player.YPosition = 1;
-            Hero main = (Hero)player;
-            Console.WriteLine("Client " + client_ID + " will now add " + main.PlayerName + " to the game...");
-            _players.Add(client_ID, main);
+
+            if (_clientsOfThisGame[0].Player == null)
+            {
+                Hero main = (Hero)player;
+                _clientsOfThisGame[0].Player = main;
+                // _players.Add(client_ID, main);
+            }
+            else
+            {
+                Monster main = (Monster)player;
+                foreach (var client in _clientsOfThisGame)
+                {
+                    if (client.Client_ID == client_ID)
+                    {
+                        client.Player = main;
+                    }
+                }
+                // _players.Add(client_ID, main);
+            }
         }
 
         /// <summary>
@@ -71,26 +94,68 @@ namespace MDC.Server
         /// <param name="client_ID">ID of the owner of the player</param>
         /// <param name="playerName">Name of the new player</param>
         /// <param name="characterClass">The class of character of the character</param>
-        public void AddPlayerToGame(string client_ID, string playerName, string characterClass)
+        public void AddPlayerToGame(string client_ID, string playerName, CharacterClass characterClass)
         {
+            if (_clientsOfThisGame[0].Player == null)
+            {
+                Hero main;
+                switch (characterClass)
+                {
+                    case CharacterClass.MeleeFighter:
+                        main = new Hero(playerName, new MeleeFighter(), 0, 0);
+                        break;
+                    case CharacterClass.RangeFighter:
+                        main = new Hero(playerName, new RangeFighter(), 0, 0);
+                        break;
+                    default:
+                        main = new Hero("***Error***", new MeleeFighter(), 0, 0);
+                        break;
+                }
+
+                _clientsOfThisGame[0].Player = main;
+            }
+            else
+            {
+                Monster main;
+                foreach (var client in _clientsOfThisGame)
+                {
+                    if (client.Client_ID == client_ID)
+                    {
+                        switch (characterClass)
+                        {
+                            case CharacterClass.MeleeFighter:
+                                main = new Monster(playerName, new MeleeFighter(), 0, 0);
+                                break;
+                            case CharacterClass.RangeFighter:
+                                main = new Monster(playerName, new RangeFighter(), 0, 0);
+                                break;
+                            default:
+                                main = new Monster("***Error***", new MeleeFighter(), 0, 0);
+                                break;
+                        }
+                        client.Player = main;
+                    }
+                }
+                // _players.Add(client_ID, main);
+            }
             // switch (characterClass)
             // {
 
             //     default:
             // }
             // _players.Add()
-            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Adds a TcpClient to the game
         /// </summary>
         /// <param name="client">The TcpClient</param>
-        public void AddClientToGame(TcpClient client)
+        public void AddClientToGame(GameClient gClient)
         {
             if (_clientsOfThisGame.Count < MAX_CLIENTS)
             {
-                _clientsOfThisGame.Add(client);
+                // _test.Add(client);
+                _clientsOfThisGame.Add(gClient);
             }
             else
             {
@@ -105,10 +170,32 @@ namespace MDC.Server
         /// </summary>
         public void StartGame()
         {
+            if (_clientsOfThisGame.Count < 4)
+            {
+                throw new NotEnoughPlayerInGameException();
+            }
+            else
+            {
+                //TODO: Vor Eintritt in die Schleife, den Host erst eine Runde spielen lassen
+                while (_clientsOfThisGame[0].TcpClient.Connected)
+                {
+                    Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
+                    while (_currentClient.Player.PlayerRemainingMoves > 0)
+                    {
+                        CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
+                        Console.WriteLine("CCC");
+                        // command.SourcePlayer = _players.GetValueOrDefault(command.SourceClientID);
+                        command.SourcePlayer = _currentClient.Player;
+                        command.Execute();
+                    }
+                    NextPlayer();
+
+                }
+
+                throw new NotImplementedException();
+            }
             // gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
             // gcm.ProcessPendingTransactions();
-
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -154,20 +241,66 @@ namespace MDC.Server
         /// <returns>Returns the received Command</returns>
         private static CommandGame ReceiveCommandFromClient(TcpClient client)
         {
+            // NetworkStream nwStream = client.GetStream();
+            // IFormatter formatter = new BinaryFormatter();
+
+            // return (CommandGame)formatter.Deserialize(nwStream);
+
             NetworkStream nwStream = client.GetStream();
+            MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
-            return (CommandGame)formatter.Deserialize(nwStream); ;
+            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+
+            dataStream.Write(bytesToRead, 0, bytesToRead.Length);
+            dataStream.Seek(0, SeekOrigin.Begin);
+
+            try
+            {
+                var obj = formatter.Deserialize(dataStream);
+                Console.WriteLine(obj.GetType());
+                if (obj.GetType().IsSubclassOf(typeof(CommandGame)))
+                {
+                    return (CommandGame)obj;
+                }
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return null;
         }
 
         /// <summary>
         /// Ends the turn of a client
         /// </summary>
         /// <returns>TODO: Muss hier etwas zurückgegeben werden, oder muss nur auf den nächsten Client gehorcht werden?</returns>
-        public Player NextPlayer()
+        public void NextPlayer()
         {
+            if (_clientsOfThisGame.IndexOf(_currentClient) < (MAX_CLIENTS - 1))
+            {
+                _currentClient = _clientsOfThisGame[_clientsOfThisGame.IndexOf(_currentClient) + 1];
+            }
+            else
+            {
+                _currentClient = _clientsOfThisGame[0];
+            }
             // _currentClient = _clientsOfThisGame.FindIndex();
-            return null;
+            // return null;
+        }
+
+        /// <summary>
+        /// Read the configuration from the config-file and store the value in the corresponding variables.
+        /// </summary>
+        private void ReadConfig()
+        {
+            var data = new Dictionary<string, string>();
+            foreach (var row in File.ReadAllLines("game.config"))
+                data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
+
+            PORT_NO_SESSION = Convert.ToInt32(data["PortNo"]) + 1; //Games should not listen on the same port as the MasterServer
         }
 
         //TODO: call after every round

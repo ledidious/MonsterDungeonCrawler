@@ -1,6 +1,6 @@
 namespace MDC
 {    
-    public enum CharacterClasses
+    public enum CharacterClass
     {
         MeleeFighter,
         RangeFighter
