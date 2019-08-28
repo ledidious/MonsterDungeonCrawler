@@ -236,7 +236,7 @@ public class MasterServer
         try
         {
             var obj = formatter.Deserialize(dataStream);
-            Console.WriteLine(obj.GetType());
+            Console.WriteLine("MASTERSERVER: " + obj.GetType());
             if (obj.GetType().IsSubclassOf(typeof(Command)))
             {
                 return (Command)obj;
