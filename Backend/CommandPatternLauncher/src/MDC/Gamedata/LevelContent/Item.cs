@@ -7,6 +7,7 @@ namespace MDC.Gamedata.LevelContent
     public abstract class Item
     {
         private double _effectValue;
+        private Boolean _isVisible = true; 
         public abstract Boolean DecrementBoosterDuration(); 
 
         /// <summary>
@@ -26,6 +27,23 @@ namespace MDC.Gamedata.LevelContent
                 else
                 {
                     throw new System.ArgumentException("Effectvalue must be between 0 and 1");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Property for getting and setting the isvisible
+        /// </summary>
+        /// <value>Set only for key</value>
+        public Boolean IsVisible
+        {
+            get { return _isVisible; }
+
+            set 
+            {
+                if (this is Key)
+                {
+                    _isVisible = value; 
                 }
             }
         }

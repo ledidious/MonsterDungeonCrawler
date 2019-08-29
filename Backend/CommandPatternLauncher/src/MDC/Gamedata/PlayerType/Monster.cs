@@ -87,5 +87,10 @@ namespace MDC.Gamedata.PlayerType
             }
             return collectSuccessfull;
         }
+
+         public override Boolean CollectKey()
+        {
+            return false;  
+        }
     }
 }

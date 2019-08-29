@@ -9,7 +9,7 @@ namespace MDC.Gamedata.LevelContent
         /// If the field can be accessed by a player
         /// The commandgamemove class call this method to prevent moves on a wall
         /// </summary>
-        /// <returns>Returns true because a floor is not accesable for a player</returns>
+        /// <returns>Returns true because a floor is accesable for a player</returns>
         public Boolean CanBeAccessed(){
             return true;
         }

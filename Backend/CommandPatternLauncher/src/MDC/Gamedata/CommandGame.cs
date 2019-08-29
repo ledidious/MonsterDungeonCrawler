@@ -107,11 +107,11 @@ namespace MDC.Gamedata
 
         /// <summary>
         /// Checks if the targetfield contains a item
-        /// If the targetfield contains a item it will be collected and delted from the playingfield
+        /// If the targetfield contains a visible item it will be collected and delted from the playingfield
         /// </summary>
         public void TargetFieldContainsItem()
         {
-            if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null)
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null && Level.playingField[_xPosition, _yPosition].Item.IsVisible == true)
             {
                 if (SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item) == true)
                 {
@@ -121,6 +121,7 @@ namespace MDC.Gamedata
                 {
                     //Player has already a higher level boost
                 }
+                
             }
             else
             {

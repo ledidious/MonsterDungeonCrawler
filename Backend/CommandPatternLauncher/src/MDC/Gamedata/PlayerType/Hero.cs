@@ -7,6 +7,7 @@ namespace MDC.Gamedata.PlayerType
     public class Hero : Player
     {
         protected const double LIFE_HERO = 5;
+
         public Hero(string playerName, CharacterType characterType, int xPosition, int yPosition)
         {
             this.PlayerName = playerName;
@@ -19,6 +20,7 @@ namespace MDC.Gamedata.PlayerType
 
         /// <summary>
         /// Collect item from playingfield
+        /// Collect key from playingfield and set attribute haskey on true
         /// Collect a extralife when life is not maximal and add it to the player
         /// Collect a defenseboost or attackboost only when none exists yet or has a higher level and add it to the player
         /// CommandGameMove delete this item from the playingfield when this method returns true
@@ -28,8 +30,12 @@ namespace MDC.Gamedata.PlayerType
         public override Boolean CollectItem(Item item)
         {
             Boolean collectSuccessfull = false;
-
-            if (item is ExtraLife)
+            if (item is Key)
+            {
+                this.HasKey = true; 
+                collectSuccessfull = true; 
+            }
+            else if (item is ExtraLife)
             {
                 if (Life < LIFE_HERO)
                 {
@@ -85,6 +91,12 @@ namespace MDC.Gamedata.PlayerType
                 }
             }
             return collectSuccessfull;
+        }
+
+        public override Boolean CollectKey()
+        {
+            this.HasKey = true;
+            return true;  
         }
     }
 }

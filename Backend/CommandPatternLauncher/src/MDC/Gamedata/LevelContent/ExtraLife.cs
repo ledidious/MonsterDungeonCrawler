@@ -10,6 +10,10 @@ namespace MDC.Gamedata.LevelContent
             EffectValue = EFFECTVALUE_EXTRALIFE;
         }
 
+        /// <summary>
+        /// This method does not concern this class, because the duration is infinite
+        /// </summary>
+        /// <returns>True because the duration of extralife is infinite</returns>
         public override Boolean DecrementBoosterDuration()
         {
             return true; 

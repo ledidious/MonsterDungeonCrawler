@@ -17,6 +17,13 @@ namespace MDC.Gamedata.PlayerType
         private Item _defenseItem;
         private CharacterType _char;
         private string _playerName;
+        private Boolean _hasKey; 
+
+        public Boolean HasKey
+        {
+            get { return _hasKey; }
+            set => _hasKey = value; 
+        }
 
         public string PlayerName
         {
@@ -182,6 +189,8 @@ namespace MDC.Gamedata.PlayerType
         /// <param name="item">Item to be collected</param>
         /// <returns>Returns true when the item is collected and false when the item is ignored</returns>
         public abstract Boolean CollectItem(Item item); 
+
+        public abstract Boolean CollectKey(); 
 
         /// <summary>
         /// Delete the attackitem
