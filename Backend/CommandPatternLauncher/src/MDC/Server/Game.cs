@@ -43,6 +43,7 @@ namespace MDC.Server
         private String _sessionID;
         CommandManager gcm = new CommandManager();
         protected Level _board;
+        protected int roundsPlayed;
 
         public Game(String sessionID, GameClient firstClient)
         {
@@ -77,9 +78,7 @@ namespace MDC.Server
         /// <param name="player">The player to add</param>
         public void AddPlayerToGame(string client_ID, Player player)
         {
-            //TODO: Richtige Positionen vergeben!!!
-
-            if (_clientsOfThisGame[0].Player == null)
+            if (_clientsOfThisGame[0].Client_ID  == client_ID)
             {
                 Hero main = (Hero)player;
                 _clientsOfThisGame[0].Player = main;
@@ -91,21 +90,20 @@ namespace MDC.Server
             {
                 Monster main = (Monster)player;
 
-                int index = 0;
                 foreach (var client in _clientsOfThisGame)
                 {
                     if (client.Client_ID == client_ID)
                     {
                         client.Player = main;
-                        switch (index)
+                        switch (_clientsOfThisGame.IndexOf(client))
                         {
                             case 1:
                                 client.Player.XPosition = 18;
                                 client.Player.YPosition = 1;
                                 break;
                             case 2:
-                                client.Player.XPosition = 18;
-                                client.Player.YPosition = 1;
+                                client.Player.XPosition = 1;
+                                client.Player.YPosition = 18;
                                 break;
                             case 3:
                                 client.Player.XPosition = 18;
@@ -117,7 +115,6 @@ namespace MDC.Server
 
                         _board.AddPlayerToLevel(client.Player);
                     }
-                    index++;
                 }
                 // _players.Add(client_ID, main);
             }
@@ -131,7 +128,7 @@ namespace MDC.Server
         /// <param name="characterClass">The class of character of the character</param>
         public void AddPlayerToGame(string client_ID, string playerName, CharacterClass characterClass)
         {
-            if (_clientsOfThisGame[0].Player == null)
+            if (_clientsOfThisGame[0].Client_ID  == client_ID)
             {
                 Hero main;
                 switch (characterClass)
@@ -143,15 +140,15 @@ namespace MDC.Server
                         main = new Hero(playerName, new RangeFighter(), 0, 0);
                         break;
                     default:
-                        main = new Hero("***Error***", new MeleeFighter(), 0, 0);
-                        break;
+                        // main = new Hero("***Error***", new MeleeFighter(), 0, 0);
+                        throw new NotImplementedException();
                 }
 
                 _clientsOfThisGame[0].Player = main;
             }
             else
             {
-                Monster main;
+                Monster villain;
                 foreach (var client in _clientsOfThisGame)
                 {
                     if (client.Client_ID == client_ID)
@@ -159,16 +156,36 @@ namespace MDC.Server
                         switch (characterClass)
                         {
                             case CharacterClass.MeleeFighter:
-                                main = new Monster(playerName, new MeleeFighter(), 0, 0);
+                                villain = new Monster(playerName, new MeleeFighter(), 0, 0);
                                 break;
                             case CharacterClass.RangeFighter:
-                                main = new Monster(playerName, new RangeFighter(), 0, 0);
+                                villain = new Monster(playerName, new RangeFighter(), 0, 0);
                                 break;
                             default:
-                                main = new Monster("***Error***", new MeleeFighter(), 0, 0);
+                                // main = new Monster("***Error***", new MeleeFighter(), 0, 0);
+                                throw new NotImplementedException();
+                        }
+
+                        switch (_clientsOfThisGame.IndexOf(client))
+                        {
+                            case 1:
+                                villain.XPosition = 18;
+                                villain.YPosition = 1;
+                                break;
+                            case 2:
+                                villain.XPosition = 1;
+                                villain.YPosition = 18;
+                                break;
+                            case 3:
+                                villain.XPosition = 18;
+                                villain.YPosition = 18;
+                                break;
+                            default:
                                 break;
                         }
-                        client.Player = main;
+
+                        client.Player = villain;
+                        Console.WriteLine("Villain Position: " + client.Player.XPosition + ", " + client.Player.YPosition);
                     }
                 }
                 // _players.Add(client_ID, main);
@@ -208,16 +225,14 @@ namespace MDC.Server
             }
             else
             {
-                // foreach (var gClient in _clientsOfThisGame)
-                // {
-                //     _board.AddPlayerToLevel(gClient.Player);
-                // }
+                roundsPlayed = 0;
 
                 //TODO: Vor Eintritt in die Schleife, den Host erst eine Runde spielen lassen
                 while (_clientsOfThisGame[0].TcpClient.Connected)
                 {
                     Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
-                    while (_currentClient.Player.PlayerRemainingMoves > 0)
+                    Console.WriteLine(_currentClient.Player.PlayerName + " has " + _currentClient.Player.PlayerRemainingMoves + " moves");
+                    do
                     {
                         Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
                         Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
@@ -227,10 +242,12 @@ namespace MDC.Server
                         command.Level = _board;
 
                         command.Execute();
-                        SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
-                    }
-                    NextPlayer();
 
+                        SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
+                    } while (_currentClient.Player.PlayerRemainingMoves > 0);
+
+                    System.Threading.Thread.Sleep(5000);
+                    NextPlayer();
                 }
 
                 throw new NotImplementedException();
@@ -347,6 +364,15 @@ namespace MDC.Server
             else
             {
                 _currentClient = _clientsOfThisGame[0];
+                roundsPlayed++;
+            }
+
+            if ((roundsPlayed % 2) == 0)
+            {
+                foreach (var field in _board.trapList)
+                {
+                    field.FieldType.OnNextRound();
+                }
             }
             // _currentClient = _clientsOfThisGame.FindIndex();
             // return null;
