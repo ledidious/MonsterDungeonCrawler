@@ -29,5 +29,14 @@ namespace MDC.Gamedata.LevelContent
         {
             //Has no action on next round
         } 
+        
+        /// <summary>
+        /// Returns if this fieldtype is hidden or not
+        /// </summary>
+        /// <returns>Returns false because a wall is never hidden</returns>
+        public Boolean IsHidden()
+        {
+            return false; 
+        }
     }
 }

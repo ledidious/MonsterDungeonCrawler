@@ -8,6 +8,14 @@ namespace MDC.Gamedata.LevelContent
         protected override double _dealingDamage => 1; 
         protected Boolean _isActive = false; 
 
+        /// <summary>
+        /// Contructor set isHidden on false
+        /// </summary>
+        public LaserBeam()
+        {
+            this._isHidden = false; 
+        }
+
         public Boolean Activate
         {
             get { return _isActive; }

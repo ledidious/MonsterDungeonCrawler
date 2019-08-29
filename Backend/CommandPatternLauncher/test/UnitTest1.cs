@@ -143,6 +143,7 @@ namespace MonsterdungeonCrawlerTests
             level3.AddFieldToLevel(field5);  
 
             Assert.AreEqual(2, level3.trapList.Count);
+            Assert.IsFalse(field5.FieldType.IsHidden());
         }
 
         [TestMethod]
@@ -755,26 +756,31 @@ namespace MonsterdungeonCrawlerTests
         public const int MAX_PLAYER = 4;
 
         [TestMethod]
-        public void ManualTrapAttack()
+        public void ManualTrapAttackAndTrapHidden()
         {
 
             Hero player1 = new Hero("hero", new RangeFighter(), 11, 9);
             Field field1 = new Field(11, 9, new SpikeField());
 
+            Assert.IsTrue(field1.FieldType.IsHidden());
+            
             field1.FieldType.Effects(player1);
-
+            
+            Assert.IsFalse(field1.FieldType.IsHidden());
             Assert.AreEqual(4.5, player1.Life);
             
         }
 
         [TestMethod]
-        public void ManualTrapdoorAttack()
+        public void ManualTrapdoorAttackandTrapHidden()
         {
             Level level7 = new Level(MAX_PLAYER);
 
             Hero player2 = new Hero("hero", new RangeFighter(), 11, 9);
             Monster player22 = new Monster("monster", new MeleeFighter(), 7, 7);
             Field field2 = new Field(11, 9, new Trapdoor());
+
+            Assert.IsTrue(field2.FieldType.IsHidden());
 
             Field field3 = new Field(5, 5, new Wall());
             Field field4 = new Field(6, 6, new Wall());
@@ -820,7 +826,6 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(4.75, player2.Life);
             Assert.AreEqual(8, player2.XPosition);
             Assert.AreEqual(8, player2.YPosition);
-
         }       
     }
         
@@ -1010,6 +1015,91 @@ namespace MonsterdungeonCrawlerTests
             level9.playerList[0].DefenseItem = null; 
         }
 
+        [TestMethod]
+        public void CantCollectInvisibleKey()
+        {
+            Level level10 = new Level(MAX_PLAYER); 
+
+            Hero player6 = new Hero("hero", new RangeFighter(), 10, 10);
+            Field field21 = new Field(10, 11, new Floor());
+            field21.Item = Key.getInstance(); 
+            level10.AddPlayerToLevel(player6);
+            level10.AddFieldToLevel(field21);
+
+            CommandGameMove cmove1 = new CommandGameMove("23156asd1a56sd", 10, 11);
+            cmove1.SourcePlayer = player6; 
+            cmove1.Level = level10; 
+
+            CommandManager cm1 = new CommandManager(); 
+            cm1.AddCommand(cmove1);
+            cm1.ProcessPendingTransactions();
+            
+            Assert.IsFalse(player6.HasKey);
+        }
+
+        [TestMethod]
+        public void HeroCollecteKey()
+        {
+            Level level12 = new Level(MAX_PLAYER); 
+
+            Hero player8 = new Hero("hero", new RangeFighter(), 10, 10);
+            Field field23 = new Field(10, 11, new Floor());
+            field23.Item = Key.getInstance(); 
+            level12.AddPlayerToLevel(player8);
+            level12.AddFieldToLevel(field23);
+            field23.Item.IsVisible = true; 
+            Assert.IsTrue(field23.Item.IsVisible);
+
+            CommandGameMove cmove3 = new CommandGameMove("23156asd1a56sd", 10, 11);
+            cmove3.SourcePlayer = player8; 
+            cmove3.Level = level12; 
+
+            CommandManager cm2 = new CommandManager(); 
+            cm2.AddCommand(cmove3);
+            cm2.ProcessPendingTransactions();
+            
+            Assert.IsTrue(player8.HasKey);
+            Assert.IsNull(field23.Item);
+        }
+
+        [TestMethod]
+        public void MonsterCantCollecteKey()
+        {
+            Level level11 = new Level(MAX_PLAYER); 
+
+            Monster player7 = new Monster("monster", new RangeFighter(), 10, 10);
+            Field field22 = new Field(10, 11, new Floor());
+            field22.Item = Key.getInstance(); 
+            level11.AddPlayerToLevel(player7);
+            level11.AddFieldToLevel(field22);
+            field22.Item.IsVisible = true; 
+            Assert.IsTrue(field22.Item.IsVisible);
+
+            CommandGameMove cmove2 = new CommandGameMove("23156asd1a56sd", 10, 11);
+            cmove2.SourcePlayer = player7; 
+            cmove2.Level = level11; 
+
+            CommandManager cm3 = new CommandManager(); 
+            cm3.AddCommand(cmove2);
+            cm3.ProcessPendingTransactions();
+            
+            Assert.IsFalse(player7.HasKey);
+            Assert.IsNotNull(field22.Item);
+            Assert.IsTrue(field22.Item is Key);
+        }
+
+        [TestMethod]
+        public void CantCreateMultipleKeyObjects()
+        {
+            Field field24 = new Field(12, 12, new Floor());
+            Field field25 = new Field(12, 13, new Floor());            
+            
+            field24.Item = Key.getInstance(); 
+            field25.Item = Key.getInstance();    
+
+            Assert.AreEqual(field24.Item, field25.Item);
+            Assert.AreSame(field24.Item, field25.Item); 
+        }
     }
 
     [TestClass]
@@ -1088,7 +1178,6 @@ namespace MonsterdungeonCrawlerTests
 
             CommandGameMove cmove3 = new CommandGameMove("1jhb2h48325sdf5", 12, 2);
             cmove3.SourcePlayer = player5; 
-            player5.PlayerRemainingMoves = player5.CharacterType._moveRange; 
 
             Level level1 = new Level(MAX_PLAYER);
             level1.AddPlayerToLevel(player5);
