@@ -5,9 +5,14 @@ namespace MDC.Gamedata.LevelContent
     public class ExtraLife : Item
     {
         protected const double EFFECTVALUE_EXTRALIFE = 1;
+
+        /// <summary>
+        /// contructor set effectvalue and isvisible
+        /// </summary>
         public ExtraLife()
         {
             EffectValue = EFFECTVALUE_EXTRALIFE;
+            IsVisible = true; 
         }
 
         /// <summary>

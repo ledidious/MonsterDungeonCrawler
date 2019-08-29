@@ -7,6 +7,7 @@ namespace MDC.Gamedata.LevelContent
     {
         Boolean CanBeAccessed(); 
         void Effects(Player player); 
-        void OnNextRound();       
+        void OnNextRound();  
+        Boolean IsHidden();   
     }
 }

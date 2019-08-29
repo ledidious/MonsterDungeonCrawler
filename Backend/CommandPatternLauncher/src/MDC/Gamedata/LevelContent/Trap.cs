@@ -6,6 +6,8 @@ namespace MDC.Gamedata.LevelContent
 {
     public abstract class Trap : FieldType
     {
+        protected Boolean _isHidden { get; set; }
+
         protected abstract double _dealingDamage { get; } 
 
         /// <summary>
@@ -27,5 +29,14 @@ namespace MDC.Gamedata.LevelContent
         /// </summary>
         /// <param name="player">Player who will be affected by the effect</param>
         public abstract void Effects(Player player); 
+
+        /// <summary>
+        /// Returns if this fieldtype is hidden or not
+        /// </summary>
+        /// <returns>Returns true when the trap is hidden and false when the trap is not hidden</returns>
+        public Boolean IsHidden()
+        {
+            return _isHidden; 
+        }
     }
 }
