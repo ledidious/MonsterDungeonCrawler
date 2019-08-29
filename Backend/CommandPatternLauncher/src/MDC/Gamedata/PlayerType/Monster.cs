@@ -18,6 +18,14 @@ namespace MDC.Gamedata.PlayerType
             this.PlayerRemainingMoves = characterType._moveRange; 
         }
 
+        /// <summary>
+        /// Collect item from playingfield
+        /// Collect a extralife when life is not maximal and add it to the player
+        /// Collect a defenseboost or attackboost only when none exists yet or has a higher level and add it to the player
+        /// CommandGameMove delete this item from the playingfield when this method returns true
+        /// </summary>
+        /// <param name="item">Item to be collected</param>
+        /// <returns>Returns true when the item is collected and false when the item is ignored</returns>
         public override Boolean CollectItem(Item item)
         {
             Boolean collectSuccessfull = false;
@@ -31,7 +39,7 @@ namespace MDC.Gamedata.PlayerType
                 }
                 else
                 {
-                    //maximal life    
+                    //Maximal life    
                 }
             }
             else if (item is DefenseBoost)
@@ -52,7 +60,7 @@ namespace MDC.Gamedata.PlayerType
                 }
                 else
                 {
-                    //ignore this item
+                    //Ignore this item
                 }
 
             }
@@ -74,7 +82,7 @@ namespace MDC.Gamedata.PlayerType
                 }
                 else
                 {
-                    //ignore this item
+                    //Ignore this item
                 }
             }
             return collectSuccessfull;
