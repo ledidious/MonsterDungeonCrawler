@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using MDC.Exceptions;
 using MDC.Gamedata;
 
@@ -22,6 +23,23 @@ namespace MDC.Client
         private Boolean _isConnected = false;
         public Boolean IsConnected { get { return _isConnected; } }
         private Boolean _isHost = false;
+
+        public enum Status
+        {
+            Busy,
+            Waiting,
+            Spectator
+        }
+
+        private Status _currentStatus;
+        public Status CurrentStatus { get { return (_currentStatus); } }
+        private UpdatePack _update;
+        public UpdatePack Update { get { return _update; } }
+
+        public ClientProgram()
+        {
+            this._currentStatus = Status.Busy;
+        }
 
         /// <summary>
         /// generates a tcp client and networkstream to send data or receive data from the server
@@ -100,7 +118,6 @@ namespace MDC.Client
             }
         }
 
-
         /// <summary>
         /// Create a new game session
         /// </summary>
@@ -120,7 +137,6 @@ namespace MDC.Client
                 }
                 else
                 {
-                    // throw feedback.FeedbackException;
                     feedback.Execute();
                 }
             }
@@ -138,7 +154,7 @@ namespace MDC.Client
         {
             if (_isConnected)
             {
-                if (_gameSession_ID != null)
+                if (_gameSession_ID != null && _isHost)
                 {
                     CommandServerStartGame command = new CommandServerStartGame(_client_ID, _gameSession_ID);
                     SendCommandToServer(command);
@@ -148,7 +164,6 @@ namespace MDC.Client
                     { }
                     else
                     {
-                        // throw feedback.FeedbackException;
                         feedback.Execute();
                     }
                 }
@@ -175,9 +190,9 @@ namespace MDC.Client
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK) { }
+                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start();}
                     else
                     {
-                        // throw feedback.FeedbackException;
                         feedback.Execute();
                     }
 
@@ -192,13 +207,14 @@ namespace MDC.Client
         { //TODO: Übergabe der Richtung und Anzahl Schritte
             if (_isConnected)
             {
-                if (_gameSession_ID != null)
+                if (_gameSession_ID != null && _currentStatus == Status.Busy)
                 {
                     CommandGameMove command = new CommandGameMove(_client_ID, x, y);
                     SendCommandToServer(command);
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK) { }
+                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
                     else
                     {
                         // throw feedback.FeedbackException;
@@ -216,18 +232,79 @@ namespace MDC.Client
         {
             if (_isConnected)
             {
-                if (_gameSession_ID != null)
+                if (_gameSession_ID != null && _currentStatus == Status.Busy)
                 {
                     CommandGameAttack command = new CommandGameAttack(_client_ID, client_ID_From_Enemy);
                     SendCommandToServer(command);
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK) { }
+                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
                     else
                     {
                         // throw feedback.FeedbackException;
                         feedback.Execute();
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ends the player's turn earlier than normal
+        /// </summary>
+        public void EndTurn()
+        {
+            if (_isConnected)
+            {
+                if (_gameSession_ID != null)
+                {
+                    CommandGameEndTurn command = new CommandGameEndTurn(_client_ID);
+                    SendCommandToServer(command);
+
+                    CommandFeedback feedback = EvaluateFeedback();
+                    if (feedback is CommandFeedbackOK) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
+                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
+                    else
+                    {
+                        feedback.Execute();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get an update of the playing field and wait for the call for your next move.
+        /// It is best to encapsulate it in its own thread so that the client does not get stuck.
+        /// </summary>
+        private void WaitForNextTurn()
+        {
+            _currentStatus = Status.Waiting;
+            CommandFeedback feedback;
+
+            do
+            {
+                feedback = EvaluateFeedback();
+
+                if (feedback is CommandFeedbackUpdatePack)
+                {
+                    if (((CommandFeedbackUpdatePack)feedback).PlayerAlive == false && _currentStatus != Status.Spectator)
+                    {
+                        _currentStatus = Status.Spectator;
+                        _update = ((CommandFeedbackUpdatePack)feedback).Update;
+                    }
+                    else
+                    {
+                        _update = ((CommandFeedbackUpdatePack)feedback).Update;
+                    }
+
+                }
+            } while (feedback is CommandFeedbackUpdatePack);
+
+            if (feedback is CommandFeedbackYourTurn)
+            {
+                if (_currentStatus != Status.Spectator)
+                {
+                    _currentStatus = Status.Busy;
                 }
             }
         }

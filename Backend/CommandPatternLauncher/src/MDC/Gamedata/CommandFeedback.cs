@@ -30,6 +30,56 @@ namespace MDC.Gamedata
     }
 
     [Serializable]
+    public class CommandFeedbackEndOfTurn : CommandFeedback
+    {
+        public CommandFeedbackEndOfTurn(string SourceClientID) : base(SourceClientID)
+        {
+            IsCompleted = true;
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class CommandFeedbackYourTurn : CommandFeedback
+    {
+        public CommandFeedbackYourTurn(string SourceClientID) : base(SourceClientID)
+        {
+            IsCompleted = true;
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class CommandFeedbackUpdatePack : CommandFeedback
+    {
+        public Boolean PlayerAlive { get; }
+
+        public UpdatePack Update { get; }
+
+        public CommandFeedbackUpdatePack(string SourceClientID, Boolean playerAlive, UpdatePack update) : base(SourceClientID)
+        {
+            this.PlayerAlive = playerAlive;
+            this.Update = update;
+
+            IsCompleted = true;
+            // throw new NotImplementedException();
+        }
+
+        public override void Execute()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
     public class CommandFeedbackEnemyNotInRange : CommandFeedback
     {
         public CommandFeedbackEnemyNotInRange(string SourceClientID) : base(SourceClientID)

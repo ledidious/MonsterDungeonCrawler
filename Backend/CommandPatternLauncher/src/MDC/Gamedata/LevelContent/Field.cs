@@ -4,6 +4,7 @@ using MDC.Gamedata.LevelContent;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class Field
     {
         private int _xPosition;
