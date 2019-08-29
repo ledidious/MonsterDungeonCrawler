@@ -3,6 +3,7 @@ using MDC.Gamedata.PlayerType;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class Floor : FieldType
     { 
         /// <summary>
@@ -29,6 +30,15 @@ namespace MDC.Gamedata.LevelContent
         public void OnNextRound()
         {
             //Has no action on next round
+        }
+
+        /// <summary>
+        /// Returns if this fieldtype is hidden or not
+        /// </summary>
+        /// <returns>Returns false because a wall is never hidden</returns>
+        public Boolean IsHidden()
+        {
+            return false; 
         }
     }
 }

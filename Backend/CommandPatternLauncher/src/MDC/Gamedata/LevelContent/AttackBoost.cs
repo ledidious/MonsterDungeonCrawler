@@ -32,7 +32,7 @@ namespace MDC.Gamedata.LevelContent
 
         /// <summary>
         /// Property for getting and setting the level
-        /// If the level is set also the duration and effectvalue will be set
+        /// If the level is set also the duration, effectvalue and isvisible will be set
         /// </summary>
         /// <value>Must be between 1 and 3 to be valid</value>
         public int Level
@@ -53,6 +53,7 @@ namespace MDC.Gamedata.LevelContent
                 //Set duration because it must be a booster
                 Duration = DURATION_ATTACKBOOSTER;
                 EffectValue = EFFECTVALUE_ATTACKBOOST * _level;
+                IsVisible = true; 
             }
         }
 

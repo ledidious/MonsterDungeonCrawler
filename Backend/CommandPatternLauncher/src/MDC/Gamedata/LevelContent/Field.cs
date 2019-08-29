@@ -4,6 +4,7 @@ using MDC.Gamedata.LevelContent;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class Field
     {
         private int _xPosition;
@@ -14,8 +15,7 @@ namespace MDC.Gamedata.LevelContent
         public FieldType FieldType
         {
             get { return _fieldType; }
-
-            set { _fieldType = value; }
+            set => _fieldType = value; 
         }
         
         /// <summary>
@@ -43,15 +43,13 @@ namespace MDC.Gamedata.LevelContent
         public int XPosition
         {
             get { return _xPosition; }
-
-            set { _xPosition = value; }
+            set => _xPosition = value;
         }
 
           public int YPosition
         {
             get { return _yPosition; }
-
-            set { _yPosition = value; }
+            set => _yPosition = value; 
         }
 
        public Field(int xPosition, int yPosition, FieldType fieldType){

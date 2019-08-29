@@ -7,7 +7,7 @@ namespace MDC.Gamedata.LevelContent
     public abstract class Item
     {
         private double _effectValue;
-        private Boolean _isVisible = true; 
+        private Boolean _isVisible; 
         public abstract Boolean DecrementBoosterDuration(); 
 
         /// <summary>
@@ -39,13 +39,7 @@ namespace MDC.Gamedata.LevelContent
         {
             get { return _isVisible; }
 
-            set 
-            {
-                if (this is Key)
-                {
-                    _isVisible = value; 
-                }
-            }
+            set => _isVisible = value; 
         }
     }
 }

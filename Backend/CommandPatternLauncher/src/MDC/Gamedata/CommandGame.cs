@@ -107,7 +107,7 @@ namespace MDC.Gamedata
 
         /// <summary>
         /// Checks if the targetfield contains a item
-        /// If the targetfield contains a visible item it will be collected and delted from the playingfield
+        /// If the targetfield contains a visible item it will be collected and deleted from the playingfield
         /// </summary>
         public void TargetFieldContainsItem()
         {

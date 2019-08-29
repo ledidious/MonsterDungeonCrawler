@@ -42,8 +42,9 @@ namespace MDC.Server
         private int _lapsRemaining;
         private String _sessionID;
         CommandManager gcm = new CommandManager();
-        protected Level _board;
+        protected Level _level;
         protected int roundsPlayed;
+        protected Boolean _gameActive;
 
         public Game(String sessionID, GameClient firstClient)
         {
@@ -52,16 +53,17 @@ namespace MDC.Server
             this._currentClient = _clientsOfThisGame[0];
 
 
-            _board = new Level(MAX_CLIENTS);
+            _level = new Level(MAX_CLIENTS);
 
             //TODO: Loader einbauen
-            for (int x = 0; x < 19; x++)
+            for (int x = 0; x <= 19; x++)
             {
-                for (int y = 0; y < 19; y++)
+                for (int y = 0; y <= 19; y++)
                 {
-                    _board.AddFieldToLevel(new Field(x, y, new Floor()));
+                    _level.AddFieldToLevel(new Field(x, y, new Floor()));
                 }
             }
+
             // CommandManager gcm = new CommandManager();
 
             // while (true)
@@ -78,12 +80,12 @@ namespace MDC.Server
         /// <param name="player">The player to add</param>
         public void AddPlayerToGame(string client_ID, Player player)
         {
-            if (_clientsOfThisGame[0].Client_ID  == client_ID)
+            if (_clientsOfThisGame[0].Client_ID == client_ID)
             {
                 Hero main = (Hero)player;
                 _clientsOfThisGame[0].Player = main;
                 _clientsOfThisGame[0].Player.XPosition = 1; _clientsOfThisGame[0].Player.YPosition = 1;
-                _board.AddPlayerToLevel(_clientsOfThisGame[0].Player);
+                _level.AddPlayerToLevel(_clientsOfThisGame[0].Player);
                 // _players.Add(client_ID, main);
             }
             else
@@ -113,7 +115,7 @@ namespace MDC.Server
                                 break;
                         }
 
-                        _board.AddPlayerToLevel(client.Player);
+                        _level.AddPlayerToLevel(client.Player);
                     }
                 }
                 // _players.Add(client_ID, main);
@@ -128,7 +130,7 @@ namespace MDC.Server
         /// <param name="characterClass">The class of character of the character</param>
         public void AddPlayerToGame(string client_ID, string playerName, CharacterClass characterClass)
         {
-            if (_clientsOfThisGame[0].Client_ID  == client_ID)
+            if (_clientsOfThisGame[0].Client_ID == client_ID)
             {
                 Hero main;
                 switch (characterClass)
@@ -232,21 +234,41 @@ namespace MDC.Server
                 {
                     Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
                     Console.WriteLine(_currentClient.Player.PlayerName + " has " + _currentClient.Player.PlayerRemainingMoves + " moves");
-                    do
+
+                    if (_currentClient.Player.Life > 0)
                     {
-                        Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
-                        Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
-                        CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
-                        // command.SourcePlayer = _players.GetValueOrDefault(command.SourceClientID);
-                        command.SourcePlayer = _currentClient.Player;
-                        command.Level = _board;
+                        do
+                        {
+                            Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
+                            Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
+                            CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
+                            // command.SourcePlayer = _players.GetValueOrDefault(command.SourceClientID);
+                            command.SourcePlayer = _currentClient.Player;
+                            command.Level = _level;
 
-                        command.Execute();
+                            try
+                            {
+                                command.Execute();
 
-                        SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
-                    } while (_currentClient.Player.PlayerRemainingMoves > 0);
+                                if (_currentClient.Player.PlayerRemainingMoves > 0)
+                                {
+                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
+                                }
+                                else
+                                {
+                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackEndOfTurn(_currentClient.Client_ID));
+                                }
 
-                    System.Threading.Thread.Sleep(5000);
+                            }
+                            catch (System.Exception)
+                            {
+                                //TODO: Fehlermeldung des Commands an Client weiterreichen
+                                throw;
+                            }
+
+                        } while (_currentClient.Player.PlayerRemainingMoves > 0);
+                    }
+
                     NextPlayer();
                 }
 
@@ -352,11 +374,46 @@ namespace MDC.Server
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        private void UpdateClients()
+        {
+            foreach (var client in _clientsOfThisGame)
+            {
+                UpdatePack update = new UpdatePack(_level.playerList, _level.playingField, _level.trapList);
+                if (client.Player.Life > 0)
+                {
+                    SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
+                }
+                else
+                {
+                    SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, false, update));
+                }
+            }
+        }
+
+        /// <summary>
         /// Ends the turn of a client
         /// </summary>
         /// <returns>TODO: Muss hier etwas zurückgegeben werden, oder muss nur auf den nächsten Client gehorcht werden?</returns>
         public void NextPlayer()
         {
+            if (_currentClient.Player is Hero)
+            {
+                foreach (var item in _level.playingField)
+                {
+                    if (item.FieldType is Exit && item.XPosition == _currentClient.Player.XPosition && item.YPosition == _currentClient.Player.YPosition && _currentClient.Player.HasKey)
+                    {
+                        foreach (var client in _clientsOfThisGame)
+                        {
+                            //SendFeedbackToClient(client.TcpClient, new CommandFeedbackEndOfGame());
+                            //Oder ein UpdatePack welches alle über Ende des Spiels informiert
+                        }
+                    }
+                }
+
+            }
+            _currentClient.Player.ResetRemainingMoves();
             if (_clientsOfThisGame.IndexOf(_currentClient) < (MAX_CLIENTS - 1))
             {
                 _currentClient = _clientsOfThisGame[_clientsOfThisGame.IndexOf(_currentClient) + 1];
@@ -364,16 +421,26 @@ namespace MDC.Server
             else
             {
                 _currentClient = _clientsOfThisGame[0];
+                ItemManagement();
                 roundsPlayed++;
             }
+            SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackYourTurn(_currentClient.Client_ID));
+
+            // if (_currentClient.Player is Monster && _currentClient.Player.Life <= 0 && _currentClient.IsAlive)
+            // {
+            //     _currentClient.IsAlive = false;
+            //     //TODO: Info an Client senden
+            // }
 
             if ((roundsPlayed % 2) == 0)
             {
-                foreach (var field in _board.trapList)
+                foreach (var field in _level.trapList)
                 {
                     field.FieldType.OnNextRound();
                 }
             }
+
+            UpdateClients();
             // _currentClient = _clientsOfThisGame.FindIndex();
             // return null;
         }
@@ -395,12 +462,12 @@ namespace MDC.Server
         {
             for (int i = 0; i < MAX_CLIENTS; i++)
             {
-                if (_board.playerList[i].AttackItem != null)
+                if (_level.playerList[i].AttackItem != null)
                 {
-                    if (_board.playerList[i].AttackItem.DecrementBoosterDuration() == false)
+                    if (_level.playerList[i].AttackItem.DecrementBoosterDuration() == false)
                     {
-                        _board.playerList[i].ResetAttackBooster();
-                        _board.playerList[i].ResetAttackItem();
+                        _level.playerList[i].ResetAttackBooster();
+                        _level.playerList[i].ResetAttackItem();
                     }
                     else
                     {
@@ -412,12 +479,12 @@ namespace MDC.Server
                     //no attackitem available
                 }
 
-                if (_board.playerList[i].DefenseItem != null)
+                if (_level.playerList[i].DefenseItem != null)
                 {
-                    if (_board.playerList[i].DefenseItem.DecrementBoosterDuration() == false)
+                    if (_level.playerList[i].DefenseItem.DecrementBoosterDuration() == false)
                     {
-                        _board.playerList[i].ResetDefenseBooster();
-                        _board.playerList[i].ResetDefenseItem();
+                        _level.playerList[i].ResetDefenseBooster();
+                        _level.playerList[i].ResetDefenseItem();
                     }
                     else
                     {

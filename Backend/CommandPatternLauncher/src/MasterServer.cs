@@ -115,11 +115,16 @@ public class MasterServer
     public static void CreateNewPlayerForSession(string client_ID, string session_ID, string playerName, CharacterClass characterClass)
     {
         _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, playerName, characterClass);
-        SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+
 
         if (_gClients.GetValueOrDefault(client_ID).IsHost == false)
         {
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackEndOfTurn(client_ID));
             _gClients.GetValueOrDefault(client_ID).IsInGame = true;
+        }
+        else
+        {
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
         }
     }
 

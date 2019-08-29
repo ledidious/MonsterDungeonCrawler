@@ -5,6 +5,7 @@ using MDC.Gamedata.PlayerType;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class Level
     {
         protected const int WIDTH = 20; 
@@ -13,6 +14,13 @@ namespace MDC.Gamedata.LevelContent
         public Field[,] playingField = new Field[WIDTH, HIGHT];
         public List<Player> playerList = new List<Player>();
         public List<Field> trapList = new List<Field>(); 
+        private Boolean _keyOnField; 
+
+        public Boolean KeyOnField
+        {
+            get { return _keyOnField; }
+            set => _keyOnField = value; 
+        }
 
         public Level(int maxPlayer)
         {
