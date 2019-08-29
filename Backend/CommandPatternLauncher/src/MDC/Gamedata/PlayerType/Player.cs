@@ -134,7 +134,7 @@ namespace MDC.Gamedata.PlayerType
         /// <summary>
         /// Calculates the damage taken by the player and decrement its life when someone attacks the player
         /// Depending on attackpower and attackboost of the enemy and the defensepower and defenseboost of the victim
-        /// CommandGameAttack call this method when an enemy attack the player
+        /// CommandGameAttack class call this method when an enemy attack the player
         /// </summary>
         /// <param name="attackBoost">Attackboost of the attacking enemy</param>
         /// <param name="characterType">Charactertype of the attacking enemy</param>
@@ -150,6 +150,7 @@ namespace MDC.Gamedata.PlayerType
         /// Calculates the damage taken by the player and decrement its life when the player enter a trapfield
         /// Depending on the dealingdamage of the trap and the defensepower and defenseboost of the victim
         /// Additionally the defenseboost and defenseitem will be deleted
+        /// CommandGameMove class call the effects method from the trap class when the player enter a trapfield and the trap class call then this method
         /// </summary>
         /// <param name="_dealingDamage">Dealingdamage if the trap</param>
         public void DecrementLife(double _dealingDamage)
@@ -162,6 +163,7 @@ namespace MDC.Gamedata.PlayerType
 
         /// <summary>
         /// Moving the player to another field 
+        /// CommandGameMove class call this method when the movecommand was successfull
         /// </summary>
         /// <param name="xPosition">X-Position of the targetfield</param>
         /// <param name="yPosition">Y-Position of the targetfield</param>
@@ -175,7 +177,7 @@ namespace MDC.Gamedata.PlayerType
         /// Collect item from playingfield
         /// Collect a extralife when life is not maximal and add it to the player
         /// Collect a defenseboost or attackboost only when none exists yet or has a higher level and add it to the player
-        /// CommandGameMove delete this item from the playingfield when this method returns true
+        /// CommandGameMove class call this method and delete this item from the playingfield when this method returns true
         /// </summary>
         /// <param name="item">Item to be collected</param>
         /// <returns>Returns true when the item is collected and false when the item is ignored</returns>
@@ -183,7 +185,7 @@ namespace MDC.Gamedata.PlayerType
 
         /// <summary>
         /// Delete the attackitem
-        /// ItemManagement call this method if the duration of the item is 0
+        /// Game class call this method if the duration of the item is 0
         /// </summary>
         public void ResetAttackItem()
         {
@@ -192,7 +194,7 @@ namespace MDC.Gamedata.PlayerType
 
         /// <summary>
         /// Delete the defenseitem
-        /// ItemManagement call this method if the duration of the item is 0
+        /// Game class call this method if the duration of the item is 0
         /// </summary>
         public void ResetDefenseItem()
         {
@@ -201,7 +203,7 @@ namespace MDC.Gamedata.PlayerType
 
         /// <summary>
         /// Set the attackboost to 0
-        /// ItemManagement call this method if the duration of the attackitem is 0
+        /// Game class call this method if the duration of the attackitem is 0
         /// </summary>
         public void ResetAttackBooster()
         {
@@ -210,7 +212,7 @@ namespace MDC.Gamedata.PlayerType
 
         /// <summary>
         /// Set the defenseboost to 0
-        /// ItemManagement call this method if the duration of the defenseitem is 0
+        /// Game class call this method if the duration of the defenseitem is 0
         /// </summary>
         public void ResetDefenseBooster()
         {

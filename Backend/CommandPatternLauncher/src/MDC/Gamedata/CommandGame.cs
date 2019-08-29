@@ -24,6 +24,13 @@ namespace MDC.Gamedata
         public int _xPosition { get; set; }
         public int _yPosition { get; set; }
 
+        /// <summary>
+        /// Command for moving the player on a selected field
+        /// Set iscompleted on false
+        /// </summary>
+        /// <param name="sourceClientID">ID of the Client who wants to move his player</param>
+        /// <param name="xPosition">Target x-position</param>
+        /// <param name="yPosition">Target y-position</param>
         public CommandGameMove(string sourceClientID, int xPosition, int yPosition) : base(sourceClientID)
         {
             _xPosition = xPosition;
@@ -31,6 +38,10 @@ namespace MDC.Gamedata
             IsCompleted = false;
         }
 
+        /// <summary>
+        /// Checks if the targetfield is accessable for the player or not
+        /// </summary>
+        /// <returns>False if the targetfield is a wall, blocked by another player or the current position of the player and true if these conditions are not given</returns>
         public Boolean TargetFieldIsInvalid()
         {
             Boolean fieldIsNotAccessable = false;
@@ -49,13 +60,17 @@ namespace MDC.Gamedata
                     }
                     else
                     {
-                        //field is accessable
+                        //Field is accessable
                     }
                 }
             }
             return fieldIsNotAccessable;
         }
 
+        /// <summary>
+        /// Checks if the targetfield is a trap
+        /// If the target field is a trap it will be triggered and if it is a trapdoor the player will be additionally set to a random free and accessable field
+        /// </summary>
         public void TargetFieldIsTrap()
         {
             if (Level.playingField[_xPosition, _yPosition].FieldType is Trap)
@@ -79,41 +94,49 @@ namespace MDC.Gamedata
                         }
                         else
                         {
-                            //player can not move to a wall or another trap
+                            //Player can not move to a wall or another trap
                         }
                     }
                 }
             }
             else
             {
-                //field is not a trap
+                //Field is not a trap
             }
         }
 
+        /// <summary>
+        /// Checks if the targetfield contains a item
+        /// If the targetfield contains a item it will be collected and delted from the playingfield
+        /// </summary>
         public void TargetFieldContainsItem()
         {
             if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null)
             {
-                if (SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item))
+                if (SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item) == true)
                 {
                     Level.playingField[_xPosition, _yPosition].Item = null; 
                 }
                 else
                 {
-                    //player has already a higher level boost
+                    //Player has already a higher level boost
                 }
             }
             else
             {
-                //field is not a item
+                //Field is not a item
             }
         }
 
+        /// <summary>
+        /// Checks if the targetfield is in moverange
+        /// </summary>
+        /// <returns>True when the move is in range and false when the move is out of range</returns>
         public Boolean VerifyMoveRange()
         {
             Boolean MoveInRange = false;
 
-            //verify if targetfield is vertical in range
+            //Verify if targetfield is vertical in range
             if (SourcePlayer.XPosition == _xPosition)
             {
                 if (_yPosition == SourcePlayer.YPosition + 1 || _yPosition == SourcePlayer.YPosition - 1)
@@ -122,15 +145,15 @@ namespace MDC.Gamedata
                 }
                 else
                 {
-                    //targetfield out of range
+                    //Targetfield out of range
                 }
             }
             else
             {
-                //targetfield vertical out of range
+                //Targetfield vertical out of range
             }
 
-            //verify if targetfield is horizontal in range
+            //Verify if targetfield is horizontal in range
             if (SourcePlayer.YPosition == _yPosition)
             {
                 if (_xPosition == SourcePlayer.XPosition + 1 || _xPosition == SourcePlayer.XPosition - 1)
@@ -139,12 +162,12 @@ namespace MDC.Gamedata
                 }
                 else
                 {
-                    //targetfield out of range
+                    //Targetfield out of range
                 }
             }
             else
             {
-                //enemy horizontal out of range
+                //Enemy horizontal out of range
             }
             return MoveInRange;
         }
@@ -152,7 +175,8 @@ namespace MDC.Gamedata
 
 
         /// <summary>
-        /// set IsComplete on true if the TargetPlayer has more or equal remaining moves than the Input (_moveAmount)
+        /// Set iscompleted on true, call targetfieldistrap method, call targetfieldcontainsitem method, move the player
+        /// and decrement the playerremainingmoves when the sourceplayer has more moves left, the targetfield is valid and the targetfield is in range
         /// </summary>
         public override void Execute()
         {
@@ -186,8 +210,13 @@ namespace MDC.Gamedata
         public string TargetClientID { get; set; }
         public Player TargetPlayer { get; set; }
 
-
-
+        /// <summary>
+        /// Command for attack an enemy
+        /// Set iscompleted on false
+        /// </summary>
+        /// <param name="SourceClientID">ID of the Client who wants to attack</param>
+        /// <param name="targetClientID">ID of the Client which will be attecked</param>
+        /// <returns></returns>
         public CommandGameAttack(string SourceClientID, string targetClientID) : base(SourceClientID)
         {
             IsCompleted = false;
@@ -198,11 +227,15 @@ namespace MDC.Gamedata
                 throw new Exceptions.CantAttackException();
         }
 
+        /// <summary>
+        /// Checks if the targetplayer is in the attackrange of the sourceplayer
+        /// </summary>
+        /// <returns>True when the targetplayer is in the attackrange of the sourceplayer and false when the targtplayer is not in the attackrange of the sourceplayer</returns>
         public Boolean VerifyAttackRange()
         {
             Boolean TargetInRange = false;
 
-            //verify if an enemy is vertical in range
+            //Verify if an enemy is vertical in range
             if (SourcePlayer.XPosition == TargetPlayer.XPosition)
             {
                 for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
@@ -214,16 +247,16 @@ namespace MDC.Gamedata
                     }
                     else
                     {
-                        //enemy out of range
+                        //Enemy out of range
                     }
                 }
             }
             else
             {
-                //enemy vertical out of range
+                //Enemy vertical out of range
             }
 
-            //verify if an enemy is horizontal in range
+            //Verify if an enemy is horizontal in range
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
                 for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
@@ -235,22 +268,26 @@ namespace MDC.Gamedata
                     }
                     else
                     {
-                        //enemy out of range
+                        //Enemy out of range
                     }
                 }
             }
             else
             {
-                //enemy horizontal out of range
+                //Enemy horizontal out of range
             }
             return TargetInRange;
         }
 
+        /// <summary>
+        /// Checks if an obstacle is between the sourceplayer and the targetplayer
+        /// </summary>
+        /// <returns>True when an obstacle is between the sourceplayer and the targetplayer and false when there is not an obstacle between the sourceplayer and the targetplayer</returns>
         public Boolean VerifyObstacleInRange()
         {
             Boolean ObstacleInRange = false;
 
-            //verify if an obstacle is vertical between the players
+            //Verify if an obstacle is vertical between the players
             if (SourcePlayer.XPosition == TargetPlayer.XPosition)
             {
                 if (TargetPlayer.YPosition > SourcePlayer.YPosition)
@@ -278,10 +315,10 @@ namespace MDC.Gamedata
             }
             else
             {
-                //no obstacle vertical between the players
+                //No obstacle vertical between the players
             }
 
-            //verify if an obstacle is horizontal between the players
+            //Verify if an obstacle is horizontal between the players
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
                 if (TargetPlayer.XPosition > SourcePlayer.XPosition)
@@ -309,15 +346,16 @@ namespace MDC.Gamedata
             }
             else
             {
-                //no obstacle horizontal between the players
+                //No obstacle horizontal between the players
             }
-
             return ObstacleInRange;
         }
 
-
-
         //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
+        /// <summary>
+        /// Set iscompleted on true, call decrementlife method and set playerremainingmoves to 0 when source- or targetplayer is the hero,
+        /// the targetplayer is in attackrange, there is no obstacle between source- and targetplayer and the sourceplayer has more moves left
+        /// </summary>
         public override void Execute()
         {
             //TODO: Throw Exception if AttackedPlayer not reachable 
@@ -355,11 +393,21 @@ namespace MDC.Gamedata
     [Serializable]
     public class CommandGameEndTurn : CommandGame
     {
+
+        /// <summary>
+        /// Command to finish the round with remaining moves
+        /// Set iscompletet on false 
+        /// </summary>
+        /// <param name="SourceClientID">ID of the Client who wants to finish his round</param>
+        /// <returns></returns>
         public CommandGameEndTurn(string SourceClientID) : base(SourceClientID)
         {
             IsCompleted = false;
         }
 
+        /// <summary>
+        /// Set iscompleted on true and the playerremainingmoves to 0
+        /// </summary>
         public override void Execute()
         {
             SourcePlayer.PlayerRemainingMoves = 0; 
