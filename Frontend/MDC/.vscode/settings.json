@@ -41,7 +41,7 @@
         "**/*.mat": true,
         "**/*.meta": true,
         "**/*.prefab": true,
-        "**/*.unity": true,
+        // "**/*.unity": true,
         "build/": true,
         "Build/": true,
         "Library/": true,
@@ -53,11 +53,12 @@
         "Temp/": true
     },
     "files.watcherExclude": {
-        "**/.git/objects/**": true,
-        "**/.git/subtree-cache/**": true,
-        "**/node_modules/**": true,
         "**/**": true,
-        "ExtLibraries": false,
-        "Assets/Scripts": false
+        "**/*.xml": false,
+        "**/*.cs": false,
+        "**/*.json": false,
+        "**/*.sln": false,
+        "**/*.txt": false,
+        "**/*.unity": false,
     }
 }
