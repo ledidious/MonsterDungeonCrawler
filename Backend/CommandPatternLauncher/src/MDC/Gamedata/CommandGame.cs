@@ -351,4 +351,20 @@ namespace MDC.Gamedata
             }
         }
     }
+
+    [Serializable]
+    public class CommandGameEndTurn : CommandGame
+    {
+        public CommandGameEndTurn(string SourceClientID) : base(SourceClientID)
+        {
+            IsCompleted = false;
+        }
+
+        public override void Execute()
+        {
+            SourcePlayer.PlayerRemainingMoves = 0; 
+            
+            IsCompleted = true; 
+        }
+    }
 }
