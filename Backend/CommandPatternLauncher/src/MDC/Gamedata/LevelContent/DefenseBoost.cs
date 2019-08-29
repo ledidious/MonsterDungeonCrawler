@@ -9,6 +9,10 @@ namespace MDC.Gamedata.LevelContent
         protected const int DURATION_DEFENSEBOOSTER = 3;
         protected const double EFFECTVALUE_DEFENSEBOOST = 0.25;
 
+        /// <summary>
+        /// Property for getting and setting the duration
+        /// </summary>
+        /// <value>Must be between 0 and 5 to be valid</value>
         public int Duration
         {
             get { return _duration; }
@@ -26,6 +30,11 @@ namespace MDC.Gamedata.LevelContent
             }
         }
 
+        /// <summary>
+        /// Property for getting and setting the level
+        /// If the level is set also the duration and effectvalue will be set
+        /// </summary>
+        /// <value>Must be between 1 and 3 to be valid</value>
         public int Level
         {
 
@@ -42,7 +51,7 @@ namespace MDC.Gamedata.LevelContent
                     throw new System.ArgumentException("Level must be between 1 and 3");
                 }
 
-                //set duration because it must be a booster
+                //Set duration because it must be a booster
                 Duration = DURATION_DEFENSEBOOSTER;
                 EffectValue = EFFECTVALUE_DEFENSEBOOST * _level;
             }
@@ -53,6 +62,11 @@ namespace MDC.Gamedata.LevelContent
             this.Level = Level;
         }
 
+        /// <summary>
+        /// Decrements the duration of the item
+        /// Called after every round by the game class
+        /// </summary>
+        /// <returns>False if the durationtime has expired and ture if the durationtime has not expired</returns>
         public override Boolean DecrementBoosterDuration()
         {
             Boolean BoosterActive; 

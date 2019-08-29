@@ -110,6 +110,11 @@ namespace MDC.Gamedata.PlayerType
             }
         }
 
+        public void ResetRemainingMoves()
+        {
+            this.PlayerRemainingMoves = this.CharacterType._moveRange; 
+        }
+
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
             double totalAttackPower = attackBoost + characterType._attackPower;

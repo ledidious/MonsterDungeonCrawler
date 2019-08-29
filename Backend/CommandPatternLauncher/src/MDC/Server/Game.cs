@@ -239,7 +239,7 @@ namespace MDC.Server
                         CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
                         // command.SourcePlayer = _players.GetValueOrDefault(command.SourceClientID);
                         command.SourcePlayer = _currentClient.Player;
-                        command.level = _board;
+                        command.Level = _board;
 
                         command.Execute();
 

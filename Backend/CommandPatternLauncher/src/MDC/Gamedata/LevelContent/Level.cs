@@ -4,19 +4,14 @@ using MDC.Gamedata.PlayerType;
 
 
 namespace MDC.Gamedata.LevelContent
-{  
-    [Serializable]
+{
     public class Level
     {
         protected const int WIDTH = 20; 
         protected const int HIGHT = 20;
-
         protected int _maxPlayer; 
-
         public Field[,] playingField = new Field[WIDTH, HIGHT];
-
         public List<Player> playerList = new List<Player>();
-
         public List<Field> trapList = new List<Field>(); 
 
         public Level(int maxPlayer)
@@ -24,18 +19,24 @@ namespace MDC.Gamedata.LevelContent
             _maxPlayer = maxPlayer; 
         }
 
-
+        /// <summary>
+        /// Add a field to the level respectively to the playingfieldlist
+        /// If the field is from fieldtype trap it will also added to the traplist
+        /// </summary>
+        /// <param name="field">Field to be added to the playingfieldlist</param>
         public void AddFieldToLevel(Field field)
         {
             playingField[field.XPosition, field.YPosition] = field;
             if (field.FieldType is Trap)
             {
-                trapList.Add(field); 
+                trapList.Add(field);  
             }
         }
 
-        public void AddTrapToList(Field field) => trapList.Add(field); 
-
+        /// <summary>
+        /// Add a player to the level respectively to the playerlist if the maximum number of players has not been reached
+        /// </summary>
+        /// <param name="player">Player to be added to the playerlist</param>
         public void AddPlayerToLevel(Player player)
         {
                 if (playerList.Count <= _maxPlayer)
@@ -44,10 +45,16 @@ namespace MDC.Gamedata.LevelContent
                 }
                 else
                 {
-                    //too many player
+                    //Too many player
                 }
         }
 
+        /// <summary>
+        /// Verified if a field is blocked by another player
+        /// </summary>
+        /// <param name="xPosition">X-Positon of the targetfield</param>
+        /// <param name="yPosition">Y-Position of the targetfield</param>
+        /// <returns>Returns true if the field is blocked and false if the field is not blocked by another player</returns>
         public Boolean FieldBlockedByPlayer(int xPosition, int yPosition)
         {
             Boolean FieldIsBlocked = false; 
@@ -60,7 +67,7 @@ namespace MDC.Gamedata.LevelContent
                 }
                 else
                 {
-                    //field is not blocked
+                    //Field is not blocked
                 }
             }
             return FieldIsBlocked;

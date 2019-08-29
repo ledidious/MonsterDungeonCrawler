@@ -14,7 +14,7 @@ namespace MDC.Gamedata
 
         public Player SourcePlayer { get; set; }
 
-        public Level level { get; set; }
+        public Level Level { get; set; }
     }
 
     [Serializable]
@@ -35,15 +35,15 @@ namespace MDC.Gamedata
         {
             Boolean fieldIsNotAccessable = false;
 
-            if (level.playingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
             {
                 fieldIsNotAccessable = true;
             }
             else
             {
-                for (int i = 0; i < level.playerList.Count; i++)
+                for (int i = 0; i < Level.playerList.Count; i++)
                 {
-                    if (level.playerList[i].XPosition == _xPosition && level.playerList[i].YPosition == _yPosition)
+                    if (Level.playerList[i].XPosition == _xPosition && Level.playerList[i].YPosition == _yPosition)
                     {
                         fieldIsNotAccessable = true;
                     }
@@ -58,10 +58,10 @@ namespace MDC.Gamedata
 
         public void TargetFieldIsTrap()
         {
-            if (level.playingField[_xPosition, _yPosition].FieldType is Trap)
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Trap)
             {
-                level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
-                if(level.playingField[_xPosition, _yPosition].FieldType is Trapdoor)
+                Level.playingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
+                if(Level.playingField[_xPosition, _yPosition].FieldType is Trapdoor)
                 {
                     Boolean successfulMoving = false;
                     int randomX; 
@@ -72,7 +72,7 @@ namespace MDC.Gamedata
                         randomX = new Random().Next(0, 19); 
                         randomY = new Random().Next(0, 19); 
 
-                        if (level.playingField[randomX, randomY].FieldType is Floor && level.FieldBlockedByPlayer(randomX, randomY) == false)
+                        if (Level.playingField[randomX, randomY].FieldType is Floor && Level.FieldBlockedByPlayer(randomX, randomY) == false)
                         {
                             successfulMoving = true;
                             SourcePlayer.MovePlayer(randomX, randomY);
@@ -92,11 +92,11 @@ namespace MDC.Gamedata
 
         public void TargetFieldContainsItem()
         {
-            if (level.playingField[_xPosition, _yPosition].FieldType is Floor && level.playingField[_xPosition, _yPosition].Item != null)
+            if (Level.playingField[_xPosition, _yPosition].FieldType is Floor && Level.playingField[_xPosition, _yPosition].Item != null)
             {
-                if (SourcePlayer.CollectItem(level.playingField[_xPosition, _yPosition].Item))
+                if (SourcePlayer.CollectItem(Level.playingField[_xPosition, _yPosition].Item))
                 {
-                    level.playingField[_xPosition, _yPosition].Item = null; 
+                    Level.playingField[_xPosition, _yPosition].Item = null; 
                 }
                 else
                 {
@@ -164,6 +164,10 @@ namespace MDC.Gamedata
             else if (TargetFieldIsInvalid() == true)
             {
                 throw new Exceptions.CantMoveException("Targetfield is blocked by another player or is a wall"); 
+            }
+            else if (VerifyMoveRange() == false)
+            {
+                throw new Exceptions.CantMoveException("Targetfield is out of range");
             }
             else
             {
@@ -253,7 +257,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.YPosition - 1; i > SourcePlayer.YPosition; i--)
                     {
-                        if (level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
+                        if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -264,7 +268,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.YPosition + 1; i < SourcePlayer.YPosition; i++)
                     {
-                        if (level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
+                        if (Level.playingField[SourcePlayer.XPosition, i].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -284,7 +288,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.XPosition - 1; i > SourcePlayer.XPosition; i--)
                     {
-                        if (level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
+                        if (Level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;
@@ -295,7 +299,7 @@ namespace MDC.Gamedata
                 {
                     for (int i = TargetPlayer.XPosition + 1; i < SourcePlayer.XPosition; i++)
                     {
-                        if (level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
+                        if (Level.playingField[i, SourcePlayer.YPosition].FieldType.CanBeAccessed() == false)
                         {
                             ObstacleInRange = true;
                             break;

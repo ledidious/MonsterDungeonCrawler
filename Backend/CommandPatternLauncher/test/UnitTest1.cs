@@ -9,10 +9,10 @@ using System.Net.Sockets;
 
 namespace MonsterdungeonCrawlerTests
 {
-
     [TestClass]
     public class UnitTestGeneral
-    {
+    {    
+        public const int MAX_PLAYER = 4;
 
         [TestMethod]
         public void NumberOfLife()
@@ -31,8 +31,7 @@ namespace MonsterdungeonCrawlerTests
         public void GameSzenario1()
         {   //need number of max. clients
 
-            Level.playerList.Clear();
-            Level.trapList.Clear();
+            Level level1 = new Level(MAX_PLAYER); 
 
             Hero player3 = new Hero("hero", new MeleeFighter(), 10, 18); 
             Monster player4 = new Monster("monster", new RangeFighter(), 8, 16);
@@ -45,10 +44,18 @@ namespace MonsterdungeonCrawlerTests
 
             CommandManager cm1 = new CommandManager(); 
 
+            level1.AddPlayerToLevel(player3);
+            level1.AddPlayerToLevel(player4);
+            level1.AddPlayerToLevel(player5);
+            level1.AddPlayerToLevel(player6);
+            level1.AddFieldToLevel(field1);
+            level1.AddFieldToLevel(field2);
+            level1.AddFieldToLevel(field3);
 
             //move to field (10, 17)
             CommandGameMove cmove1 = new CommandGameMove("adua5as7da5sd5", 10, 17); 
             cmove1.SourcePlayer = player3; 
+            cmove1.Level = level1;
             cm1.AddCommand(cmove1); 
             cm1.ProcessPendingTransactions(); 
 
@@ -59,6 +66,7 @@ namespace MonsterdungeonCrawlerTests
             //move to field with trap (9, 17)
             CommandGameMove cmove2 = new CommandGameMove("adua5as7da5sd5", 9, 17); 
             cmove2.SourcePlayer = player3; 
+            cmove2.Level = level1;
             cm1.AddCommand(cmove2); 
             cm1.ProcessPendingTransactions();   
 
@@ -69,7 +77,8 @@ namespace MonsterdungeonCrawlerTests
 
             //move to field with item (8, 17)
             CommandGameMove cmove3 = new CommandGameMove("adua5as7da5sd5", 8, 17); 
-            cmove3.SourcePlayer = player3; 
+            cmove3.SourcePlayer = player3;
+            cmove3.Level = level1; 
             cm1.AddCommand(cmove3); 
             cm1.ProcessPendingTransactions();   
 
@@ -82,6 +91,7 @@ namespace MonsterdungeonCrawlerTests
             CommandGameAttack cattack1 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
             cattack1.SourcePlayer = player3; 
             cattack1.TargetPlayer = player4; 
+            cattack1.Level = level1;
             cm1.AddCommand(cattack1); 
             cm1.ProcessPendingTransactions();  
 
@@ -95,75 +105,81 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestLevelField
     {
+        public const int MAX_PLAYER = 4;
+
         [TestMethod]
         public void LevelAddAllFieldObjects()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear(); 
+            Level level2 = new Level(MAX_PLAYER);
 
             Field field1 = new Field(13, 9, new Wall()); 
             Field field8 = new Field(11, 9, new Floor());
 
-            Assert.AreEqual(field1, Level.playingField[13, 9]);
-            Assert.AreNotEqual(field1, Level.playingField[10, 9]);
+            level2.AddFieldToLevel(field1);
+            level2.AddFieldToLevel(field8);            
 
-            Assert.AreEqual(field8, Level.playingField[11, 9]);
+            Assert.AreEqual(field1, level2.playingField[13, 9]);
+            Assert.AreNotEqual(field1, level2.playingField[10, 9]);
 
-            Assert.IsInstanceOfType(Level.playingField[13, 9].FieldType, typeof(Wall));
-            Assert.IsInstanceOfType(Level.playingField[11, 9].FieldType, typeof(Floor));
+            Assert.AreEqual(field8, level2.playingField[11, 9]);
+
+            Assert.IsInstanceOfType(level2.playingField[13, 9].FieldType, typeof(Wall));
+            Assert.IsInstanceOfType(level2.playingField[11, 9].FieldType, typeof(Floor));
         }
 
         [TestMethod]
         public void LevelAddTrapToTrapList()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear(); 
+            Level level3 = new Level(MAX_PLAYER);       
 
             Field field2 = new Field(3, 9, new Wall()); 
             Field field3 = new Field(1, 9, new Floor());           
             Field field4 = new Field(11, 8, new SpikeField()); 
-            Field field5 = new Field(8, 8, new LaserBeam()); 
+            Field field5 = new Field(8, 8, new LaserBeam());
 
-            Assert.AreEqual(2, Level.trapList.Count);
+            level3.AddFieldToLevel(field2); 
+            level3.AddFieldToLevel(field3); 
+            level3.AddFieldToLevel(field4); 
+            level3.AddFieldToLevel(field5);  
 
+            Assert.AreEqual(2, level3.trapList.Count);
         }
 
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void PlayerPositionOutOfField()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
-
             Hero player1 = new Hero("hero", new MeleeFighter(), 19, 30);
         }
 
         [TestMethod]
         public void LevelFieldBlockedByPlayer()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
-             
+            Level level4 = new Level(MAX_PLAYER);       
+
             Hero player1 = new Hero("hero", new MeleeFighter(), 19, 19);
             Monster player2 = new Monster("monster", new RangeFighter(), 10, 19); 
             Monster player3 = new Monster("monster", new RangeFighter(), 11, 19);
-            
-        
-            Assert.IsTrue(Level.FieldBlockedByPlayer(11, 19)); 
-            Assert.IsTrue(Level.FieldBlockedByPlayer(19, 19));
-            Assert.IsTrue(Level.FieldBlockedByPlayer(10, 19));
-            Assert.IsFalse(Level.FieldBlockedByPlayer(10, 3));
-            Assert.IsFalse(Level.FieldBlockedByPlayer(10, 9));
-            Assert.IsFalse(Level.FieldBlockedByPlayer(7, 7));
 
-            Assert.AreEqual(3, Level.playerList.Count);
+            level4.AddPlayerToLevel(player1);
+            level4.AddPlayerToLevel(player2);
+            level4.AddPlayerToLevel(player3);
 
+            Assert.IsTrue(level4.FieldBlockedByPlayer(11, 19)); 
+            Assert.IsTrue(level4.FieldBlockedByPlayer(19, 19));
+            Assert.IsTrue(level4.FieldBlockedByPlayer(10, 19));
+            Assert.IsFalse(level4.FieldBlockedByPlayer(10, 3));
+            Assert.IsFalse(level4.FieldBlockedByPlayer(10, 9));
+            Assert.IsFalse(level4.FieldBlockedByPlayer(7, 7));
+
+            Assert.AreEqual(3, level4.playerList.Count);
         }
     }
 
     [TestClass]
     public class UnitTestMove
     {
+        public const int MAX_PLAYER = 4;
         /*
         [TestMethod]
         [ExpectedException(typeof(System.NullReferenceException), "Object reference not set to an instance of an object.")]
@@ -180,15 +196,18 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void InvalidTargetField()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
+            Level level5 = new Level(MAX_PLAYER);              
 
             //targetfield is equal current field
             Hero player3 = new Hero("hero", new MeleeFighter(), 18, 18);
             Field field1 = new Field(18, 18, new Floor());
 
+            level5.AddPlayerToLevel(player3);
+            level5.AddFieldToLevel(field1); 
+
             CommandGameMove cmove1 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 18, 18);
             cmove1.SourcePlayer = player3;  
+            cmove1.Level = level5; 
 
             Assert.IsTrue(cmove1.TargetFieldIsInvalid()); 
 
@@ -197,8 +216,12 @@ namespace MonsterdungeonCrawlerTests
             Hero player4 = new Hero("hero", new MeleeFighter(), 8, 8);
             Field field2 = new Field(8, 9, new Wall());      
 
+            level5.AddPlayerToLevel(player4);
+            level5.AddFieldToLevel(field2); 
+
             CommandGameMove cmove2 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",8, 9);      
             cmove2.SourcePlayer = player4; 
+            cmove2.Level = level5;
 
             Assert.IsTrue(cmove2.TargetFieldIsInvalid());
 
@@ -208,8 +231,13 @@ namespace MonsterdungeonCrawlerTests
             Monster player6 = new Monster("monster", new RangeFighter(), 2, 3);
             Field field3 = new Field(2, 3, new Floor());
 
+            level5.AddPlayerToLevel(player5);
+            level5.AddPlayerToLevel(player6);
+            level5.AddFieldToLevel(field3);
+
             CommandGameMove cmove3 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",2, 3);      
-            cmove3.SourcePlayer = player5;       
+            cmove3.SourcePlayer = player5;      
+            cmove3.Level = level5;  
 
             Assert.IsTrue(cmove3.TargetFieldIsInvalid());
 
@@ -218,8 +246,12 @@ namespace MonsterdungeonCrawlerTests
             Hero player7 = new Hero("hero", new MeleeFighter(), 1, 1);
             Field field4 = new Field(1, 2, new Floor());
 
+            level5.AddPlayerToLevel(player7);
+            level5.AddFieldToLevel(field4);
+
             CommandGameMove cmove4 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 1, 2);      
-            cmove4.SourcePlayer = player7;       
+            cmove4.SourcePlayer = player7; 
+            cmove4.Level = level5;       
 
             Assert.IsFalse(cmove4.TargetFieldIsInvalid());
 
@@ -234,8 +266,12 @@ namespace MonsterdungeonCrawlerTests
             Hero player8 = new Hero("hero", new MeleeFighter(), 5, 5);
             Field field5 = new Field(6, 6, new Floor());
 
+            level5.AddPlayerToLevel(player8);
+            level5.AddFieldToLevel(field5);
+
             CommandGameMove cmove5 = new CommandGameMove("5a45dsf5s4as5d4as8", 6, 6);   
             cmove5.SourcePlayer = player8; 
+            cmove5.Level = level5; 
 
             Assert.IsFalse(cmove5.VerifyMoveRange()); 
         }
@@ -243,9 +279,6 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void MoveRangeCharactertypes()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
-
             Hero player1 = new Hero("hero", new MeleeFighter(), 18, 18);
             Monster player2 = new Monster("monster", new RangeFighter(), 19, 18);
 
@@ -261,8 +294,7 @@ namespace MonsterdungeonCrawlerTests
         public void TrapTargetField()
         {   //need number of max. clients
 
-            Level.playerList.Clear();
-            Level.trapList.Clear();
+            Level level7 = new Level(MAX_PLAYER); 
 
             Monster player8 = new Monster("monster", new RangeFighter(), 2, 3);
             Monster player9 = new Monster("monster", new RangeFighter(), 3, 3);
@@ -272,10 +304,18 @@ namespace MonsterdungeonCrawlerTests
             Field field5 = new Field(10, 11, new SpikeField());
             Field field6 = new Field(10, 12, new LaserBeam());
 
+            level7.AddPlayerToLevel(player8);
+            level7.AddPlayerToLevel(player9);
+            level7.AddPlayerToLevel(player10);
+            level7.AddPlayerToLevel(player11);
+            level7.AddFieldToLevel(field5);
+            level7.AddFieldToLevel(field6);
+
             field6.FieldType.OnNextRound(); 
               
             CommandGameMove cmove5 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",10, 11);
             cmove5.SourcePlayer = player11;
+            cmove5.Level = level7; 
 
             CommandManager cm2 = new CommandManager(); 
             cm2.AddCommand(cmove5);
@@ -285,6 +325,7 @@ namespace MonsterdungeonCrawlerTests
 
             CommandGameMove cmove6 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07",10, 12);
             cmove6.SourcePlayer = player11; 
+            cmove6.Level = level7; 
             cm2.AddCommand(cmove6);
             cm2.ProcessPendingTransactions();
 
@@ -294,8 +335,6 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void MoveInRange()
         {   
-            Level.playerList.Clear();
-            Level.trapList.Clear();
 
             Hero player12 = new Hero("hero", new MeleeFighter(), 16, 12);
 
@@ -346,8 +385,7 @@ namespace MonsterdungeonCrawlerTests
         public void ItemOnTargetField()
         {   //need number of max. clients
 
-            Level.playerList.Clear();
-            Level.trapList.Clear();
+            Level level6 = new Level(MAX_PLAYER);
 
             Monster player13 = new Monster("monster", new RangeFighter(), 2, 3);
             Monster player14 = new Monster("monster", new RangeFighter(), 3, 3);
@@ -361,8 +399,17 @@ namespace MonsterdungeonCrawlerTests
             field7.Item = new DefenseBoost(2); 
             field9.Item = new AttackBoost(3); 
 
+            level6.AddPlayerToLevel(player13);
+            level6.AddPlayerToLevel(player14);
+            level6.AddPlayerToLevel(player15);
+            level6.AddPlayerToLevel(player16);
+            level6.AddFieldToLevel(field7);
+            level6.AddFieldToLevel(field8);
+            level6.AddFieldToLevel(field9);
+
             CommandGameMove cmove14 = new CommandGameMove("234hug2haa1248325sdf5",10, 11);
             cmove14.SourcePlayer = player16; 
+            cmove14.Level = level6; 
 
             CommandManager cm3 = new CommandManager(); 
             cm3.AddCommand(cmove14);
@@ -374,6 +421,7 @@ namespace MonsterdungeonCrawlerTests
 
             CommandGameMove cmove16 = new CommandGameMove("234hug2haa1248325sdf5",10, 12);
             cmove16.SourcePlayer = player16; 
+            cmove16.Level = level6; 
 
             cm3.AddCommand(cmove16); 
             cm3.ProcessPendingTransactions();
@@ -381,12 +429,15 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(0.75, player16.AttackBoost);
             Assert.AreEqual(null, field9.Item); 
         }
-
     }
 
     [TestClass]
     public class UnitTestAttack
+
     {
+    public const int MAX_PLAYER = 4; 
+
+    
         [TestMethod]
         public void AttackEnemy()
         {
@@ -419,7 +470,6 @@ namespace MonsterdungeonCrawlerTests
             cattack2.TargetPlayer = player6;
             cm2.AddCommand(cattack2);
             cm2.ProcessPendingTransactions();  
-
         }
         
         [TestMethod]
@@ -467,6 +517,8 @@ namespace MonsterdungeonCrawlerTests
         public void ObstacleInRange1()
         {
 
+            Level level2 = new Level(MAX_PLAYER);
+
             //test obstacle in range on the bottom side
             Field field2 = new Field(11, 11, new Wall());
             Field field7 = new Field(11, 10, new Floor()); 
@@ -474,9 +526,16 @@ namespace MonsterdungeonCrawlerTests
             Hero player12 = new Hero("hero", new MeleeFighter(), 11, 9);
             Monster player13 = new Monster("monster", new MeleeFighter(), 11, 12);
 
+            level2.AddPlayerToLevel(player12);
+            level2.AddPlayerToLevel(player13);
+            level2.AddFieldToLevel(field2);
+            level2.AddFieldToLevel(field7);
+
+
             CommandGameAttack cattack7 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
             cattack7.SourcePlayer = player12;
             cattack7.TargetPlayer = player13;
+            cattack7.Level = level2; 
 
             Assert.IsTrue(cattack7.VerifyObstacleInRange());
 
@@ -486,9 +545,15 @@ namespace MonsterdungeonCrawlerTests
             Hero player14 = new Hero("hero", new MeleeFighter(), 11, 12);
             Monster player15 = new Monster("monster", new MeleeFighter(), 11, 9);
 
+            Level level3 = new Level(MAX_PLAYER); 
+            level3.AddPlayerToLevel(player14);
+            level3.AddPlayerToLevel(player15);
+            level3.AddFieldToLevel(field3); 
+
             CommandGameAttack cattack8 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack8.SourcePlayer = player14;
             cattack8.TargetPlayer = player15;
+            cattack8.Level = level3;
 
             Assert.IsTrue(cattack8.VerifyObstacleInRange());
 
@@ -498,9 +563,15 @@ namespace MonsterdungeonCrawlerTests
             Hero player16 = new Hero("hero", new MeleeFighter(), 1, 5);
             Monster player17 = new Monster("monster", new MeleeFighter(), 4, 5);
 
+            Level level4 = new Level(MAX_PLAYER); 
+            level4.AddPlayerToLevel(player16);
+            level4.AddPlayerToLevel(player17);
+            level4.AddFieldToLevel(field4); 
+
             CommandGameAttack cattack9 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack9.SourcePlayer = player16;
             cattack9.TargetPlayer = player17;
+            cattack9.Level = level4; 
 
             Assert.IsTrue(cattack9.VerifyObstacleInRange());
 
@@ -510,9 +581,15 @@ namespace MonsterdungeonCrawlerTests
             Hero player18 = new Hero("hero", new MeleeFighter(), 4, 5);
             Monster player19 = new Monster("monster", new MeleeFighter(), 1, 5);
 
+            Level level5 = new Level(MAX_PLAYER); 
+            level5.AddPlayerToLevel(player18);
+            level5.AddPlayerToLevel(player19);   
+            level5.AddFieldToLevel(field5);        
+
             CommandGameAttack cattack10 = new CommandGameAttack("2f2de19a291c41b5ae950faa111662e07", "1sda1672423124sdf2885");
             cattack10.SourcePlayer = player18;
             cattack10.TargetPlayer = player19;
+            cattack10.Level = level5; 
 
             Assert.IsTrue(cattack10.VerifyObstacleInRange());
         }
@@ -559,8 +636,7 @@ namespace MonsterdungeonCrawlerTests
         public void AttackWithoutRemainingMoves()
         {   //need number of max. clients
 
-            Level.playerList.Clear();
-            Level.trapList.Clear();
+            Level level1 = new Level(MAX_PLAYER);
 
             Hero player3 = new Hero("hero", new MeleeFighter(), 10, 18); 
             Monster player4 = new Monster("monster", new RangeFighter(), 8, 14);
@@ -573,35 +649,50 @@ namespace MonsterdungeonCrawlerTests
             Field field5 = new Field(8, 15, new Floor());
             field3.Item = new AttackBoost(3); 
 
+            level1.AddPlayerToLevel(player3); 
+            level1.AddPlayerToLevel(player4);
+            level1.AddPlayerToLevel(player5);
+            level1.AddPlayerToLevel(player6);
+            level1.AddFieldToLevel(field1);
+            level1.AddFieldToLevel(field2);
+            level1.AddFieldToLevel(field3);
+            level1.AddFieldToLevel(field4);
+            level1.AddFieldToLevel(field5);
+
             CommandManager cm1 = new CommandManager(); 
 
             //move to field (10, 17)
             CommandGameMove cmove1 = new CommandGameMove("adua5as7da5sd5", 10, 17); 
             cmove1.SourcePlayer = player3; 
+            cmove1.Level = level1;
             cm1.AddCommand(cmove1); 
             cm1.ProcessPendingTransactions(); 
 
             //move to field with trap (9, 17)
             CommandGameMove cmove2 = new CommandGameMove("adua5as7da5sd5", 9, 17); 
             cmove2.SourcePlayer = player3; 
+            cmove2.Level = level1;
             cm1.AddCommand(cmove2); 
             cm1.ProcessPendingTransactions();   
 
             //move to field with item (8, 17)
             CommandGameMove cmove3 = new CommandGameMove("adua5as7da5sd5", 8, 17); 
             cmove3.SourcePlayer = player3; 
+            cmove3.Level = level1;
             cm1.AddCommand(cmove3); 
             cm1.ProcessPendingTransactions(); 
 
             //move to field with item (8, 16)
             CommandGameMove cmove4 = new CommandGameMove("adua5as7da5sd5", 8, 16); 
             cmove4.SourcePlayer = player3; 
+            cmove4.Level = level1;
             cm1.AddCommand(cmove4); 
             cm1.ProcessPendingTransactions();
 
             //move to field with item (8, 15)
             CommandGameMove cmove5 = new CommandGameMove("adua5as7da5sd5", 8, 15); 
             cmove5.SourcePlayer = player3; 
+            cmove5.Level = level1;
             cm1.AddCommand(cmove5); 
             cm1.ProcessPendingTransactions();
 
@@ -609,6 +700,7 @@ namespace MonsterdungeonCrawlerTests
             CommandGameAttack cattack1 = new CommandGameAttack("adua5as7da5sd5", "6a6sd465a4s9"); 
             cattack1.SourcePlayer = player3; 
             cattack1.TargetPlayer = player4; 
+            cattack1.Level = level1;
             cm1.AddCommand(cattack1); 
             cm1.ProcessPendingTransactions();
         }
@@ -617,9 +709,6 @@ namespace MonsterdungeonCrawlerTests
         [ExpectedException(typeof(CantAttackException))]
         public void ObstacleInRange2()
         {   //need number of max. clients
-
-            Level.playerList.Clear();
-            Level.trapList.Clear();
 
             Hero player7 = new Hero("hero", new MeleeFighter(), 1, 5); 
             Monster player8 = new Monster("monster", new RangeFighter(), 4, 5);
@@ -640,9 +729,6 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void ObstacleInRange3()
         {   //need number of max. clients
-
-            Level.playerList.Clear();
-            Level.trapList.Clear();
 
             Hero player11 = new Hero("hero", new RangeFighter(), 3, 13); 
             Monster player12 = new Monster("monster", new RangeFighter(), 4, 13);
@@ -666,12 +752,11 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestTraps
     {
+        public const int MAX_PLAYER = 4;
 
         [TestMethod]
         public void ManualTrapAttack()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
 
             Hero player1 = new Hero("hero", new RangeFighter(), 11, 9);
             Field field1 = new Field(11, 9, new SpikeField());
@@ -685,8 +770,7 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void ManualTrapdoorAttack()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
+            Level level7 = new Level(MAX_PLAYER);
 
             Hero player2 = new Hero("hero", new RangeFighter(), 11, 9);
             Monster player22 = new Monster("monster", new MeleeFighter(), 7, 7);
@@ -696,7 +780,14 @@ namespace MonsterdungeonCrawlerTests
             Field field4 = new Field(6, 6, new Wall());
             Field field5 = new Field(7, 7, new Floor());
             Field field6 = new Field(8, 8, new Floor());
- 
+
+            level7.AddPlayerToLevel(player2);
+            level7.AddPlayerToLevel(player22);
+            level7.AddFieldToLevel(field2);
+            level7.AddFieldToLevel(field3);
+            level7.AddFieldToLevel(field4);
+            level7.AddFieldToLevel(field5);
+            level7.AddFieldToLevel(field6);
                     
             player2.DecrementLife(0.25);
 
@@ -708,7 +799,7 @@ namespace MonsterdungeonCrawlerTests
 
                 while (successfulMoving == false)
                 {
-                    if (Level.playingField[randomX, randomY].FieldType is Floor && Level.FieldBlockedByPlayer(randomX, randomY) == false)
+                    if (level7.playingField[randomX, randomY].FieldType is Floor && level7.FieldBlockedByPlayer(randomX, randomY) == false)
                     {
                         successfulMoving = true;
                         player2.MovePlayer(randomX, randomY);
@@ -771,13 +862,14 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestItems
     {
+        public const int MAX_PLAYER = 4;
+
+        Level level8 = new Level(MAX_PLAYER); 
+
         [TestMethod]
         [ExpectedException(typeof(System.ArgumentException))]
         public void ItemLevelInvalidLevel()
         {
-            Level.playerList.Clear();
-            Level.trapList.Clear();
-
             Field field8 = new Field(11, 11, new Floor());
             field8.Item = new DefenseBoost(8); 
         }
@@ -900,19 +992,22 @@ namespace MonsterdungeonCrawlerTests
         [TestMethod]
         public void DeleteBooster()
         {
+            Level level9 = new Level(MAX_PLAYER);
+
             Hero player5 = new Hero("hero", new RangeFighter(), 12, 1);
             Field field20 = new Field(12, 1, new Floor());
             field20.Item = new DefenseBoost(2); 
 
+            level9.AddPlayerToLevel(player5);
+            level9.AddFieldToLevel(field20);
+
             Assert.IsTrue(player5.CollectItem(field20.Item));
 
-            Assert.IsTrue(Level.playerList[0].DefenseItem.DecrementBoosterDuration());
-            Assert.IsTrue(Level.playerList[0].DefenseItem.DecrementBoosterDuration());
-            Assert.IsFalse(Level.playerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsTrue(level9.playerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsTrue(level9.playerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsFalse(level9.playerList[0].DefenseItem.DecrementBoosterDuration());
 
-
-            Level.playerList[0].DefenseItem = null; 
-
+            level9.playerList[0].DefenseItem = null; 
         }
 
     }
@@ -920,12 +1015,12 @@ namespace MonsterdungeonCrawlerTests
     [TestClass]
     public class UnitTestGame
     {
+        public const int MAX_PLAYER = 4;
+
+        /*
         [TestMethod]
         public void DecrementItemDurationAndDelete()
         {//need number of max. clients
-
-            Level.playerList.Clear();
-            Level.trapList.Clear();
 
             Hero player1 = new Hero("hero", new RangeFighter(), 12, 1);
             Monster player2 = new Monster("monster", new RangeFighter(), 2, 3);
@@ -974,13 +1069,11 @@ namespace MonsterdungeonCrawlerTests
             Assert.IsNull(player2.AttackItem);
             Assert.AreEqual(0, player2.AttackBoost);
         }
+        */
 
         [TestMethod]
         public void SwappingItems()
         {//need number of max. clients
-
-            Level.playerList.Clear();
-            Level.trapList.Clear();
 
             Hero player5 = new Hero("hero", new MeleeFighter(), 12, 1);
             Monster player6 = new Monster("monster", new RangeFighter(), 2, 3);
@@ -997,6 +1090,17 @@ namespace MonsterdungeonCrawlerTests
             cmove3.SourcePlayer = player5; 
             player5.PlayerRemainingMoves = player5.CharacterType._moveRange; 
 
+            Level level1 = new Level(MAX_PLAYER);
+            level1.AddPlayerToLevel(player5);
+            level1.AddPlayerToLevel(player6);
+            level1.AddPlayerToLevel(player7);
+            level1.AddPlayerToLevel(player8);
+            level1.AddFieldToLevel(field3);
+            level1.AddFieldToLevel(field4);
+            level1.AddFieldToLevel(field5); 
+
+            cmove3.Level = level1;           
+
             CommandManager cm2 = new CommandManager(); 
             cm2.AddCommand(cmove3);
             cm2.ProcessPendingTransactions();
@@ -1007,6 +1111,7 @@ namespace MonsterdungeonCrawlerTests
 
             CommandGameMove cmove4 = new CommandGameMove("1jhb2h48325sdf5", 12, 3);
             cmove4.SourcePlayer = player5; 
+            cmove4.Level = level1;    
             cm2.AddCommand(cmove4);
             cm2.ProcessPendingTransactions();
 
@@ -1016,6 +1121,7 @@ namespace MonsterdungeonCrawlerTests
 
             CommandGameMove cmove5 = new CommandGameMove("1jhb2h48325sdf5", 12, 4);
             cmove5.SourcePlayer = player5; 
+            cmove5.Level = level1;    
             cm2.AddCommand(cmove5);
             cm2.ProcessPendingTransactions();
 

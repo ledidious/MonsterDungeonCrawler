@@ -9,6 +9,7 @@ namespace MDC.Gamedata.LevelContent
         private int _xPosition;
         private int _yPosition;
         private FieldType _fieldType;
+        private Item _item; 
 
         public FieldType FieldType
         {
@@ -16,9 +17,12 @@ namespace MDC.Gamedata.LevelContent
 
             set { _fieldType = value; }
         }
-
-        private Item _item; 
-
+        
+        /// <summary>
+        /// Property for getting and setting the item
+        /// Set the item only if the fieldtype is a floor, because a wall or trap can't contain an item
+        /// </summary>
+        /// <value>Has to be a Item</value>
         public Item Item
         {
             get { return _item; }

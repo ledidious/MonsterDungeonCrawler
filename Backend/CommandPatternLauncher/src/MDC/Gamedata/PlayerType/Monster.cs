@@ -15,6 +15,7 @@ namespace MDC.Gamedata.PlayerType
             this.XPosition = xPosition;
             this.YPosition = yPosition;
             this.Life = LIFE_MONSTER;
+            this.PlayerRemainingMoves = characterType._moveRange; 
         }
 
         public override Boolean CollectItem(Item item)
