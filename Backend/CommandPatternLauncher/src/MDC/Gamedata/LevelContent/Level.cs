@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic; 
-using MDC.Gamedata.PlayerType; 
+using System.Collections.Generic;
+using MDC.Gamedata.PlayerType;
 
 
 namespace MDC.Gamedata.LevelContent
@@ -8,23 +8,30 @@ namespace MDC.Gamedata.LevelContent
     [Serializable]
     public class Level
     {
-        protected const int WIDTH = 20; 
-        protected const int HIGHT = 20;
-        protected int _maxPlayer; 
-        public Field[,] playingField = new Field[WIDTH, HIGHT];
+        protected int WIDTH;
+        protected int HIGHT;
+        protected int _maxPlayer;
+        public Field[,] playingField;
         public List<Player> playerList = new List<Player>();
-        public List<Field> trapList = new List<Field>(); 
-        private Boolean _keyOnField; 
+        public List<Field> trapList = new List<Field>();
+        private Boolean _keyOnField;
 
         public Boolean KeyOnField
         {
             get { return _keyOnField; }
-            set => _keyOnField = value; 
+            set => _keyOnField = value;
         }
 
         public Level(int maxPlayer)
         {
-            _maxPlayer = maxPlayer; 
+            _maxPlayer = maxPlayer;
+            this.playingField = new Field[20, 20];
+        }
+
+        public Level(int maxPlayer, int levelSize)
+        {
+            _maxPlayer = maxPlayer;
+            this.playingField = new Field[levelSize, levelSize];
         }
 
         /// <summary>
@@ -37,7 +44,7 @@ namespace MDC.Gamedata.LevelContent
             playingField[field.XPosition, field.YPosition] = field;
             if (field.FieldType is Trap)
             {
-                trapList.Add(field);  
+                trapList.Add(field);
             }
         }
 
@@ -47,14 +54,14 @@ namespace MDC.Gamedata.LevelContent
         /// <param name="player">Player to be added to the playerlist</param>
         public void AddPlayerToLevel(Player player)
         {
-                if (playerList.Count <= _maxPlayer)
-                {
-                    playerList.Add(player);     
-                }
-                else
-                {
-                    //Too many player
-                }
+            if (playerList.Count <= _maxPlayer)
+            {
+                playerList.Add(player);
+            }
+            else
+            {
+                //Too many player
+            }
         }
 
         /// <summary>
@@ -65,13 +72,13 @@ namespace MDC.Gamedata.LevelContent
         /// <returns>Returns true if the field is blocked and false if the field is not blocked by another player</returns>
         public Boolean FieldBlockedByPlayer(int xPosition, int yPosition)
         {
-            Boolean FieldIsBlocked = false; 
+            Boolean FieldIsBlocked = false;
 
             for (int i = 0; i < playerList.Count; i++)
             {
                 if (playerList[i].XPosition == xPosition && playerList[i].YPosition == yPosition)
                 {
-                    FieldIsBlocked = true; 
+                    FieldIsBlocked = true;
                 }
                 else
                 {
