@@ -1100,6 +1100,20 @@ namespace MonsterdungeonCrawlerTests
             Assert.AreEqual(field24.Item, field25.Item);
             Assert.AreSame(field24.Item, field25.Item); 
         }
+
+        [TestMethod]
+        public void AddTwoItemsToTheSameField()
+        {
+          Field field33 = new Field(12, 4, new Floor());
+          field33.Item = new DefenseBoost(2);
+          field33.Item = new AttackBoost(3);
+
+          Level level33 = new Level(MAX_PLAYER);
+          level33.AddFieldToLevel(field33); 
+
+          Assert.IsTrue(field33.Item is AttackBoost);
+          Assert.IsFalse(field33.Item is DefenseBoost);
+        }
     }
 
     [TestClass]
