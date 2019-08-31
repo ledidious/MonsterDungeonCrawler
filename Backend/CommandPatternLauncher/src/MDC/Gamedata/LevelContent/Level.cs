@@ -8,8 +8,8 @@ namespace MDC.Gamedata.LevelContent
     [Serializable]
     public class Level
     {
-        protected int WIDTH;
-        protected int HIGHT;
+        protected const int WIDTH_DEFAULT = 20;
+        protected const int HEIGHT_DEFAULT = 20;
         protected int _maxPlayer;
         public Field[,] playingField;
         public List<Player> playerList = new List<Player>();
@@ -25,7 +25,7 @@ namespace MDC.Gamedata.LevelContent
         public Level(int maxPlayer)
         {
             _maxPlayer = maxPlayer;
-            this.playingField = new Field[20, 20];
+            this.playingField = new Field[HEIGHT_DEFAULT, WIDTH_DEFAULT];
         }
 
         public Level(int maxPlayer, int levelSize)
