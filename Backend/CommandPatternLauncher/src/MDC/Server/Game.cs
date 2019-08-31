@@ -13,15 +13,15 @@ using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
 using MDC.Gamedata.LevelContent;
 
-//TODO: LaserBeam mit ROUNDCOUNTER verbinden von der Gameklasse alle % 3 Attribut IsActive auf true setzen -> OnNextRound() bei FieldType
-//TODO: nach jeder Runde schauen, ob Held ein DefenseItem und/oder AttackItem hat und -- auf Duration, wenn 0 dann Property null setzen und defenseBoost bzw. attackBoost beim Spieler (Hero hat Methode ResetBoost()) zurücksetzen
-//TODO: Item vom Level löschen, wenn CollectItem() true zurückliefert
+//TODO: ### CHECK ### LaserBeam mit ROUNDCOUNTER verbinden von der Gameklasse alle % 3 Attribut IsActive auf true setzen -> OnNextRound() bei FieldType
+//TODO: ### CHECK ### nach jeder Runde schauen, ob Held ein DefenseItem und/oder AttackItem hat und -- auf Duration, wenn 0 dann Property null setzen und defenseBoost bzw. attackBoost beim Spieler (Hero hat Methode ResetBoost()) zurücksetzen
+//TODO: ### CHECK ### Item vom Level löschen, wenn CollectItem() true zurückliefert
 //TODO: für die Spieler feste Startpositionen vergeben (Konstruktor sieht XYPositionen bereits vor)
 //TODO: Game Klasse muss am Ende jeden AttackCommands prüfen, ob alle noch Leben haben
-//TODO: immer wenn Spieler an die Reihe kommt, muss Player.PlayerRemainingMoves auf Player.CharacterType._moveRange gesetzt werden
-//TODO: bevor Spieler dran ist RemainingMoves auf moverange (CharacterType) setzen
-//TODO: OnNextRound() bei FieldType muss nach jeder Runde bei allen Traps und Items aufgerufen werden - wenn false zurückgeliefert wird, dann muss Item gelöscht werden
-//TODO: nach jeder Runde muss PlayerList durchlaufen werden und DecrementBoostDuration für DefenseItem und AttackItem vom Player durchgehen, sobald false zurückkommt null setzen
+//TODO: ### CHECK ### immer wenn Spieler an die Reihe kommt, muss Player.PlayerRemainingMoves auf Player.CharacterType._moveRange gesetzt werden
+//TODO: ### CHECK ### bevor Spieler dran ist RemainingMoves auf moverange (CharacterType) setzen
+//TODO: ### CHECK ### OnNextRound() bei FieldType muss nach jeder Runde bei allen Traps und Items aufgerufen werden - wenn false zurückgeliefert wird, dann muss Item gelöscht werden
+//TODO: ### CHECK ### nach jeder Runde muss PlayerList durchlaufen werden und DecrementBoostDuration für DefenseItem und AttackItem vom Player durchgehen, sobald false zurückkommt null setzen
 
 namespace MDC.Server
 {
@@ -130,6 +130,7 @@ namespace MDC.Server
         /// <param name="characterClass">The class of character of the character</param>
         public void AddPlayerToGame(string client_ID, string playerName, CharacterClass characterClass)
         {
+            //TODO: Wenn Game aktiv, dann nicht zulassen
             if (_clientsOfThisGame[0].Client_ID == client_ID)
             {
                 Hero main;
@@ -190,14 +191,7 @@ namespace MDC.Server
                         Console.WriteLine("Villain Position: " + client.Player.XPosition + ", " + client.Player.YPosition);
                     }
                 }
-                // _players.Add(client_ID, main);
             }
-            // switch (characterClass)
-            // {
-
-            //     default:
-            // }
-            // _players.Add()
         }
 
         /// <summary>
@@ -212,7 +206,7 @@ namespace MDC.Server
             }
             else
             {
-                throw new NotImplementedException(); //TODO: Melden, dass maximale Anzahl an Clients bereits erreicht wurde
+                throw new GameLobbyIsFullException();
             }
         }
 
@@ -229,7 +223,7 @@ namespace MDC.Server
             {
                 roundsPlayed = 0;
 
-                //TODO: Vor Eintritt in die Schleife, den Host erst eine Runde spielen lassen
+                //TODO: Verhindern, dass ein Spiel mehrfach gestartet werden kann.
                 while (_clientsOfThisGame[0].TcpClient.Connected)
                 {
                     Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
@@ -260,10 +254,9 @@ namespace MDC.Server
                                 }
 
                             }
-                            catch (System.Exception)
+                            catch (System.Exception e)
                             {
-                                //TODO: Fehlermeldung des Commands an Client weiterreichen
-                                throw;
+                                SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackGameException(_currentClient.Client_ID, e));
                             }
 
                         } while (_currentClient.Player.PlayerRemainingMoves > 0);
@@ -413,7 +406,9 @@ namespace MDC.Server
                 }
 
             }
+
             _currentClient.Player.ResetRemainingMoves();
+
             if (_clientsOfThisGame.IndexOf(_currentClient) < (MAX_CLIENTS - 1))
             {
                 _currentClient = _clientsOfThisGame[_clientsOfThisGame.IndexOf(_currentClient) + 1];
@@ -424,7 +419,6 @@ namespace MDC.Server
                 ItemManagement();
                 roundsPlayed++;
             }
-            SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackYourTurn(_currentClient.Client_ID));
 
             // if (_currentClient.Player is Monster && _currentClient.Player.Life <= 0 && _currentClient.IsAlive)
             // {
@@ -441,6 +435,7 @@ namespace MDC.Server
             }
 
             UpdateClients();
+            SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackYourTurn(_currentClient.Client_ID));
             // _currentClient = _clientsOfThisGame.FindIndex();
             // return null;
         }
@@ -497,6 +492,7 @@ namespace MDC.Server
                 }
             }
         }
+
         // ############
         // # OLD CODE #
         // ############

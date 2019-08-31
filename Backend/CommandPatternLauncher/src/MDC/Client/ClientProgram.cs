@@ -17,6 +17,7 @@ namespace MDC.Client
         private int _port_NO;
         private string _server_IP;
         private string _client_ID;
+        public string Client_ID { get { return _client_ID; } }
         private TcpClient _masterServer;
         private string _gameSession_ID;
         public string GameSession_ID { get { return _gameSession_ID; } }
@@ -64,6 +65,7 @@ namespace MDC.Client
             {
                 Console.WriteLine(e.GetType().FullName);
                 Console.WriteLine("\t" + e.Message);
+                throw new CannotConnectToServerException();
             }
 
             if (_client_ID != null)
@@ -83,14 +85,12 @@ namespace MDC.Client
                 _client_ID = null;
                 _isConnected = false;
             }
-            else if (_isHost)
+            else if (_isConnected && _isHost)
             {
                 throw new NotImplementedException();
                 //TODO: Wenn Host disconnected, auf Serverseite alle Clients disconnecten.
             }
-            else
-            {
-            }
+            else { throw new ClientIsNotConnectedToServerException(); }
         }
 
         /// <summary>
@@ -110,11 +110,8 @@ namespace MDC.Client
                 {
                     _gameSession_ID = session_ID;
                 }
-                else
-                {
-                    feedback.Execute();
-                    throw feedback.FeedbackException;
-                }
+                else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                else { throw new CommandNotRecognizedException(); }
             }
         }
 
@@ -135,10 +132,8 @@ namespace MDC.Client
                     Console.WriteLine("ID of the new Game: " + _gameSession_ID);
                     _isHost = true;
                 }
-                else
-                {
-                    feedback.Execute();
-                }
+                else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                else { throw new CommandNotRecognizedException(); }
             }
             else
             {
@@ -160,12 +155,9 @@ namespace MDC.Client
                     SendCommandToServer(command);
 
                     CommandFeedback feedback = EvaluateFeedback();
-                    if (feedback is CommandFeedbackOK)
-                    { }
-                    else
-                    {
-                        feedback.Execute();
-                    }
+                    if (feedback is CommandFeedbackOK) { }
+                    else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                    else { throw new CommandNotRecognizedException(); }
                 }
             }
             else
@@ -190,13 +182,18 @@ namespace MDC.Client
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK) { }
-                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start();}
-                    else
+                    else if (feedback is CommandFeedbackEndOfTurn)
                     {
-                        feedback.Execute();
+                        Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn()));
+                        updateThread.Start();
                     }
-
+                    else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                    else { throw new CommandNotRecognizedException(); }
                 }
+            }
+            else
+            {
+                throw new ClientIsNotConnectedToServerException();
             }
         }
 
@@ -214,12 +211,13 @@ namespace MDC.Client
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK) { }
-                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
-                    else
+                    else if (feedback is CommandFeedbackEndOfTurn)
                     {
-                        // throw feedback.FeedbackException;
-                        feedback.Execute();
+                        Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn()));
+                        updateThread.Start();
                     }
+                    else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                    else { throw new CommandNotRecognizedException(); }
                 }
             }
         }
@@ -239,12 +237,13 @@ namespace MDC.Client
 
                     CommandFeedback feedback = EvaluateFeedback();
                     if (feedback is CommandFeedbackOK) { }
-                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
-                    else
+                    else if (feedback is CommandFeedbackEndOfTurn)
                     {
-                        // throw feedback.FeedbackException;
-                        feedback.Execute();
+                        Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn()));
+                        updateThread.Start();
                     }
+                    else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                    else { throw new CommandNotRecognizedException(); }
                 }
             }
         }
@@ -256,18 +255,20 @@ namespace MDC.Client
         {
             if (_isConnected)
             {
-                if (_gameSession_ID != null)
+                if (_gameSession_ID != null && _currentStatus == Status.Busy)
                 {
                     CommandGameEndTurn command = new CommandGameEndTurn(_client_ID);
                     SendCommandToServer(command);
 
                     CommandFeedback feedback = EvaluateFeedback();
-                    if (feedback is CommandFeedbackOK) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
-                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
-                    else
+                    if (feedback is CommandFeedbackOK)
                     {
-                        feedback.Execute();
+                        Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn()));
+                        updateThread.Start();
                     }
+                    else if (feedback is CommandFeedbackEndOfTurn) { Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn())); updateThread.Start(); }
+                    else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                    else { throw new CommandNotRecognizedException(); }
                 }
             }
         }

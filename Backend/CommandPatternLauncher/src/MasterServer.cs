@@ -97,12 +97,19 @@ public class MasterServer
 
         if (_games.ContainsKey(session_ID))
         {
-            _games.GetValueOrDefault(session_ID).AddClientToGame(_gClients.GetValueOrDefault(client_ID));
-            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+            try
+            {
+                _games.GetValueOrDefault(session_ID).AddClientToGame(_gClients.GetValueOrDefault(client_ID));
+                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+            }
+            catch (System.Exception e)
+            {
+                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackGameException(client_ID, e));
+            }
         }
         else
         {
-            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackSessionIdIsInvalid(client_ID));
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackGameException(client_ID, new SessionIdIsInvalidException()));
         }
     }
 
@@ -114,18 +121,26 @@ public class MasterServer
     /// <param name="player">The player object to be forwarded</param>
     public static void CreateNewPlayerForSession(string client_ID, string session_ID, string playerName, CharacterClass characterClass)
     {
-        _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, playerName, characterClass);
+        try
+        {
+            _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, playerName, characterClass);
+
+            if (_gClients.GetValueOrDefault(client_ID).IsHost == false)
+            {
+                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackEndOfTurn(client_ID)); 
+                _gClients.GetValueOrDefault(client_ID).IsInGame = true;
+            }
+            else
+            {
+                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+            }
+        }
+        catch (System.Exception e)
+        {
+            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackGameException(client_ID, e));
+        }
 
 
-        if (_gClients.GetValueOrDefault(client_ID).IsHost == false)
-        {
-            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackEndOfTurn(client_ID));
-            _gClients.GetValueOrDefault(client_ID).IsInGame = true;
-        }
-        else
-        {
-            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
-        }
     }
 
     /// <summary>
@@ -173,11 +188,11 @@ public class MasterServer
             while (gClient.IsInGame == false)
             {
                 Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
-                Command leCommand = ReceiveCommandFromClient(gClient.TcpClient);
-                if (leCommand != null)
+                Command command = ReceiveCommandFromClient(gClient.TcpClient);
+                if (command != null)
                 {
                     // leCommand.Execute();
-                    cm.AddCommand(leCommand);
+                    cm.AddCommand(command);
                     cm.ProcessPendingTransactions();
                 }
             }
@@ -262,10 +277,6 @@ public class MasterServer
     /// <param name="command">Command you want to send</param>
     private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
     {
-        // NetworkStream nwStream = client.GetStream();
-        // IFormatter formatter = new BinaryFormatter();
-        // formatter.Serialize(nwStream, command);
-
         NetworkStream nwStream = client.GetStream();
         MemoryStream dataStream = new MemoryStream();
         IFormatter formatter = new BinaryFormatter();
