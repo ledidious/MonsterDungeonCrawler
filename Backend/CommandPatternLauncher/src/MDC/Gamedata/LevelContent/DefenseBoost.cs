@@ -73,7 +73,7 @@ namespace MDC.Gamedata.LevelContent
             Boolean BoosterActive; 
             this.Duration--; 
 
-            if (this.Duration == 0)
+            if (this.Duration <= 0)
             {
                 BoosterActive = false;
             }
