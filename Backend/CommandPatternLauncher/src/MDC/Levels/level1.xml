@@ -278,7 +278,7 @@
         <Wall/>
     </Field>
     <Field x="14" y="8">
-        <Spikefield/>
+        <SpikeField/>
     </Field>
     <Field x="15" y="8" />
     <Field x="16" y="8" />
@@ -296,7 +296,7 @@
     </Field>
     <Field x="7" y="9" />
     <Field x="8" y="9">
-        <Spikefield/>
+        <SpikeField/>
     </Field>
     <Field x="9" y="9">
         <Shield level="3"/>

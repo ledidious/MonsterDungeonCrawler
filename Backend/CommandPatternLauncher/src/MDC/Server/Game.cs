@@ -404,9 +404,20 @@ namespace MDC.Server
                             //SendFeedbackToClient(client.TcpClient, new CommandFeedbackEndOfGame());
                             //Oder ein UpdatePack welches alle über Ende des Spiels informiert
                         }
+                        //TODO: Held gewinnen lassen
                     }
                 }
 
+            }
+
+            if (_clientsOfThisGame[1].Player.Life <= 0 && _clientsOfThisGame[2].Player.Life <= 0 && _clientsOfThisGame[3].Player.Life <= 0)
+            {
+                //TODO: Held gewinnen lassen
+            }
+
+            if (_clientsOfThisGame[0].Player.Life <= 0)
+            {
+                //TODO: Monster gewinnen lassen
             }
 
             _currentClient.Player.ResetRemainingMoves();
@@ -421,12 +432,6 @@ namespace MDC.Server
                 ItemManagement();
                 roundsPlayed++;
             }
-
-            // if (_currentClient.Player is Monster && _currentClient.Player.Life <= 0 && _currentClient.IsAlive)
-            // {
-            //     _currentClient.IsAlive = false;
-            //     //TODO: Info an Client senden
-            // }
 
             if ((roundsPlayed % 2) == 0)
             {
@@ -562,6 +567,10 @@ namespace MDC.Server
                         Field heartField = new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor());
                         heartField.Item = new ExtraLife();
                         _level.AddFieldToLevel(heartField);
+                    }
+                    else if (item.Element("Hero") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor()));
                     }
                     else
                     {
