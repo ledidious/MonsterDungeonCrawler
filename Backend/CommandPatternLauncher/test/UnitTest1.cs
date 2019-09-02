@@ -118,13 +118,13 @@ namespace MonsterdungeonCrawlerTests
             level2.AddFieldToLevel(field1);
             level2.AddFieldToLevel(field8);            
 
-            Assert.AreEqual(field1, level2.playingField[13, 9]);
-            Assert.AreNotEqual(field1, level2.playingField[10, 9]);
+            Assert.AreEqual(field1, level2.PlayingField[13, 9]);
+            Assert.AreNotEqual(field1, level2.PlayingField[10, 9]);
 
-            Assert.AreEqual(field8, level2.playingField[11, 9]);
+            Assert.AreEqual(field8, level2.PlayingField[11, 9]);
 
-            Assert.IsInstanceOfType(level2.playingField[13, 9].FieldType, typeof(Wall));
-            Assert.IsInstanceOfType(level2.playingField[11, 9].FieldType, typeof(Floor));
+            Assert.IsInstanceOfType(level2.PlayingField[13, 9].FieldType, typeof(Wall));
+            Assert.IsInstanceOfType(level2.PlayingField[11, 9].FieldType, typeof(Floor));
         }
 
         [TestMethod]
@@ -142,7 +142,7 @@ namespace MonsterdungeonCrawlerTests
             level3.AddFieldToLevel(field4); 
             level3.AddFieldToLevel(field5);  
 
-            Assert.AreEqual(2, level3.trapList.Count);
+            Assert.AreEqual(2, level3.TrapList.Count);
             Assert.IsFalse(field5.FieldType.IsHidden());
         }
 
@@ -151,6 +151,33 @@ namespace MonsterdungeonCrawlerTests
         public void PlayerPositionOutOfField()
         {
             Hero player1 = new Hero("hero", new MeleeFighter(), 19, 30);
+        }
+
+        [TestMethod]
+
+        public void AddingStartingPoints()
+        {
+            Level level7 = new Level(MAX_PLAYER);
+
+            level7.FillStartingPoint("hero", 5, 5);   
+            level7.FillStartingPoint("monster", 6, 6);               
+            level7.FillStartingPoint("monster", 7, 7);  
+            level7.FillStartingPoint("monster", 8, 8);    
+
+            Assert.IsTrue(level7.StartingPoints.ContainsKey("monster3"));
+        }
+
+        
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentOutOfRangeException))]
+        public void AddingStartingPointsForTooMuchMonsters()
+        {
+            Level level7 = new Level(MAX_PLAYER);
+
+            level7.FillStartingPoint("monster", 5, 6);   
+            level7.FillStartingPoint("monster", 5, 6);               
+            level7.FillStartingPoint("monster", 5, 6);  
+            level7.FillStartingPoint("monster", 5, 6);    
         }
 
         [TestMethod]
@@ -173,7 +200,7 @@ namespace MonsterdungeonCrawlerTests
             Assert.IsFalse(level4.FieldBlockedByPlayer(10, 9));
             Assert.IsFalse(level4.FieldBlockedByPlayer(7, 7));
 
-            Assert.AreEqual(3, level4.playerList.Count);
+            Assert.AreEqual(3, level4.PlayerList.Count);
         }
     }
 
@@ -805,7 +832,7 @@ namespace MonsterdungeonCrawlerTests
 
                 while (successfulMoving == false)
                 {
-                    if (level7.playingField[randomX, randomY].FieldType is Floor && level7.FieldBlockedByPlayer(randomX, randomY) == false)
+                    if (level7.PlayingField[randomX, randomY].FieldType is Floor && level7.FieldBlockedByPlayer(randomX, randomY) == false)
                     {
                         successfulMoving = true;
                         player2.MovePlayer(randomX, randomY);
@@ -1008,11 +1035,11 @@ namespace MonsterdungeonCrawlerTests
 
             Assert.IsTrue(player5.CollectItem(field20.Item));
 
-            Assert.IsTrue(level9.playerList[0].DefenseItem.DecrementBoosterDuration());
-            Assert.IsTrue(level9.playerList[0].DefenseItem.DecrementBoosterDuration());
-            Assert.IsFalse(level9.playerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsTrue(level9.PlayerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsTrue(level9.PlayerList[0].DefenseItem.DecrementBoosterDuration());
+            Assert.IsFalse(level9.PlayerList[0].DefenseItem.DecrementBoosterDuration());
 
-            level9.playerList[0].DefenseItem = null; 
+            level9.PlayerList[0].DefenseItem = null; 
         }
 
         [TestMethod]

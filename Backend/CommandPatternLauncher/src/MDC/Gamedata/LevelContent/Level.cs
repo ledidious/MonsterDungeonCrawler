@@ -11,11 +11,13 @@ namespace MDC.Gamedata.LevelContent
         protected const int WIDTH_DEFAULT = 20;
         protected const int HEIGHT_DEFAULT = 20;
         protected int _maxPlayer;
-        public Field[,] playingField;
-        public List<Player> playerList = new List<Player>();
-        public List<Field> trapList = new List<Field>();
+        private int _countMonster = 0; 
+        public Field[,] PlayingField;
+        public List<Player> PlayerList = new List<Player>();
+        public List<Field> TrapList = new List<Field>();
         private Boolean _keyOnField;
-
+        public Dictionary<string, int[,]> StartingPoints = new Dictionary<string, int[,]>();
+        
         public Boolean KeyOnField
         {
             get { return _keyOnField; }
@@ -25,13 +27,40 @@ namespace MDC.Gamedata.LevelContent
         public Level(int maxPlayer)
         {
             _maxPlayer = maxPlayer;
-            this.playingField = new Field[HEIGHT_DEFAULT, WIDTH_DEFAULT];
+            this.PlayingField = new Field[HEIGHT_DEFAULT, WIDTH_DEFAULT];
+            this.StartingPoints = new Dictionary<string, int[,]>(); 
         }
 
         public Level(int maxPlayer, int levelSize)
         {
             _maxPlayer = maxPlayer;
-            this.playingField = new Field[levelSize, levelSize];
+            this.PlayingField = new Field[levelSize, levelSize];
+            this.StartingPoints = new Dictionary<string, int[,]>(); 
+        }
+
+        /// <summary>
+        /// Save the startingpositions for hero and monsters in startingpoints
+        /// </summary>
+        /// <param name="playerType">hero or monster</param>
+        /// <param name="xPosition">x startingposition</param>
+        /// <param name="yPosition">y startingposition</param>
+        public void FillStartingPoint(string playerType, int xPosition, int yPosition)
+        {
+            if (playerType == "hero")
+            {   
+                int[,] position = { {xPosition, yPosition} };
+                this.StartingPoints.Add(playerType, position);      
+            }
+            else if (playerType == "monster" && this._countMonster < this._maxPlayer - 1)
+            {
+                this._countMonster++; 
+                int[,] position = { {xPosition, yPosition} };
+                this.StartingPoints.Add(playerType+this._countMonster, position); 
+            }
+            else
+            {
+                throw new System.ArgumentOutOfRangeException("The maximum number of monsters is exceeded"); 
+            }
         }
 
         /// <summary>
@@ -41,10 +70,10 @@ namespace MDC.Gamedata.LevelContent
         /// <param name="field">Field to be added to the playingfieldlist</param>
         public void AddFieldToLevel(Field field)
         {
-            playingField[field.XPosition, field.YPosition] = field;
+            PlayingField[field.XPosition, field.YPosition] = field;
             if (field.FieldType is Trap)
             {
-                trapList.Add(field);
+                TrapList.Add(field);
             }
         }
 
@@ -54,9 +83,9 @@ namespace MDC.Gamedata.LevelContent
         /// <param name="player">Player to be added to the playerlist</param>
         public void AddPlayerToLevel(Player player)
         {
-            if (playerList.Count <= _maxPlayer)
+            if (PlayerList.Count <= _maxPlayer)
             {
-                playerList.Add(player);
+                PlayerList.Add(player);
             }
             else
             {
@@ -74,9 +103,9 @@ namespace MDC.Gamedata.LevelContent
         {
             Boolean FieldIsBlocked = false;
 
-            for (int i = 0; i < playerList.Count; i++)
+            for (int i = 0; i < PlayerList.Count; i++)
             {
-                if (playerList[i].XPosition == xPosition && playerList[i].YPosition == yPosition)
+                if (PlayerList[i].XPosition == xPosition && PlayerList[i].YPosition == yPosition)
                 {
                     FieldIsBlocked = true;
                 }

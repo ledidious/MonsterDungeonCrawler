@@ -12,8 +12,8 @@ namespace MDC.Gamedata.PlayerType
         {
             this.PlayerName = playerName;
             this.CharacterType = characterType;
-            this.XPosition = xPosition;
-            this.YPosition = yPosition;
+            this.XPosition = xPosition; 
+            this.YPosition = yPosition; 
             this.Life = LIFE_HERO;
             this.PlayerRemainingMoves = characterType._moveRange; 
         }
