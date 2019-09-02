@@ -12,6 +12,8 @@ using MDC.Exceptions;
 using MDC.Gamedata;
 using MDC.Gamedata.PlayerType;
 using MDC.Gamedata.LevelContent;
+using System.Xml.Linq;
+using System.Xml;
 
 //TODO: ### CHECK ### LaserBeam mit ROUNDCOUNTER verbinden von der Gameklasse alle % 3 Attribut IsActive auf true setzen -> OnNextRound() bei FieldType
 //TODO: ### CHECK ### nach jeder Runde schauen, ob Held ein DefenseItem und/oder AttackItem hat und -- auf Duration, wenn 0 dann Property null setzen und defenseBoost bzw. attackBoost beim Spieler (Hero hat Methode ResetBoost()) zurücksetzen
@@ -52,17 +54,17 @@ namespace MDC.Server
             this._sessionID = sessionID;
             this._currentClient = _clientsOfThisGame[0];
 
-
-            _level = new Level(MAX_CLIENTS);
-
             //TODO: Loader einbauen
-            for (int x = 0; x <= 19; x++)
-            {
-                for (int y = 0; y <= 19; y++)
-                {
-                    _level.AddFieldToLevel(new Field(x, y, new Floor()));
-                }
-            }
+            LoadLevelFile("level1.xml");
+
+            // _level = new Level(MAX_CLIENTS);
+            // for (int x = 0; x <= 19; x++)
+            // {
+            //     for (int y = 0; y <= 19; y++)
+            //     {
+            //         _level.AddFieldToLevel(new Field(x, y, new Floor()));
+            //     }
+            // }
 
             // CommandManager gcm = new CommandManager();
 
@@ -493,155 +495,88 @@ namespace MDC.Server
             }
         }
 
-        // ############
-        // # OLD CODE #
-        // ############
+        private void LoadLevelFile(string file)
+        {
+            //TODO: Evtl. Pfad für verschiedene OS anpassen
+            var fullPathToFile = Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), ("MDC" + Path.DirectorySeparatorChar + "Levels" + Path.DirectorySeparatorChar + file));
 
-        // /// <summary>
-        // /// Start a new server, which clients can connect to via a TCP connection
-        // /// </summary>
-        // public static void StartServer()
-        // {
+            XElement levelFromFile = XElement.Load(fullPathToFile);
+            // XElement test = new XElement(levelFromFile.Name,levelFromFile.)
 
-        //     CommandManager cm = new CommandManager();
+            // Create the level object
+            _level = new Level(MAX_CLIENTS, Int32.Parse(levelFromFile.Attribute("width").Value));
 
-        //     //---listen at the specified IP and port no.---
-        //     IPAddress localAdd = IPAddress.Parse(SERVER_IP);
-        //     TcpListener listener = new TcpListener(localAdd, PORT_NO);
+            // foreach (var item in levelFromFile.Attributes())
+            // {
+            //     if (item.Name == "width")
+            //     {
+            //         _level = new Level(MAX_CLIENTS, Int32.Parse(item.Value));
+            //     }
+            // }
 
-        //     Console.WriteLine("IP: " + SERVER_IP);
-        //     Console.WriteLine("Listening...");
-        //     listener.Start();
-
-        //     int counter = 0;
-        //     while (counter < MAX_CLIENTS)
-        //     {
-        //         counter++;
-        //         TcpClient tcpClient = listener.AcceptTcpClient();
-
-        //         Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, cm)));
-        //         clientThread.Start();
-        //     }
-
-        //     listener.Stop();
-        // }
-
-        /// <summary>
-        /// Called when a new Client connects to the server
-        /// </summary>
-        /// <param name="client">The Tcp Client</param>
-        /// <param name="cm">The Command Manager</param>
-        /*  private void ClientInteraction(TcpClient client, CommandManager cm)
-         {
-             string clientID = GenerateID();
-
-             //---Get the playerName from the server and create a new Player---
-             string playerName = ReceiveStringFromClient(client);
-             // _players.Add(clientID, new Player(playerName, 20));
-             //TODO: Make it universal --> Each PlayerType should be addable
-             _players.Add(clientID, new Hero("Manfred", 20));
-
-             //---write back the client ID to the client---
-             SendStringToClient(client, clientID);
-
-             Console.WriteLine($"Player {_players[clientID].PlayerName} has {_players[clientID].PlayerRemainingMoves} moves left.");
-
-             //---Receive command from client
-             GameCommand command = ReceiveCommandFromClient(client);
-
-             //---Get the matching player object from the dictionary and inject it into the command----
-             command.TargetPlayer = _players.GetValueOrDefault(command.ClientID);
-
-             cm.AddCommand(command);
-             cm.ProcessPendingTransactions();
-
-             Console.WriteLine($"Player {_players[clientID].PlayerName} has {_players[clientID].PlayerRemainingMoves} moves left.");
-
-             client.Close();
-
-         } */
-
-        /*         /// <summary>
-                /// Create a new player
-                /// </summary>
-                /// <param name="playerName">Name of the new player </param>
-                /// <returns>Returns the new Player</returns>
-                private static Player CreatePlayer(string playerName)
+            // Read field information.
+            foreach (var item in levelFromFile.Elements())
+            {
+                if (item.Name == "Field")
                 {
-                    return new Player(playerName, 20);
-                } */
+                    if (item.Element("Wall") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Wall()));
+                    }
+                    else if (item.Element("SpikeField") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new SpikeField()));
+                    }
+                    else if (item.Element("Trapdoor") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Trapdoor()));
+                    }
+                    else if (item.Element("Laserbeam") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new LaserBeam()));
+                    }
+                    else if (item.Element("Exit") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Exit()));
+                    }
+                    else if (item.Element("Sword") != null)
+                    {
+                        Field boostField = new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor());
+                        boostField.Item = new AttackBoost(Int32.Parse(item.Element("Sword").Attribute("level").Value));
+                        _level.AddFieldToLevel(boostField);
+                    }
+                    else if (item.Element("Shield") != null)
+                    {
+                        Field boostField = new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor());
+                        boostField.Item = new DefenseBoost(Int32.Parse(item.Element("Shield").Attribute("level").Value));
+                        _level.AddFieldToLevel(boostField);
+                    }
+                    else if (item.Element("Key") != null)
+                    {
+                        Field keyField = new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor());
+                        keyField.Item = Key.getInstance();
+                        _level.AddFieldToLevel(keyField);
+                    }
+                    else if (item.Element("Heart") != null)
+                    {
+                        Field heartField = new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor());
+                        heartField.Item = new ExtraLife();
+                        _level.AddFieldToLevel(heartField);
+                    }
+                    else
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor()));
+                    }
+                }
+            }
 
-        // //---incoming client connected---
-        // TcpClient client = listener.AcceptTcpClient();
-        // NetworkStream nwStream = client.GetStream();
-
-        // //---receive player from client and add it to the dictionary---
-        // _players.Add(noc, (Player) formatter.Deserialize(nwStream));
-
-        //     //---write back the client ID to the client---
-        //     byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(noc.ToString());
-        // nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-        //     noc++;
-
-        //     Console.WriteLine($"Player {_players[0].playerName} has {_players[0].playerRemainingMoves} moves left.");
-
-        //     //---Receive command from client
-        //     ICommand command = (ICommand)formatter.Deserialize(nwStream);
-
-        // //---Get the matching player object from the dictionary and inject it into the command----
-        // command.TargetPlayer = _players.GetValueOrDefault(command.ClientID);
-
-        //     cm.AddCommand(command);
-        //     cm.ProcessPendingTransactions();
-
-        //     Console.WriteLine($"Player {_players[0].playerName} has {_players[0].playerRemainingMoves} moves left.");
-
-        //     client.Close();
-        //     listener.Stop();
-
-
-
-        // byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes("Welcome Agent 47.");
-        // nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-
-        // string dataReceived = null;
-
-        // do
-        // {
-        //     //---get the incoming data through a network stream---
-        //     byte[] buffer = new byte[client.ReceiveBufferSize];
-
-        //     //---read incoming stream---
-        //     int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
-
-        //     //---convert the data received into a string---
-        //     dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-        //     Console.WriteLine("Received : " + dataReceived);
-
-
-        //     string dataResult = null;
-
-
-        //     //---write back the text to the client---
-        //     Console.WriteLine("Sending back : " + dataResult);
-        //     bytesToSend = ASCIIEncoding.ASCII.GetBytes(dataResult);
-        //     nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-        // } while (!"$exit".Equals(dataReceived));
-
+            // foreach (var item in levelFromFile.Elements())
+            // {
+            //     foreach (var franz in item.Elements())
+            //     {
+            //         Console.WriteLine(franz);
+            //     }
+            // }
+        }
     }
-
-    // private static void CommandMove(CommandManager cm, Player p, int steps)
-    // {
-    //     CommandMove mv = new CommandMove(p, steps, "Left");
-    //     cm.AddCommand(mv);
-    // }
-
-    // private static string CommandExecute(CommandManager cm, Player p)
-    // {
-    //     cm.ProcessPendingTransactions();
-
-    //     return "Player " + p.playerName + " has " + p.playerRemainingMoves.ToString() + " Moves left.";
-    // }
-
-
 }
