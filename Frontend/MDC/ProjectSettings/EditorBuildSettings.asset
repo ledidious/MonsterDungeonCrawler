@@ -35,4 +35,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameManual.unity
     guid: c7cb4f661042f6d6e915eeddd5d19a9b
+  - enabled: 1
+    path: Assets/Scenes/WinScenes/ArcherHeroWin.unity
+    guid: 3ef610d7d6bd5922791efc2c6495824a
+  - enabled: 1
+    path: Assets/Scenes/WinScenes/LoseHero.unity
+    guid: ed9f41cf1ae0721ee837c89b46e5110e
+  - enabled: 1
+    path: Assets/Scenes/WinScenes/LoseHeroArcher.unity
+    guid: 3810a22523d854639ae5add2eb049c38
   m_configObjects: {}
