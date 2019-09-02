@@ -30,7 +30,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SelectCharacter.unity
     guid: 30c010f16ec4b1a79878403e0817ceca
   - enabled: 1
-    path: Assets/Scenes/HeroWin.unity
+    path: Assets/Scenes/WinScenes/HeroWin.unity
     guid: 871149d34fa469cc4ae8010ca4f7fb39
   - enabled: 1
     path: Assets/Scenes/GameManual.unity
