@@ -375,7 +375,7 @@ namespace MDC.Server
         {
             foreach (var client in _clientsOfThisGame)
             {
-                UpdatePack update = new UpdatePack(_level.playerList, _level.playingField, _level.trapList);
+                UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList);
                 if (client.Player.Life > 0)
                 {
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -395,7 +395,7 @@ namespace MDC.Server
         {
             if (_currentClient.Player is Hero)
             {
-                foreach (var item in _level.playingField)
+                foreach (var item in _level.PlayingField)
                 {
                     if (item.FieldType is Exit && item.XPosition == _currentClient.Player.XPosition && item.YPosition == _currentClient.Player.YPosition && _currentClient.Player.HasKey)
                     {
@@ -435,7 +435,7 @@ namespace MDC.Server
 
             if ((roundsPlayed % 2) == 0)
             {
-                foreach (var field in _level.trapList)
+                foreach (var field in _level.TrapList)
                 {
                     field.FieldType.OnNextRound();
                 }
@@ -464,12 +464,12 @@ namespace MDC.Server
         {
             for (int i = 0; i < MAX_CLIENTS; i++)
             {
-                if (_level.playerList[i].AttackItem != null)
+                if (_level.PlayerList[i].AttackItem != null)
                 {
-                    if (_level.playerList[i].AttackItem.DecrementBoosterDuration() == false)
+                    if (_level.PlayerList[i].AttackItem.DecrementBoosterDuration() == false)
                     {
-                        _level.playerList[i].ResetAttackBooster();
-                        _level.playerList[i].ResetAttackItem();
+                        _level.PlayerList[i].ResetAttackBooster();
+                        _level.PlayerList[i].ResetAttackItem();
                     }
                     else
                     {
@@ -481,12 +481,12 @@ namespace MDC.Server
                     //no attackitem available
                 }
 
-                if (_level.playerList[i].DefenseItem != null)
+                if (_level.PlayerList[i].DefenseItem != null)
                 {
-                    if (_level.playerList[i].DefenseItem.DecrementBoosterDuration() == false)
+                    if (_level.PlayerList[i].DefenseItem.DecrementBoosterDuration() == false)
                     {
-                        _level.playerList[i].ResetDefenseBooster();
-                        _level.playerList[i].ResetDefenseItem();
+                        _level.PlayerList[i].ResetDefenseBooster();
+                        _level.PlayerList[i].ResetDefenseItem();
                     }
                     else
                     {
