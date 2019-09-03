@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/CommandPattern.csproj"
+                "${workspaceFolder}/mdcServer.csproj"
             ],
             "problemMatcher": "$tsc"
         },
@@ -17,7 +17,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/CommandPattern.csproj"
+                "${workspaceFolder}/mdcServer.csproj"
             ],
             "problemMatcher": "$tsc"
         },
@@ -28,9 +28,23 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/CommandPattern.csproj"
+                "${workspaceFolder}/mdcServer.csproj"
             ],
             "problemMatcher": "$tsc"
+        }
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "shell",
+            "group": "test",
+            "args": [
+                "test",
+                "${workspaceFolder}/testprojectfolder/testprojectname.csproj"
+            ],
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }
