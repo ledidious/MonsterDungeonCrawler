@@ -318,8 +318,8 @@ namespace MDC.Client
         private string ReceiveStringFromServer()
         {
             NetworkStream nwStream = _masterServer.GetStream();
-            byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);
+            Byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
+            Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
 
             return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
         }
@@ -332,8 +332,9 @@ namespace MDC.Client
         private void SendStringToServer(string data)
         {
             NetworkStream nwStream = _masterServer.GetStream();
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+            Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+
         }
 
         /// <summary>
@@ -349,8 +350,11 @@ namespace MDC.Client
 
             var ms = new MemoryStream();
             formatter.Serialize(ms, command);
+            ms.Flush(); //TODO: Evtl. entfernen
+            ms.Position = 0; //TODO: Evtl. entfernen
 
             byte[] bytesToSend = ms.ToArray();
+            ms.Close(); //TODO: Evtl. entfernen
 
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
             nwStream.Flush();

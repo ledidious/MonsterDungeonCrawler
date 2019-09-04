@@ -11,16 +11,14 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using MDC.Gamedata;
-using MDC.Gamedata.PlayerType;
-using MDC.Server;
 using MDC.Exceptions;
-using MDC;
+
 namespace MDC.Server
 {
     public class MasterServer
     {
-        static int PORT_NO;
-        // static string SERVER_IP;
+        static Int32 PORT_NO;
+        static string SERVER_IP;
         public static Boolean Shutdown { get; set; }
 
         static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
@@ -36,7 +34,7 @@ namespace MDC.Server
             // CommandManager scm = new CommandManager();
 
             //---listen at the specified IP and port no.---
-            IPAddress localAdd = IPAddress.Any; //Parse(SERVER_IP);
+            IPAddress localAdd = IPAddress.Parse(SERVER_IP); //Parse(SERVER_IP);
             TcpListener listener = new TcpListener(localAdd, PORT_NO);
 
             // Console.WriteLine("IP: " + SERVER_IP);
@@ -69,7 +67,7 @@ namespace MDC.Server
             foreach (var row in File.ReadAllLines("game.config"))
                 data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
 
-            // SERVER_IP = data["ServerIP"];
+            SERVER_IP = data["ServerIP"];
             PORT_NO = Convert.ToInt32(data["PortNo"]);
         }
 
@@ -80,11 +78,11 @@ namespace MDC.Server
         public static void CreateNewGame(string client_ID)
         {
             string session_ID = GenerateID();
-            _games.Add(session_ID, new Game(session_ID, _gClients.GetValueOrDefault(client_ID)));
+            _games.Add(session_ID, new Game(session_ID, _gClients[client_ID]));
 
-            SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
-            SendStringToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, session_ID);
-            _gClients.GetValueOrDefault(client_ID).IsHost = true;
+            SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
+            SendStringToClient(_gClients[client_ID].TcpClient, session_ID);
+            _gClients[client_ID].IsHost = true;
         }
 
         /// <summary>
@@ -100,17 +98,17 @@ namespace MDC.Server
             {
                 try
                 {
-                    _games.GetValueOrDefault(session_ID).AddClientToGame(_gClients.GetValueOrDefault(client_ID));
-                    SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+                    _games[session_ID].AddClientToGame(_gClients[client_ID]);
+                    SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
                 }
                 catch (System.Exception e)
                 {
-                    SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackGameException(client_ID, e));
+                    SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
                 }
             }
             else
             {
-                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackGameException(client_ID, new SessionIdIsInvalidException()));
+                SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, new SessionIdIsInvalidException()));
             }
         }
 
@@ -124,21 +122,21 @@ namespace MDC.Server
         {
             try
             {
-                _games.GetValueOrDefault(session_ID).AddPlayerToGame(client_ID, playerName, characterClass);
+                _games[session_ID].AddPlayerToGame(client_ID, playerName, characterClass);
 
-                if (_gClients.GetValueOrDefault(client_ID).IsHost == false)
+                if (_gClients[client_ID].IsHost == false)
                 {
-                    SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackEndOfTurn(client_ID));
-                    _gClients.GetValueOrDefault(client_ID).IsInGame = true;
+                    SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackEndOfTurn(client_ID));
+                    _gClients[client_ID].IsInGame = true;
                 }
                 else
                 {
-                    SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
+                    SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
                 }
             }
             catch (System.Exception e)
             {
-                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackGameException(client_ID, e));
+                SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
             }
 
 
@@ -156,11 +154,11 @@ namespace MDC.Server
                 // {
                 //     item.IsInGame = true;
                 // }
-                Thread gameThread = new Thread(new ThreadStart(() => _games.GetValueOrDefault(session_ID).StartGame()));
+                Thread gameThread = new Thread(new ThreadStart(() => _games[session_ID].StartGame()));
                 gameThread.Start();
                 // _games.GetValueOrDefault(session_ID).StartGame();
-                SendFeedbackToClient(_gClients.GetValueOrDefault(client_ID).TcpClient, new CommandFeedbackOK(client_ID));
-                _gClients.GetValueOrDefault(client_ID).IsInGame = true;
+                SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
+                _gClients[client_ID].IsInGame = true;
             }
             catch (NotEnoughPlayerInGameException e)
             {
@@ -218,9 +216,8 @@ namespace MDC.Server
         private static string ReceiveStringFromClient(TcpClient client)
         {
             NetworkStream nwStream = client.GetStream();
-            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            // Console.WriteLine("TYPE: " + bytesToRead.GetType());
-            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+            Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+            Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
 
             return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
         }
@@ -233,7 +230,7 @@ namespace MDC.Server
         private static void SendStringToClient(TcpClient client, string data)
         {
             NetworkStream nwStream = client.GetStream();
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+            Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
         }
 
