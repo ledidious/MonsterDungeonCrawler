@@ -503,7 +503,7 @@ namespace MDC.Server
         private void LoadLevelFile(string file)
         {
             //TODO: Evtl. Pfad für verschiedene OS anpassen
-            var fullPathToFile = Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), ("MDC" + Path.DirectorySeparatorChar + "Levels" + Path.DirectorySeparatorChar + file));
+            var fullPathToFile = Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), ("Level" + Path.DirectorySeparatorChar + file));
 
             XElement levelFromFile = XElement.Load(fullPathToFile);
             // XElement test = new XElement(levelFromFile.Name,levelFromFile.)
