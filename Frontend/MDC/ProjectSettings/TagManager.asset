@@ -11,6 +11,7 @@ TagManager:
   - Wall
   - Key
   - music
+  - client
   layers:
   - Default
   - TransparentFX

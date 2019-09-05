@@ -348,6 +348,9 @@ namespace MDC.Client
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
+            // set the binder to the custom binder:
+            formatter.Binder = TypeOnlyBinder.Default;
+
             var ms = new MemoryStream();
             formatter.Serialize(ms, command);
             ms.Flush(); //TODO: Evtl. entfernen
@@ -391,6 +394,9 @@ namespace MDC.Client
             NetworkStream nwStream = _masterServer.GetStream();
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
+
+            // set the binder to the custom binder:
+            formatter.Binder = TypeOnlyBinder.Default;
 
             byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
             int bytesRead = nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);

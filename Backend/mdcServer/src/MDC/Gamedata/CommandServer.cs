@@ -1,6 +1,7 @@
 //Command
 using System;
 using MDC.Gamedata.PlayerType;
+using MDC.Server;
 
 namespace MDC.Gamedata
 {

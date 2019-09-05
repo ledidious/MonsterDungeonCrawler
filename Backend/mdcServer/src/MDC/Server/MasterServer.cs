@@ -245,6 +245,9 @@ namespace MDC.Server
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
+            // set the binder to the custom binder:
+            formatter.Binder = TypeOnlyBinder.Default;
+
             byte[] bytesToRead = new byte[client.ReceiveBufferSize];
             int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
 
@@ -278,6 +281,9 @@ namespace MDC.Server
             NetworkStream nwStream = client.GetStream();
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
+
+            // set the binder to the custom binder:
+            formatter.Binder = TypeOnlyBinder.Default;
 
             var ms = new MemoryStream();
             formatter.Serialize(ms, command);
