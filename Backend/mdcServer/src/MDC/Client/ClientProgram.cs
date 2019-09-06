@@ -24,6 +24,7 @@ namespace MDC.Client
         private Boolean _isConnected = false;
         public Boolean IsConnected { get { return _isConnected; } }
         private Boolean _isHost = false;
+        public Boolean IsHost { get { return _isHost; } }
 
         public enum Status
         {
