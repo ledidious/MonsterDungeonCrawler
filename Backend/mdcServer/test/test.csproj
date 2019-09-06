@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\CommandPattern.csproj" />
+    <ProjectReference Include="..\src\mdcServer.csproj" />
   </ItemGroup>
 
 </Project>

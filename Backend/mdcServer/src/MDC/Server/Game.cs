@@ -138,10 +138,10 @@ namespace MDC.Server
                 Hero main;
                 switch (characterClass)
                 {
-                    case CharacterClass.MeleeFighter:
+                    case CharacterClass.Knight:
                         main = new Hero(playerName, new MeleeFighter(), 0, 0);
                         break;
-                    case CharacterClass.RangeFighter:
+                    case CharacterClass.Archer:
                         main = new Hero(playerName, new RangeFighter(), 0, 0);
                         break;
                     default:
@@ -160,10 +160,10 @@ namespace MDC.Server
                     {
                         switch (characterClass)
                         {
-                            case CharacterClass.MeleeFighter:
+                            case CharacterClass.Knight:
                                 villain = new Monster(playerName, new MeleeFighter(), 0, 0);
                                 break;
-                            case CharacterClass.RangeFighter:
+                            case CharacterClass.Archer:
                                 villain = new Monster(playerName, new RangeFighter(), 0, 0);
                                 break;
                             default:
