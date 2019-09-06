@@ -18,11 +18,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Session.unity
     guid: bbf123b3a36c207d7b2a718b7374eacf
   - enabled: 1
-    path: Assets/Scenes/SelectCharacter.unity
-    guid: 30c010f16ec4b1a79878403e0817ceca
-  - enabled: 1
     path: Assets/Scenes/LevelSelect.unity
     guid: 3c5b846ab10aaa7a8a61c61529ebac35
+  - enabled: 1
+    path: Assets/Scenes/SelectCharacter.unity
+    guid: 30c010f16ec4b1a79878403e0817ceca
   - enabled: 1
     path: Assets/Scenes/PlayerList.unity
     guid: 0684437ac2fb676c6a8acf2c0b470b3d
@@ -47,4 +47,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WinScenes/LoseHeroArcher.unity
     guid: 3810a22523d854639ae5add2eb049c38
+  - enabled: 1
+    path: Assets/Scenes/FourthLevel.unity
+    guid: 4cf10afddc7596f8881b0e13747ce574
   m_configObjects: {}
