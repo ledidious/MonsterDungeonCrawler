@@ -59,7 +59,9 @@
     <Field x="19" y="0">
         <Wall />
     </Field>
-    <Field x="0" y="1" />
+    <Field x="0" y="1">
+        <Wall />
+    </Field>
     <Field x="1" y="1">
         <Hero color="red" />
     </Field>
@@ -86,8 +88,12 @@
     <Field x="18" y="1">
         <Enemy color="yellow" />
     </Field>
-    <Field x="19" y="1" />
-    <Field x="0" y="2" />
+    <Field x="19" y="1">
+        <Wall />
+    </Field>
+    <Field x="0" y="2">
+        <Wall />
+    </Field>
     <Field x="1" y="2" />
     <Field x="2" y="2" />
     <Field x="3" y="2" />
@@ -106,8 +112,12 @@
     <Field x="16" y="2" />
     <Field x="17" y="2" />
     <Field x="18" y="2" />
-    <Field x="19" y="2" />
-    <Field x="0" y="3" />
+    <Field x="19" y="2">
+        <Wall />
+    </Field>
+    <Field x="0" y="3">
+        <Wall />
+    </Field>
     <Field x="1" y="3" />
     <Field x="2" y="3" />
     <Field x="3" y="3">
@@ -136,8 +146,12 @@
         <Wall/>
     </Field>
     <Field x="18" y="3" />
-    <Field x="19" y="3" />
-    <Field x="0" y="4" />
+    <Field x="19" y="3">
+        <Wall/>
+    </Field>
+    <Field x="0" y="4">
+        <Wall/>
+    </Field>
     <Field x="1" y="4" />
     <Field x="2" y="4" />
     <Field x="3" y="4" />
@@ -162,8 +176,12 @@
         <Wall/>
     </Field>
     <Field x="18" y="4" />
-    <Field x="19" y="4" />
-    <Field x="0" y="5" />
+    <Field x="19" y="4">
+        <Wall/>
+    </Field>
+    <Field x="0" y="5">
+        <Wall/>
+    </Field>
     <Field x="1" y="5" />
     <Field x="2" y="5" />
     <Field x="3" y="5" />
@@ -190,8 +208,12 @@
     </Field>
     <Field x="17" y="5" />
     <Field x="18" y="5" />
-    <Field x="19" y="5" />
-    <Field x="0" y="6" />
+    <Field x="19" y="5">
+        <Wall/>
+    </Field>
+    <Field x="0" y="6">
+        <Wall/>
+    </Field>
     <Field x="1" y="6" />
     <Field x="2" y="6" />
     <Field x="3" y="6" />
@@ -218,8 +240,12 @@
     <Field x="16" y="6" />
     <Field x="17" y="6" />
     <Field x="18" y="6" />
-    <Field x="19" y="6" />
-    <Field x="0" y="7" />
+    <Field x="19" y="6">
+        <Wall/>
+    </Field>
+    <Field x="0" y="7">
+        <Wall/>
+    </Field>
     <Field x="1" y="7" />
     <Field x="2" y="7" />
     <Field x="3" y="7" />
@@ -252,8 +278,12 @@
     <Field x="16" y="7" />
     <Field x="17" y="7" />
     <Field x="18" y="7" />
-    <Field x="19" y="7" />
-    <Field x="0" y="8" />
+    <Field x="19" y="7">
+        <Wall/>
+    </Field>
+    <Field x="0" y="8">
+        <Wall/>
+    </Field>
     <Field x="1" y="8">
         <Shield level="1"/>
     </Field>
@@ -284,8 +314,12 @@
     <Field x="16" y="8" />
     <Field x="17" y="8" />
     <Field x="18" y="8" />
-    <Field x="19" y="8" />
-    <Field x="0" y="9" />
+    <Field x="19" y="8">
+        <Wall/>
+    </Field>
+    <Field x="0" y="9">
+        <Wall/>
+    </Field>
     <Field x="1" y="9" />
     <Field x="2" y="9" />
     <Field x="3" y="9" />
@@ -310,8 +344,12 @@
     <Field x="16" y="9" />
     <Field x="17" y="9" />
     <Field x="18" y="9" />
-    <Field x="19" y="9" />
-    <Field x="0" y="10" />
+    <Field x="19" y="9">
+        <Wall/>
+    </Field>
+    <Field x="0" y="10">
+        <Wall/>
+    </Field>
     <Field x="1" y="10" />
     <Field x="2" y="10" />
     <Field x="3" y="10" />
@@ -336,13 +374,17 @@
     <Field x="18" y="10">
         <Sword level="3"/>
     </Field>    
-    <Field x="19" y="10" />
-    <Field x="0" y="11" />
+    <Field x="19" y="10">
+        <Wall/>
+    </Field>
+    <Field x="0" y="11">
+        <Wall/>
+    </Field>
     <Field x="1" y="11" />
     <Field x="2" y="11" />
     <Field x="3" y="11" />
     <Field x="4" y="11">
-        <Wall></Wall>
+        </Wall>
     </Field>
     <Field x="5" y="11">
         <Wall/>
@@ -366,8 +408,12 @@
     <Field x="16" y="11" />
     <Field x="17" y="11" />
     <Field x="18" y="11" />
-    <Field x="19" y="11" />
-    <Field x="0" y="12" />
+    <Field x="19" y="11">
+        <Wall/>
+    </Field>
+    <Field x="0" y="12">
+        <Wall/>
+    </Field>
     <Field x="1" y="12" />
     <Field x="2" y="12" />
     <Field x="3" y="12" />
@@ -388,8 +434,12 @@
     <Field x="16" y="12" />
     <Field x="17" y="12" />
     <Field x="18" y="12" />
-    <Field x="19" y="12" />
-    <Field x="0" y="13" />
+    <Field x="19" y="12">
+        <Wall/>
+    </Field>
+    <Field x="0" y="13">
+        <Wall/>
+    </Field>
     <Field x="1" y="13" />
     <Field x="2" y="13" />
     <Field x="3" y="13" />
@@ -410,8 +460,12 @@
     <Field x="16" y="13" />
     <Field x="17" y="13" />
     <Field x="18" y="13" />
-    <Field x="19" y="13" />
-    <Field x="0" y="14" />
+    <Field x="19" y="13">
+        <Wall/>
+    </Field>
+    <Field x="0" y="14">
+        <Wall/>
+    </Field>
     <Field x="1" y="14">
         <Laserbeam/>
     </Field>
@@ -442,8 +496,12 @@
     <Field x="16" y="14" />
     <Field x="17" y="14" />
     <Field x="18" y="14" />
-    <Field x="19" y="14" />
-    <Field x="0" y="15" />
+    <Field x="19" y="14">
+        <Wall/>
+    </Field>
+    <Field x="0" y="15">
+        <Wall/>
+    </Field>
     <Field x="1" y="15" />
     <Field x="2" y="15" />
     <Field x="3" y="15">
@@ -468,8 +526,12 @@
     <Field x="16" y="15" />
     <Field x="17" y="15" />
     <Field x="18" y="15" />
-    <Field x="19" y="15" />
-    <Field x="0" y="16" />
+    <Field x="19" y="15">
+        <Wall/>
+    </Field>
+    <Field x="0" y="16">
+        <Wall/>
+    </Field>
     <Field x="1" y="16" />
     <Field x="2" y="16" />
     <Field x="3" y="16">
@@ -512,8 +574,12 @@
     </Field>
     <Field x="17" y="16" />
     <Field x="18" y="16" />
-    <Field x="19" y="16" />
-    <Field x="0" y="17" />
+    <Field x="19" y="16">
+        <Wall/>
+    </Field>
+    <Field x="0" y="17">
+        <Wall/>
+    </Field>
     <Field x="1" y="17" />
     <Field x="2" y="17" />
     <Field x="3" y="17" />
@@ -534,8 +600,12 @@
     <Field x="16" y="17" />
     <Field x="17" y="17" />
     <Field x="18" y="17" />
-    <Field x="19" y="17" />
-    <Field x="0" y="18" />
+    <Field x="19" y="17">
+        <Wall/>
+    </Field>
+    <Field x="0" y="18">
+        <Wall/>
+    </Field>
     <Field x="1" y="18">
         <Enemy color="blue" />
     </Field>
@@ -558,8 +628,12 @@
     <Field x="18" y="18">
         <Enemy color="green" />
     </Field>
-    <Field x="19" y="18" />
-    <Field x="0" y="19" />
+    <Field x="19" y="18">
+        <Wall/>
+    </Field>
+    <Field x="0" y="19">
+        <Wall/>
+    </Field>
     <Field x="1" y="19" />
     <Field x="2" y="19" />
     <Field x="3" y="19" />
@@ -578,5 +652,7 @@
     <Field x="16" y="19" />
     <Field x="17" y="19" />
     <Field x="18" y="19" />
-    <Field x="19" y="19" />
+    <Field x="19" y="19">
+        <Wall/>
+    </Field>
 </Level>
