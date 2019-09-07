@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using MDC.Gamedata;
 using MDC.Exceptions;
+using System.Diagnostics;
 
 namespace MDC.Server
 {
@@ -19,7 +20,9 @@ namespace MDC.Server
     {
         static Int32 PORT_NO;
         static string SERVER_IP;
+        private static TcpListener listener;
         public static Boolean Shutdown { get; set; }
+        private List<Thread> myThreads;
 
         static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
         static private Dictionary<string, GameClient> _gClients = new Dictionary<string, GameClient>(); //clientID, TcpClient
@@ -34,17 +37,41 @@ namespace MDC.Server
             // CommandManager scm = new CommandManager();
 
             //---listen at the specified IP and port no.---
-            IPAddress localAdd = IPAddress.Parse(SERVER_IP); //Parse(SERVER_IP);
-            TcpListener listener = new TcpListener(localAdd, PORT_NO);
+            IPAddress localAdd = IPAddress.Any; //IPAddress.Parse(SERVER_IP);
+            listener = new TcpListener(localAdd, PORT_NO);
 
             // Console.WriteLine("IP: " + SERVER_IP);
             Console.WriteLine("##################\n MDC MasterServer \n##################");
             Console.WriteLine("Port: " + PORT_NO);
             Console.WriteLine("Listening...");
+
+            Shutdown = false;
+
+            Thread serverThread = new Thread(new ThreadStart(() => ServerOperation(listener)));
+            serverThread.Start();
+
+            // // Keep the Server alive
+            // while (Shutdown == false)
+            // {
+
+            // }
+
+            // while (Shutdown == false)
+            // {
+            //     TcpClient tcpClient = listener.AcceptTcpClient();
+
+            //     Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
+            //     clientThread.Start();
+            // }
+
+
+
+            // listener.Stop();
+        }
+
+        private static void ServerOperation(TcpListener listener)
+        {
             listener.Start();
-
-            Shutdown = false; //Wird nicht klappen, da der Server in listerner.AccepptTcpClient() hängt
-
             while (Shutdown == false)
             {
                 TcpClient tcpClient = listener.AcceptTcpClient();
@@ -52,10 +79,29 @@ namespace MDC.Server
                 Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
                 clientThread.Start();
             }
+            Console.WriteLine("Penis");
 
+            // System.Threading.Thread.CurrentThread.Abort();
+            // System.Threading.Thread.CurrentThread.Join();            
+        }
+
+        public static void StopServer()
+        {
             Console.WriteLine("Shuting down Server...");
+            Shutdown = true;
+            // listener.Stop();
 
-            listener.Stop();
+            foreach (var item in _gClients)
+            {
+                item.Value.TcpClient.Close();
+            }
+
+            // ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
+
+            // foreach (ProcessThread thread in currentThreads)
+            // {
+            //     thread.Id
+            // }
         }
 
         /// <summary>
@@ -75,10 +121,10 @@ namespace MDC.Server
         /// [Only called by received commands] Creates a new game session and saves it in the dictionary.
         /// </summary>
         /// <param name="client_ID">ID of the executing client</param>
-        public static void CreateNewGame(string client_ID)
+        public static void CreateNewGame(string client_ID, string levelFileName)
         {
             string session_ID = GenerateID();
-            _games.Add(session_ID, new Game(session_ID, _gClients[client_ID]));
+            _games.Add(session_ID, new Game(session_ID, _gClients[client_ID], levelFileName));
 
             SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
             SendStringToClient(_gClients[client_ID].TcpClient, session_ID);
@@ -196,7 +242,10 @@ namespace MDC.Server
                     }
                 }
             }
-            gClient.TcpClient.Close();
+            // gClient.TcpClient.Close();
+            Console.WriteLine("Client Penis");
+            System.Threading.Thread.CurrentThread.Abort();
+            System.Threading.Thread.CurrentThread.Join();            
         }
 
         /// <summary>

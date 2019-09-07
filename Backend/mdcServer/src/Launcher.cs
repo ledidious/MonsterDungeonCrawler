@@ -13,13 +13,15 @@ class Launcher
     {
         ClientProgram myFirstClient = new ClientProgram();
 
-        Thread serverThread = new Thread(new ThreadStart(() => MasterServer.StartServer()));
-        serverThread.Start();
+        // Thread serverThread = new Thread(new ThreadStart(() => MasterServer.StartServer()));
+        // serverThread.Start();
+
+        MasterServer.StartServer();
 
         System.Threading.Thread.Sleep(500);
 
         myFirstClient.ConnectToServer();
-        myFirstClient.CreateNewGame();
+        myFirstClient.CreateNewGame("level1");
         // myFirstClient.DisconnectFromServer();
 /* 
         System.Threading.Thread.Sleep(500);

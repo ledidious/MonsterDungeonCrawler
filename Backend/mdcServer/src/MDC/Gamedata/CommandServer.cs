@@ -19,13 +19,16 @@ namespace MDC.Gamedata
     [Serializable]
     public class CommandServerNewGame : CommandServer
     {
-        public CommandServerNewGame(string SourceClientID) : base(SourceClientID)
+        string levelFileName;
+        
+        public CommandServerNewGame(string SourceClientID, string levelFileName) : base(SourceClientID)
         {
+            this.levelFileName = levelFileName;
         }
 
         public override void Execute()
         {
-            MasterServer.CreateNewGame(SourceClientID);
+            MasterServer.CreateNewGame(SourceClientID, levelFileName);
             this.IsCompleted = true;
         }
     }

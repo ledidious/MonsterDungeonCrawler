@@ -119,11 +119,11 @@ namespace MDC.Client
         /// <summary>
         /// Create a new game session
         /// </summary>
-        public void CreateNewGame()
+        public void CreateNewGame(string levelFileName)
         {
             if (_isConnected)
             {
-                CommandServerNewGame command = new CommandServerNewGame(_client_ID);
+                CommandServerNewGame command = new CommandServerNewGame(_client_ID, levelFileName);
                 SendCommandToServer(command);
 
                 CommandFeedback feedback = EvaluateFeedback();

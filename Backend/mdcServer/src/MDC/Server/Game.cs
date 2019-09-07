@@ -48,14 +48,15 @@ namespace MDC.Server
         protected int roundsPlayed;
         protected Boolean _gameActive;
 
-        public Game(String sessionID, GameClient firstClient)
+        public Game(String sessionID, GameClient firstClient, string levelFileName)
         {
             _clientsOfThisGame.Add(firstClient);
             this._sessionID = sessionID;
             this._currentClient = _clientsOfThisGame[0];
 
             //TODO: Loader einbauen
-            LoadLevelFile("level1.xml");
+            // LoadLevelFile("level1.xml");
+            LoadLevelFile(levelFileName + ".xml");
 
             // _level = new Level(MAX_CLIENTS);
             // for (int x = 0; x <= 19; x++)
