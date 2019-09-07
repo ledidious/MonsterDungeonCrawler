@@ -342,7 +342,6 @@
     <Field x="2" y="11" />
     <Field x="3" y="11" />
     <Field x="4" y="11">
-        <!-- Die gute Border Wall: https://www.der-postillon.com/2017/01/IKEA-wall.html -->
         <Wall></Wall>
     </Field>
     <Field x="5" y="11">
