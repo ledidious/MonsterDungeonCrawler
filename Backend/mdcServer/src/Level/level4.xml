@@ -66,24 +66,26 @@
         <Hero color="red" />
     </Field>
     <Field x="2" y="1" />
-    <Field x="3" y="1" />
+    <Field x="3" y="1">
+        <Wall />
+    </Field>
     <Field x="4" y="1" />
     <Field x="5" y="1" />
-    <Field x="6" y="1" />
-    <Field x="7" y="1" />
+    <Field x="6" y="1">
+        <Key/>
+    </Field>
+    <Field x="7" y="1">
+        <Wall />
+    </Field>
     <Field x="8" y="1" />
     <Field x="9" y="1" />
-    <Field x="10" y="1">
-        <Sword level="2"/>
-    </Field>
+    <Field x="10" y="1" />
     <Field x="11" y="1" />
     <Field x="12" y="1" />
     <Field x="13" y="1" />
     <Field x="14" y="1" />
     <Field x="15" y="1" />
-    <Field x="16" y="1">
-        <SpikeField />
-    </Field>
+    <Field x="16" y="1" />
     <Field x="17" y="1" />
     <Field x="18" y="1">
         <Enemy color="yellow" />
@@ -96,7 +98,9 @@
     </Field>
     <Field x="1" y="2" />
     <Field x="2" y="2" />
-    <Field x="3" y="2" />
+    <Field x="3" y="2">
+        <Wall />
+    </Field>
     <Field x="4" y="2" />
     <Field x="5" y="2" />
     <Field x="6" y="2" />
@@ -104,8 +108,12 @@
     <Field x="8" y="2" />
     <Field x="9" y="2" />
     <Field x="10" y="2" />
-    <Field x="11" y="2" />
-    <Field x="12" y="2" />
+    <Field x="11" y="2">
+        <Sword level="2"/>
+    </Field>
+    <Field x="12" y="2">
+        <Wall />
+    </Field>
     <Field x="13" y="2" />
     <Field x="14" y="2" />
     <Field x="15" y="2" />
@@ -127,24 +135,38 @@
         <Wall/>
     </Field>
     <Field x="5" y="3">
-        <Shield level="2"/>
+        <Wall />
     </Field>
-    <Field x="6" y="3" />
-    <Field x="7" y="3" />
+    <Field x="6" y="3">
+        <Wall />
+    </Field>
+    <Field x="7" y="3">
+        <Wall />
+    </Field>
     <Field x="8" y="3" />
     <Field x="9" y="3" />
     <Field x="10" y="3">
         <Key/>
     </Field>
-    <Field x="11" y="3" />
-    <Field x="12" y="3" />
-    <Field x="13" y="3" />
-    <Field x="14" y="3" />
-    <Field x="15" y="3" />
-    <Field x="16" y="3" />
-    <Field x="17" y="3">
-        <Wall/>
+    <Field x="11" y="3">
+        <Wall />
     </Field>
+    <Field x="12" y="3">
+        <Wall />
+    </Field>
+    <Field x="13" y="3">
+        <Wall />
+    </Field>
+    <Field x="14" y="3">
+        <Wall />
+    </Field>
+    <Field x="15" y="3">
+        <Wall />
+    </Field>
+    <Field x="16" y="3">
+        <Wall />
+    </Field>
+    <Field x="17" y="3" />
     <Field x="18" y="3" />
     <Field x="19" y="3">
         <Wall/>
@@ -157,24 +179,24 @@
     <Field x="3" y="4" />
     <Field x="4" y="4" />
     <Field x="5" y="4" />
-    <Field x="6" y="4" />
-    <Field x="7" y="4" />
-    <Field x="8" y="4" />
+    <Field x="6" y="4">
+        <Heart/>
+    </Field>
+    <Field x="7" y="4">
+        <Wall/>
+    </Field>
+    <Field x="8" y="4">
+        <Heart/>
+    </Field>
     <Field x="9" y="4" />
     <Field x="10" y="4" />
     <Field x="11" y="4" />
     <Field x="12" y="4" />
     <Field x="13" y="4" />
     <Field x="14" y="4" />
-    <Field x="15" y="4">
-        <Heart/>
-    </Field>
-    <Field x="16" y="4">
-        <Wall/>
-    </Field>
-    <Field x="17" y="4" >
-        <Wall/>
-    </Field>
+    <Field x="15" y="4" />
+    <Field x="16" y="4" />
+    <Field x="17" y="4" />
     <Field x="18" y="4" />
     <Field x="19" y="4">
         <Wall/>
@@ -185,27 +207,25 @@
     <Field x="1" y="5" />
     <Field x="2" y="5" />
     <Field x="3" y="5" />
-    <Field x="4" y="5">
-        <Trapdoor/>
-    </Field>
+    <Field x="4" y="5" />
     <Field x="5" y="5" />
     <Field x="6" y="5" />
-    <Field x="7" y="5" />
+    <Field x="7" y="5">
+        <Wall/>
+    </Field>
     <Field x="8" y="5" />
-    <Field x="9" y="5" />
-    <Field x="10" y="5">
-        <Wall/>
+    <Field x="9" y="5"> 
+        <Shield level="2"/>
     </Field>
-    <Field x="11" y="5">
-        <Wall/>
-    </Field>
+    <Field x="10" y="5" />
+    <Field x="11" y="5" />
     <Field x="12" y="5" />
-    <Field x="13" y="5" />
+    <Field x="13" y="5">
+        <SpikeField/>
+    </Field> 
     <Field x="14" y="5" />
     <Field x="15" y="5" />
-    <Field x="16" y="5">
-        <Exit/>
-    </Field>
+    <Field x="16" y="5" />
     <Field x="17" y="5" />
     <Field x="18" y="5" />
     <Field x="19" y="5">
@@ -215,29 +235,39 @@
         <Wall/>
     </Field>
     <Field x="1" y="6" />
-    <Field x="2" y="6" />
-    <Field x="3" y="6" />
-    <Field x="4" y="6">
+    <Field x="2" y="6">
         <Wall/>
     </Field>
-    <Field x="5" y="6">
+    <Field x="3" y="6">
         <Wall/>
     </Field>
-    <Field x="6" y="6">
+    <Field x="4" y="6" />
+    <Field x="5" y="6" />
+    <Field x="6" y="6" />
+    <Field x="7" y="6">
         <Wall/>
     </Field>
-    <Field x="7" y="6" />
-    <Field x="8" y="6" />
-    <Field x="9" y="6" />
-    <Field x="10" y="6" />
+    <Field x="8" y="6">
+        <Wall/>
+    </Field>
+    <Field x="9" y="6">
+        <Wall/>
+    </Field>
+    <Field x="10" y="6">
+        <Wall/>
+    </Field>
     <Field x="11" y="6">
         <Wall/>
     </Field>
     <Field x="12" y="6" />
     <Field x="13" y="6" />
     <Field x="14" y="6" />
-    <Field x="15" y="6" />
-    <Field x="16" y="6" />
+    <Field x="15" y="6">
+        <Wall/>
+    </Field>
+    <Field x="16" y="6">
+        <Wall/>
+    </Field>
     <Field x="17" y="6" />
     <Field x="18" y="6" />
     <Field x="19" y="6">
@@ -246,36 +276,36 @@
     <Field x="0" y="7">
         <Wall/>
     </Field>
-    <Field x="1" y="7" />
-    <Field x="2" y="7" />
-    <Field x="3" y="7" />
-    <Field x="4" y="7">
-        <Heart/>
+    <Field x="1" y="7">
+        <Shield level="2"/>
     </Field>
-    <Field x="5" y="7" />
-    <Field x="6" y="7">
+    <Field x="2" y="7">
         <Wall/>
     </Field>
-    <Field x="7" y="7">
-        <Laserbeam/>
+    <Field x="3" y="7">
+        <Wall/>
     </Field>
-    <Field x="8" y="7">
-        <Laserbeam/>
-    </Field>
+    <Field x="4" y="7" />
+    <Field x="5" y="7" />
+    <Field x="6" y="7" />
+    <Field x="7" y="7" />
+    <Field x="8" y="7" />
     <Field x="9" y="7">
-        <Laserbeam/>
+        <Sword level="2"/>
     </Field>
-    <Field x="10" y="7">
-        <Laserbeam/>
-    </Field>
+    <Field x="10" y="7" />
     <Field x="11" y="7">
         <Wall/>
     </Field>
     <Field x="12" y="7" />
     <Field x="13" y="7" />
     <Field x="14" y="7" />
-    <Field x="15" y="7" />
-    <Field x="16" y="7" />
+    <Field x="15" y="7">
+        <Wall/>
+    </Field>
+    <Field x="16" y="7">
+        <Wall/>
+    </Field>
     <Field x="17" y="7" />
     <Field x="18" y="7" />
     <Field x="19" y="7">
@@ -284,16 +314,12 @@
     <Field x="0" y="8">
         <Wall/>
     </Field>
-    <Field x="1" y="8">
-        <Shield level="1"/>
-    </Field>
+    <Field x="1" y="8" />
     <Field x="2" y="8" />
     <Field x="3" y="8" />
     <Field x="4" y="8" />
     <Field x="5" y="8" />
-    <Field x="6" y="8">
-        <Wall/>
-    </Field>
+    <Field x="6" y="8" />
     <Field x="7" y="8" />
     <Field x="8" y="8" />
     <Field x="9" y="8" />
@@ -302,14 +328,10 @@
         <Wall/>
     </Field>
     <Field x="12" y="8">
-        <Wall/>
+        <Sword level="1"/>
     </Field>
-    <Field x="13" y="8">
-        <Wall/>
-    </Field>
-    <Field x="14" y="8">
-        <SpikeField/>
-    </Field>
+    <Field x="13" y="8" />
+    <Field x="14" y="8" />
     <Field x="15" y="8" />
     <Field x="16" y="8" />
     <Field x="17" y="8" />
@@ -322,24 +344,32 @@
     </Field>
     <Field x="1" y="9" />
     <Field x="2" y="9" />
-    <Field x="3" y="9" />
-    <Field x="4" y="9" />
-    <Field x="5" y="9" />
-    <Field x="6" y="9">
+    <Field x="3" y="9">
+        <Trapdoor/>
+    </Field>  
+    <Field x="4" y="9">
         <Wall/>
     </Field>
+    <Field x="5" y="9" />
+    <Field x="6" y="9" />
     <Field x="7" y="9" />
     <Field x="8" y="9">
         <SpikeField/>
     </Field>
-    <Field x="9" y="9">
-        <Shield level="3"/>
-    </Field>
+    <Field x="9" y="9" />
     <Field x="10" y="9" />
-    <Field x="11" y="9" />
-    <Field x="12" y="9" />
-    <Field x="13" y="9" />
-    <Field x="14" y="9" />
+    <Field x="11" y="9">
+        <Wall/>
+    </Field>
+    <Field x="12" y="9">
+        <Wall/>
+    </Field>
+    <Field x="13" y="9">
+        <Wall/>
+    </Field>
+    <Field x="14" y="9">
+        <Wall/>
+    </Field>
     <Field x="15" y="9" />
     <Field x="16" y="9" />
     <Field x="17" y="9" />
@@ -353,56 +383,64 @@
     <Field x="1" y="10" />
     <Field x="2" y="10" />
     <Field x="3" y="10" />
-    <Field x="4" y="10" />
-    <Field x="5" y="10">
-        <Sword level="3"/>
-    </Field>
-    <Field x="6" y="10">
+    <Field x="4" y="10">
         <Wall/>
     </Field>
+    <Field x="5" y="10" />
+    <Field x="6" y="10" />
     <Field x="7" y="10" />
-    <Field x="8" y="10" />
-    <Field x="9" y="10" />
+    <Field x="8" y="10">
+        <Wall/>
+    </Field>
+    <Field x="9" y="10">
+        <Wall/>
+    </Field>
     <Field x="10" y="10" />
     <Field x="11" y="10" />
     <Field x="12" y="10" />
     <Field x="13" y="10" />
-    <Field x="14" y="10" />
+    <Field x="14" y="10">
+        <Wall/>
+    </Field>
     <Field x="15" y="10" />
     <Field x="16" y="10" />
-    <Field x="17" y="10" />
-    <Field x="18" y="10">
-        <Sword level="3"/>
-    </Field>    
+    <Field x="17" y="10" >
+        <SpikeField/>
+    </Field>
+    <Field x="18" y="10" />  
     <Field x="19" y="10">
         <Wall/>
     </Field>
     <Field x="0" y="11">
         <Wall/>
     </Field>
-    <Field x="1" y="11" />
-    <Field x="2" y="11" />
-    <Field x="3" y="11" />
+    <Field x="1" y="11">
+        <Laserbeam/>
+    </Field>
+    <Field x="2" y="11">
+        <Wall/>
+    </Field>
+    <Field x="3" y="11">
+        <Wall/>
+    </Field>
     <Field x="4" y="11">
         <Wall/>
     </Field>
-    <Field x="5" y="11">
+    <Field x="5" y="11" />
+    <Field x="6" y="11" />
+    <Field x="7" y="11" />
+    <Field x="8" y="11">
         <Wall/>
     </Field>
-    <Field x="6" y="11">
+    <Field x="9" y="11">
         <Wall/>
     </Field>
-    <Field x="7" y="11">
-        <Heart/>
-    </Field>
-    <Field x="8" y="11" />
-    <Field x="9" y="11" />
     <Field x="10" y="11" />
     <Field x="11" y="11" />
     <Field x="12" y="11" />
     <Field x="13" y="11" />
     <Field x="14" y="11">
-        <Trapdoor/>
+        <Wall/>
     </Field>
     <Field x="15" y="11" />
     <Field x="16" y="11" />
@@ -415,24 +453,34 @@
         <Wall/>
     </Field>
     <Field x="1" y="12" />
-    <Field x="2" y="12" />
-    <Field x="3" y="12" />
+    <Field x="2" y="12">
+        <Wall/>
+    </Field>
+    <Field x="3" y="12">
+        <Exit/>
+    </Field>
     <Field x="4" y="12" />
     <Field x="5" y="12" />
     <Field x="6" y="12" />
     <Field x="7" y="12" />
-    <Field x="8" y="12" />
-    <Field x="9" y="12" />
-    <Field x="10" y="12" />
-    <Field x="11" y="12">
-        <Sword level="1"/>
+    <Field x="8" y="12">
+        <Wall/>
     </Field>
+    <Field x="9" y="12">
+        <Wall/>
+    </Field>
+    <Field x="10" y="12" />
+    <Field x="11" y="12" />
     <Field x="12" y="12" />
     <Field x="13" y="12" />
-    <Field x="14" y="12" />
+    <Field x="14" y="12">
+        <Wall/>
+    </Field>
     <Field x="15" y="12" />
     <Field x="16" y="12" />
-    <Field x="17" y="12" />
+    <Field x="17" y="12">
+        <Trapdoor/>
+    </Field>
     <Field x="18" y="12" />
     <Field x="19" y="12">
         <Wall/>
@@ -440,23 +488,41 @@
     <Field x="0" y="13">
         <Wall/>
     </Field>
-    <Field x="1" y="13" />
-    <Field x="2" y="13" />
-    <Field x="3" y="13" />
-    <Field x="4" y="13" />
-    <Field x="5" y="13" />
-    <Field x="6" y="13" />
-    <Field x="7" y="13" />
-    <Field x="8" y="13" />
-    <Field x="9" y="13" />
+    <Field x="1" y="13">
+        <Laserbeam/>
+    </Field>
+    <Field x="2" y="13">
+        <Wall/>
+    </Field>
+    <Field x="3" y="13">
+        <Wall/>
+    </Field>
+    <Field x="4" y="13">
+        <Wall/>
+    </Field>
+    <Field x="5" y="13">
+        <Wall/>
+    </Field>
+    <Field x="6" y="13">
+        <Laserbeam/>
+    </Field>
+    <Field x="7" y="13">
+        <Laserbeam/>
+    </Field>
+    <Field x="8" y="13">
+        <Wall/>
+    </Field>
+    <Field x="9" y="13">
+        <Wall/>
+    </Field>
     <Field x="10" y="13" />
     <Field x="11" y="13" />
     <Field x="12" y="13" />
     <Field x="13" y="13" />
-    <Field x="14" y="13" />
-    <Field x="15" y="13">
-        <Shield level="3"/>
+    <Field x="14" y="13">
+        <Laserbeam/>
     </Field>
+    <Field x="15" y="13" />
     <Field x="16" y="13" />
     <Field x="17" y="13" />
     <Field x="18" y="13" />
@@ -466,32 +532,30 @@
     <Field x="0" y="14">
         <Wall/>
     </Field>
-    <Field x="1" y="14">
-        <Laserbeam/>
+    <Field x="1" y="14" />
+    <Field x="2" y="14" />
+    <Field x="3" y="14" />
+    <Field x="4" y="14">
+        <Shield level="3"/>
     </Field>
-    <Field x="2" y="14">
-        <Laserbeam/>
-    </Field>
-    <Field x="3" y="14">
-        <Wall/>
-    </Field>
-    <Field x="4" y="14" />
     <Field x="5" y="14">
-        <Shield level="2"/>
+        <Wall/>
     </Field>
     <Field x="6" y="14" />
     <Field x="7" y="14" />
     <Field x="8" y="14" />
-    <Field x="9" y="14">
+    <Field x="9" y="14" />
+    <Field x="10" y="14" />
+    <Field x="11" y="14">
         <Wall/>
     </Field>
-    <Field x="10" y="14" />
-    <Field x="11" y="14" />
     <Field x="12" y="14">
         <Heart/>
     </Field>
     <Field x="13" y="14" />
-    <Field x="14" y="14" />
+    <Field x="14" y="14">
+        <Laserbeam/>
+    </Field>
     <Field x="15" y="14" />
     <Field x="16" y="14" />
     <Field x="17" y="14" />
@@ -504,36 +568,54 @@
     </Field>
     <Field x="1" y="15" />
     <Field x="2" y="15" />
-    <Field x="3" y="15">
+    <Field x="3" y="15" />
+    <Field x="4" y="15">
+        <Sword level="3"/>
+    </Field>
+    <Field x="5" y="15">
         <Wall/>
     </Field>
-    <Field x="4" y="15" />
-    <Field x="5" y="15" />
     <Field x="6" y="15" />
-    <Field x="7" y="15" />
+    <Field x="7" y="15">
+        <Spikefield/>
+    </Field>
     <Field x="8" y="15" />
-    <Field x="9" y="15">
+    <Field x="9" y="15" />
+    <Field x="10" y="15" />
+    <Field x="11" y="15">
         <Wall/>
     </Field>
-    <Field x="10" y="15">
-        <Wall/>
+    <Field x="12" y="15">
+        <Shield level="1"/>
     </Field>
-    <Field x="11" y="15" />
-    <Field x="12" y="15" />
     <Field x="13" y="15" />
-    <Field x="14" y="15" />
-    <Field x="15" y="15" />
-    <Field x="16" y="15" />
-    <Field x="17" y="15" />
-    <Field x="18" y="15" />
+    <Field x="14" y="15">
+        <Wall/>
+    </Field>
+    <Field x="15" y="15">
+        <Wall/>
+    </Field>
+    <Field x="16" y="15">
+        <Wall/>
+    </Field>
+    <Field x="17" y="15">
+        <Wall/>
+    </Field>
+    <Field x="18" y="15">
+        <Wall/>
+    </Field>
     <Field x="19" y="15">
         <Wall/>
     </Field>
     <Field x="0" y="16">
         <Wall/>
     </Field>
-    <Field x="1" y="16" />
-    <Field x="2" y="16" />
+    <Field x="1" y="16">
+        <Wall/>
+    </Field>
+    <Field x="2" y="16">
+        <Wall/>
+    </Field>
     <Field x="3" y="16">
         <Wall/>
     </Field>
@@ -543,16 +625,12 @@
     <Field x="5" y="16">
         <Wall/>
     </Field>
-    <Field x="6" y="16">
-        <Wall/>
-    </Field>
+    <Field x="6" y="16" />
     <Field x="7" y="16" />
     <Field x="8" y="16" />
-    <Field x="9" y="16">
-        <Wall/>
-    </Field>
-    <Field x="10" y="16">
-        <Wall/>
+    <Field x="9" y="16" />
+    <Field x="10" y="16"> 
+        <Sword level="1"/>
     </Field>
     <Field x="11" y="16">
         <Wall/>
@@ -560,21 +638,17 @@
     <Field x="12" y="16">
         <Wall/>
     </Field>
-    <Field x="13" y="16" >
+    <Field x="13" y="16">
         <Wall/>
     </Field>
     <Field x="14" y="16">
         <Wall/>
     </Field>
-    <Field x="15" y="16">
-        <Wall/>
-    </Field>
-    <Field x="16" y="16">
-        <Wall/>
-    </Field>
+    <Field x="15" y="16" />
+    <Field x="16" y="16" />
     <Field x="17" y="16" />
     <Field x="18" y="16" />
-    <Field x="19" y="16">
+    <Field x="19" y="16"> 
         <Wall/>
     </Field>
     <Field x="0" y="17">
@@ -589,9 +663,7 @@
     <Field x="7" y="17" />
     <Field x="8" y="17" />
     <Field x="9" y="17" />
-    <Field x="10" y="17">
-        <Sword level="1"/>
-    </Field>
+    <Field x="10" y="17" />
     <Field x="11" y="17" />
     <Field x="12" y="17" />
     <Field x="13" y="17" />
