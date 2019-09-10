@@ -1,66 +1,66 @@
 <Level width="20" height="20">
     <Field x="0" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="1" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="2" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="3" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="4" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="5" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="6" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="7" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="8" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="9" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="10" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="11" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="12" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="13" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="14" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="15" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="16" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="17" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="18" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="19" y="0">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="0" y="1">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="1" y="1">
         <Hero color="red" />
@@ -89,10 +89,10 @@
         <Enemy color="yellow" />
     </Field>
     <Field x="19" y="1">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="0" y="2">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="1" y="2" />
     <Field x="2" y="2" />
@@ -113,10 +113,10 @@
     <Field x="17" y="2" />
     <Field x="18" y="2" />
     <Field x="19" y="2">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="0" y="3">
-        <Wall />
+        <Wall/>
     </Field>
     <Field x="1" y="3" />
     <Field x="2" y="3" />
