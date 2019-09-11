@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="MDC\" />
+    <Folder Include="MDC\Client\" />
+    <Folder Include="MDC\Server\" />
+    <Folder Include="MDC\Gamedata\" />
+    <Folder Include="MDC\Gamedata\LevelContent\" />
+    <Folder Include="MDC\Gamedata\PlayerType\" />
+  </ItemGroup>
+</Project>

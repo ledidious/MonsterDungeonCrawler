@@ -1,0 +1,41 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameLogic/MDC/UpdatePack.cs">
+    <Files>
+      <File FileName="GameLogic/MDC/Server/Game.cs" Line="47" Column="13" />
+      <File FileName="GameLogic/MDC/Server/MasterServer.cs" Line="86" Column="41" />
+      <File FileName="GameLogic/MDC/Gamedata/CommandGame.cs" Line="377" Column="27" />
+      <File FileName="GameLogic/MDC/CustomException.cs" Line="9" Column="30" />
+      <File FileName="GameLogic/MDC/Gamedata/CommandServer.cs" Line="3" Column="28" />
+      <File FileName="GameLogic/MDC/Server/CommandManager.cs" Line="3" Column="30" />
+      <File FileName="GameLogic/MDC/Client/ClientProgram.cs" Line="424" Column="48" />
+      <File FileName="GameLogic/MDC/UpdatePack.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="GameLogic" expanded="True">
+            <Node name="GameLogic" expanded="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="MDC" expanded="True">
+                <Node name="Client" expanded="True" />
+                <Node name="Gamedata" expanded="True">
+                  <Node name="LevelContent" expanded="True" />
+                  <Node name="PlayerType" expanded="True" />
+                </Node>
+                <Node name="Server" expanded="True" />
+                <Node name="UpdatePack.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <AuthorInfo Name="Jannis Brune, Mario Gierke" Email="" Copyright="Superdudes 2019" Company="" Trademark="" />
+</Properties>
