@@ -78,9 +78,12 @@ namespace MDC.Server
             // }
         }
 
+        /// <summary>
+        /// Sends update packs at fixed intervals to all clients except the host.
+        /// </summary>
         private void UpdateClientsInLobby()
         {
-            while (_clientsOfThisGame.Count < MAX_CLIENTS)
+            while (_clientsOfThisGame[0].IsInGame == false)
             {
                 foreach (var client in _clientsOfThisGame)
                 {
