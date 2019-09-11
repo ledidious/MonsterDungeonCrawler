@@ -58,6 +58,8 @@ namespace MDC.Server
             // LoadLevelFile("level1.xml");
             LoadLevelFile(levelFileName + ".xml");
 
+            new Thread(new ThreadStart(() => UpdateClientsInLobby())).Start();
+
             // _level = new Level(MAX_CLIENTS);
             // for (int x = 0; x <= 19; x++)
             // {
@@ -74,6 +76,35 @@ namespace MDC.Server
             //     gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
             //     gcm.ProcessPendingTransactions();
             // }
+        }
+
+        private void UpdateClientsInLobby()
+        {
+            while (_clientsOfThisGame.Count < MAX_CLIENTS)
+            {
+                foreach (var client in _clientsOfThisGame)
+                {
+                    if (client.Client_ID != _clientsOfThisGame[0].Client_ID)
+                    {
+                        if (_level.PlayerList != null && _level.TrapList != null)
+                        {
+                            UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList);
+                            if (client.Player.Life > 0)
+                            {
+                                SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
+                            }
+                            else
+                            {
+                                SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, false, update));
+                            }
+                        }
+                    }
+                }
+
+                System.Threading.Thread.Sleep(1000);
+            }
+
+            System.Threading.Thread.CurrentThread.Join();
         }
 
         /// <summary>
@@ -409,7 +440,7 @@ namespace MDC.Server
         /// <summary>
         /// 
         /// </summary>
-        private void UpdateClients()
+        private void UpdateClientsInGame()
         {
             foreach (var client in _clientsOfThisGame)
             {
@@ -479,7 +510,7 @@ namespace MDC.Server
                 }
             }
 
-            UpdateClients();
+            UpdateClientsInGame();
             SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackYourTurn(_currentClient.Client_ID));
             // _currentClient = _clientsOfThisGame.FindIndex();
             // return null;
