@@ -87,7 +87,7 @@ namespace MDC.Server
             {
                 foreach (var client in _clientsOfThisGame)
                 {
-                    if (client.Client_ID != _clientsOfThisGame[0].Client_ID)
+                    if (client.Client_ID != _clientsOfThisGame[0].Client_ID && client.Player != null)
                     {
                         if (_level.PlayerList != null && _level.TrapList != null)
                         {
