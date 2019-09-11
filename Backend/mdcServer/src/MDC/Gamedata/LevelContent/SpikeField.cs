@@ -3,6 +3,7 @@ using MDC.Gamedata.PlayerType;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class SpikeField : Trap
     {   
         protected override double _dealingDamage => 0.5;

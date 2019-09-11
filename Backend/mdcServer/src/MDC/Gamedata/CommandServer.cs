@@ -20,7 +20,7 @@ namespace MDC.Gamedata
     public class CommandServerNewGame : CommandServer
     {
         string levelFileName;
-        
+
         public CommandServerNewGame(string SourceClientID, string levelFileName) : base(SourceClientID)
         {
             this.levelFileName = levelFileName;
@@ -113,6 +113,24 @@ namespace MDC.Gamedata
         {
             MasterServer.CreateNewPlayerForSession(SourceClientID, _session_ID, _playerName, _characterClass);
             this.IsCompleted = true;
+        }
+    }
+
+    /// <summary>
+    /// Cancel a current round of play
+    /// </summary>
+    [Serializable]
+    public class CommandServerGetUpdatePackForLobby : CommandServer
+    {
+        string session_ID;
+        public CommandServerGetUpdatePackForLobby(string SourceClientID, string session_ID) : base(SourceClientID)
+        {
+            this.session_ID = session_ID;
+        }
+
+        public override void Execute()
+        {
+            MasterServer.SendUpdatePackForLobby(SourceClientID, session_ID);
         }
     }
 }

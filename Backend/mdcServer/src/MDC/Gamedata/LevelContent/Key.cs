@@ -2,6 +2,7 @@ using System;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public sealed class Key : Item  
     {
         //Singleton

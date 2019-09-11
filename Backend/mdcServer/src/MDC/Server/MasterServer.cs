@@ -184,8 +184,28 @@ namespace MDC.Server
             {
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
             }
+        }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client_ID"></param>
+        /// <param name="session_ID"></param>
+        public static void SendUpdatePackForLobby(string client_ID, string session_ID)
+        {
+            try
+            {
+                if (_gClients[client_ID].IsHost)
+                {
+                    Console.WriteLine("Benis");
+                    UpdatePack pp = _games[session_ID].GetUpdatePackForLobby();
+                    SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackUpdatePack(client_ID, true, pp));
+                }
+            }
+            catch (System.Exception e)
+            {
+                SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
+            }
         }
 
         /// <summary>
@@ -245,7 +265,7 @@ namespace MDC.Server
             // gClient.TcpClient.Close();
             Console.WriteLine("Client Penis");
             System.Threading.Thread.CurrentThread.Abort();
-            System.Threading.Thread.CurrentThread.Join();            
+            System.Threading.Thread.CurrentThread.Join();
         }
 
         /// <summary>

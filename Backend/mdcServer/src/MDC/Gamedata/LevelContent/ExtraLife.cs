@@ -2,6 +2,7 @@ using System;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class ExtraLife : Item
     {
         protected const double EFFECTVALUE_EXTRALIFE = 1;

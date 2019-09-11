@@ -126,6 +126,22 @@ namespace MDC.Server
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client_ID"></param>
+        public UpdatePack GetUpdatePackForLobby()
+        {
+            if (_clientsOfThisGame != null)
+            {
+                return (new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList));
+            }
+            else
+            {
+                throw new NotEnoughPlayerInGameException();
+            }
+        }
+
+        /// <summary>
         /// Creates a new player and adds it to the game
         /// </summary>
         /// <param name="client_ID">ID of the owner of the player</param>
@@ -140,10 +156,10 @@ namespace MDC.Server
                 switch (characterClass)
                 {
                     case CharacterClass.Knight:
-                        main = new Hero(playerName, new MeleeFighter(), 0, 0);
+                        main = new Hero(playerName, new Knight(), 1, 1);
                         break;
                     case CharacterClass.Archer:
-                        main = new Hero(playerName, new RangeFighter(), 0, 0);
+                        main = new Hero(playerName, new Archer(), 1, 1);
                         break;
                     default:
                         // main = new Hero("***Error***", new MeleeFighter(), 0, 0);
@@ -151,6 +167,7 @@ namespace MDC.Server
                 }
 
                 _clientsOfThisGame[0].Player = main;
+                _level.AddPlayerToLevel(_clientsOfThisGame[0].Player);
             }
             else
             {
@@ -162,10 +179,10 @@ namespace MDC.Server
                         switch (characterClass)
                         {
                             case CharacterClass.Knight:
-                                villain = new Monster(playerName, new MeleeFighter(), 0, 0);
+                                villain = new Monster(playerName, new Knight(), 1, 1);
                                 break;
                             case CharacterClass.Archer:
-                                villain = new Monster(playerName, new RangeFighter(), 0, 0);
+                                villain = new Monster(playerName, new Archer(), 1, 1);
                                 break;
                             default:
                                 // main = new Monster("***Error***", new MeleeFighter(), 0, 0);
@@ -191,10 +208,24 @@ namespace MDC.Server
                         }
 
                         client.Player = villain;
+                        _level.AddPlayerToLevel(client.Player);
                         Console.WriteLine("Villain Position: " + client.Player.XPosition + ", " + client.Player.YPosition);
                     }
                 }
             }
+
+            /*  if (_clientsOfThisGame.Count == MAX_CLIENTS)
+             {
+                 if (_level.PlayerList.Count == MAX_CLIENTS)
+                 {
+                     UpdateClients();
+                     SendFeedbackToClient(_clientsOfThisGame[0].TcpClient, new CommandFeedbackYourTurn(_clientsOfThisGame[0].Client_ID));
+                 }
+             }
+             else
+             {
+                 UpdateClients();
+             }*/
         }
 
         /// <summary>
@@ -326,6 +357,9 @@ namespace MDC.Server
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
+            // set the binder to the custom binder:
+            formatter.Binder = TypeOnlyBinder.Default;
+
             byte[] bytesToRead = new byte[client.ReceiveBufferSize];
             int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
 
@@ -359,6 +393,9 @@ namespace MDC.Server
             NetworkStream nwStream = client.GetStream();
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
+
+            // set the binder to the custom binder:
+            formatter.Binder = TypeOnlyBinder.Default;
 
             var ms = new MemoryStream();
             formatter.Serialize(ms, command);

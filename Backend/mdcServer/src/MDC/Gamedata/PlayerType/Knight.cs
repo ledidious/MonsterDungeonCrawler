@@ -3,7 +3,7 @@ using System;
 namespace MDC.Gamedata.PlayerType
 {
     [Serializable]
-    public class MeleeFighter : CharacterType
+    public class Knight : CharacterType
     {
          public override double _attackPower => 1;
          public override double _defensePower => 0.25;

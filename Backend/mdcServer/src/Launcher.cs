@@ -22,13 +22,30 @@ class Launcher
 
         myFirstClient.ConnectToServer();
         myFirstClient.CreateNewGame("level1");
+        myFirstClient.CreateNewPlayerForSession("Snoop Dog", MDC.CharacterClass.Knight);
+
         // myFirstClient.DisconnectFromServer();
-/* 
+
         System.Threading.Thread.Sleep(500);
 
         ClientProgram mySecondClient = new ClientProgram();
         mySecondClient.ConnectToServer();
         mySecondClient.ConnectToGame(myFirstClient.GameSession_ID);
+        mySecondClient.CreateNewPlayerForSession("Tux", MDC.CharacterClass.Archer);
+
+        while (true)
+        {
+            if (mySecondClient.Update != null)
+            {
+                Console.WriteLine(mySecondClient.Update.PlayerList[0].PlayerName);
+            }
+            else
+            {
+                System.Threading.Thread.Sleep(1500);
+            }
+        }
+
+
         // try
         // {
         //     mySecondClient.ConnectToGame("4711");
@@ -56,7 +73,7 @@ class Launcher
 
         ClientProgram myFourthClient = new ClientProgram();
         myFourthClient.ConnectToServer();
-        myFourthClient.ConnectToGame(myFirstClient.GameSession_ID); */
+        myFourthClient.ConnectToGame(myFirstClient.GameSession_ID);
 
 
         // ClientProgram myFifthClient = new ClientProgram();

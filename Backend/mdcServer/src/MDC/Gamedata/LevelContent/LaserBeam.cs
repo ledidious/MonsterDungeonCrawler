@@ -3,6 +3,7 @@ using MDC.Gamedata.PlayerType;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class LaserBeam : Trap
     {
         protected override double _dealingDamage => 1; 

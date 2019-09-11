@@ -275,6 +275,29 @@ namespace MDC.Client
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public void GetUpdatePackForLobby()
+        {
+            if (_isConnected)
+            {
+                if (_gameSession_ID != null && _currentStatus == Status.Busy)
+                {
+                    CommandServerGetUpdatePackForLobby command = new CommandServerGetUpdatePackForLobby(_client_ID, _gameSession_ID);
+                    SendCommandToServer(command);
+
+                    CommandFeedback feedback = EvaluateFeedback();
+                    if (feedback is CommandFeedbackUpdatePack)
+                    {
+                        _update = ((CommandFeedbackUpdatePack)feedback).Update;
+                    }
+                    else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
+                    else { throw new CommandNotRecognizedException(); }
+                }
+            }
+        }
+
+        /// <summary>
         /// Get an update of the playing field and wait for the call for your next move.
         /// It is best to encapsulate it in its own thread so that the client does not get stuck.
         /// </summary>
@@ -285,7 +308,9 @@ namespace MDC.Client
 
             do
             {
+                Console.WriteLine("UPDATE...");
                 feedback = EvaluateFeedback();
+                Console.WriteLine("Boobs");
 
                 if (feedback is CommandFeedbackUpdatePack)
                 {
@@ -307,6 +332,7 @@ namespace MDC.Client
                 if (_currentStatus != Status.Spectator)
                 {
                     _currentStatus = Status.Busy;
+                    System.Threading.Thread.CurrentThread.Abort();
                 }
             }
         }

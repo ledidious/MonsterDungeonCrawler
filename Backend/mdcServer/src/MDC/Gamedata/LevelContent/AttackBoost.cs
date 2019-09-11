@@ -2,6 +2,7 @@ using System;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class AttackBoost : Item
     {
         private int _level;

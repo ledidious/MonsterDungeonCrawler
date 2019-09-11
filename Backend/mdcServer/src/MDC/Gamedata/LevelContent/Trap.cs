@@ -4,6 +4,7 @@ using MDC.Gamedata.LevelContent;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public abstract class Trap : FieldType
     {
         protected Boolean _isHidden { get; set; }

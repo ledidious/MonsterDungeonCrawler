@@ -3,6 +3,7 @@ using MDC.Gamedata.PlayerType;
 
 namespace MDC.Gamedata.LevelContent
 {
+    [Serializable]
     public class Exit : FieldType
     { 
         /// <summary>
