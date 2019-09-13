@@ -116,7 +116,7 @@ namespace GameLogic.MDC.Gamedata
     }
 
     /// <summary>
-    /// Cancel a current round of play
+    /// 
     /// </summary>
     [Serializable]
     public class CommandServerGetUpdatePackForLobby : CommandServer
@@ -130,6 +130,7 @@ namespace GameLogic.MDC.Gamedata
         public override void Execute()
         {
             MasterServer.SendUpdatePackForLobby(SourceClientID, session_ID);
+            this.IsCompleted = true;
         }
     }
 }

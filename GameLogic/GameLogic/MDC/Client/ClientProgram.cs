@@ -55,8 +55,10 @@ namespace GameLogic.MDC.Client
             {
                 //---create a TCPClient object at the IP and port no.---
                 _masterServer = new TcpClient(_server_IP, _port_NO);
-                 //_server.ReceiveTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
-                 //_server.SendTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
+                //_server.ReceiveTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
+                //_server.SendTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
+                _masterServer.SendBufferSize = 524288;
+                _masterServer.ReceiveBufferSize = 524288;
 
                 //---get the client ID from the server---
                 _client_ID = ReceiveStringFromServer();
@@ -291,7 +293,10 @@ namespace GameLogic.MDC.Client
                         _update = ((CommandFeedbackUpdatePack)feedback).Update;
                     }
                     else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
-                    else { throw new CommandNotRecognizedException(); }
+                    else
+                    {
+                        throw new CommandNotRecognizedException();
+                    }
                 }
             }
         }
@@ -370,22 +375,60 @@ namespace GameLogic.MDC.Client
         private void SendCommandToServer(Command command)
         {
             NetworkStream nwStream = _masterServer.GetStream();
-            MemoryStream dataStream = new MemoryStream();
+            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
             // set the binder to the custom binder:
             //formatter.Binder = TypeOnlyBinder.Default;
 
-            var ms = new MemoryStream();
-            formatter.Serialize(ms, command);
-            ms.Flush(); //TODO: Evtl. entfernen
-            ms.Position = 0; //TODO: Evtl. entfernen
+            /* var ms = new MemoryStream();
+             formatter.Serialize(ms, command);
+             ms.Flush(); //TODO: Evtl. entfernen
+             ms.Position = 0; //TODO: Evtl. entfernen
 
-            byte[] bytesToSend = ms.ToArray();
-            ms.Close(); //TODO: Evtl. entfernen
+             byte[] bytesToSend = ms.ToArray();
+             ms.Close(); //TODO: Evtl. entfernen
 
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+             nwStream.Write(bytesToSend, 0, bytesToSend.Length); */
+            formatter.Serialize(nwStream, command);
             nwStream.Flush();
+        }
+
+        /// <summary>
+        /// Should be called after each command sent to the server: 
+        /// Evaluates feedback from the server.
+        /// </summary>
+        /// <returns>True: If the command was successfully processed by the server. False: If command could not be executed.</returns>
+        private CommandFeedback EvaluateFeedback()
+        {
+            NetworkStream nwStream = _masterServer.GetStream();
+            //MemoryStream dataStream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+
+            /* byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
+             nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);
+
+             dataStream.Write(bytesToRead, 0, bytesToRead.Length);
+             dataStream.Seek(0, SeekOrigin.Begin); */
+
+            try
+            {
+                var obj = formatter.Deserialize(nwStream);
+                nwStream.Flush();
+                //Console.WriteLine("CLIENT: " + obj.GetType());
+                if (obj is CommandFeedback)
+                {
+                    return (CommandFeedback)obj;
+                }
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                throw e;
+                //Console.WriteLine(e.Message);
+            }
+
+            nwStream.Flush();
+            return null;
         }
 
         /// <summary>
@@ -399,51 +442,6 @@ namespace GameLogic.MDC.Client
 
             _server_IP = data["ServerIP"];
             _port_NO = Convert.ToInt32(data["PortNo"]);
-        }
-
-        /// <summary>
-        /// Should be called after each command sent to the server: 
-        /// Evaluates feedback from the server.
-        /// </summary>
-        /// <returns>True: If the command was successfully processed by the server. False: If command could not be executed.</returns>
-        private CommandFeedback EvaluateFeedback()
-        {
-            // //TODO: MemoryStream-Konzept einbauen
-            // NetworkStream nwStream = _server.GetStream();
-            // IFormatter formatter = new BinaryFormatter();
-
-            // // CommandFeedback feedback = (CommandFeedback)formatter.Deserialize(nwStream);
-            // return (CommandFeedback)formatter.Deserialize(nwStream);
-
-
-            NetworkStream nwStream = _masterServer.GetStream();
-            MemoryStream dataStream = new MemoryStream();
-            IFormatter formatter = new BinaryFormatter();
-
-            // set the binder to the custom binder:
-            //formatter.Binder = TypeOnlyBinder.Default;
-
-            byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);
-
-            dataStream.Write(bytesToRead, 0, bytesToRead.Length);
-            dataStream.Seek(0, SeekOrigin.Begin);
-
-            try
-            {
-                var obj = formatter.Deserialize(dataStream);
-                Console.WriteLine("CLIENT: " + obj.GetType());
-                if (obj is CommandFeedback)
-                {
-                    return (CommandFeedback)obj;
-                }
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            return null;
         }
     }
 }

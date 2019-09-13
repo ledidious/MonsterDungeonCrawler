@@ -217,13 +217,16 @@ namespace GameLogic.MDC.Server
              }*/
         }
 
+        /// <summary>
+        /// Sends update packs at fixed intervals to all clients except the host.
+        /// </summary>
         private void UpdateClientsInLobby()
         {
-            while (_clientsOfThisGame.Count < MAX_CLIENTS)
+            while (_clientsOfThisGame[0].IsInGame == false)
             {
                 foreach (var client in _clientsOfThisGame)
                 {
-                    if (client.Client_ID != _clientsOfThisGame[0].Client_ID)
+                    if (client.Client_ID != _clientsOfThisGame[0].Client_ID && client.Player != null)
                     {
                         if (_level.PlayerList != null && _level.TrapList != null)
                         {
@@ -231,6 +234,7 @@ namespace GameLogic.MDC.Server
                             if (client.Player.Life > 0)
                             {
                                 SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
+                                Console.WriteLine("Sending Update to: " + client.Player.PlayerName);
                             }
                             else
                             {
@@ -417,8 +421,11 @@ namespace GameLogic.MDC.Server
 
             var ms = new MemoryStream();
             formatter.Serialize(ms, command);
+            ms.Flush(); //TODO: Evtl. entfernen
+            ms.Position = 0; //TODO: Evtl. entfernen
 
             byte[] bytesToSend = ms.ToArray();
+            ms.Close(); //TODO: Evtl. entfernen
 
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
             nwStream.Flush();

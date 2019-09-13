@@ -71,6 +71,8 @@ namespace GameLogic.MDC.Server
             while (Shutdown == false)
             {
                 TcpClient tcpClient = listener.AcceptTcpClient();
+                tcpClient.SendBufferSize = 524288;
+                tcpClient.ReceiveBufferSize = 524288;
 
                 Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
                 clientThread.Start();
@@ -307,22 +309,20 @@ namespace GameLogic.MDC.Server
         private static Command ReceiveCommandFromClient(TcpClient client)
         {
             NetworkStream nwStream = client.GetStream();
-            MemoryStream dataStream = new MemoryStream();
+            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
-            // set the binder to the custom binder:
-            //formatter.Binder = TypeOnlyBinder.Default;
-
-            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+           /* byte[] bytesToRead = new byte[client.ReceiveBufferSize];
             int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
 
             dataStream.Write(bytesToRead, 0, bytesToRead.Length);
-            dataStream.Seek(0, SeekOrigin.Begin);
+            dataStream.Seek(0, SeekOrigin.Begin); */
 
             try
             {
-                var obj = formatter.Deserialize(dataStream);
+                var obj = formatter.Deserialize(nwStream);
                 Console.WriteLine("MASTERSERVER: " + obj.GetType());
+                nwStream.Flush();
                 if (obj.GetType().IsSubclassOf(typeof(Command)))
                 {
                     return (Command)obj;
@@ -333,6 +333,7 @@ namespace GameLogic.MDC.Server
                 Console.WriteLine(e.Message);
             }
 
+            nwStream.Flush();
             return null;
         }
 
@@ -344,19 +345,23 @@ namespace GameLogic.MDC.Server
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
         {
             NetworkStream nwStream = client.GetStream();
-            MemoryStream dataStream = new MemoryStream();
+            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
             // set the binder to the custom binder:
             //formatter.Binder = TypeOnlyBinder.Default;
 
-            var ms = new MemoryStream();
-            formatter.Serialize(ms, command);
+            /* var ms = new MemoryStream();
+             formatter.Serialize(ms, command);
+             ms.Flush(); //TODO: Evtl. entfernen
+             ms.Position = 0; //TODO: Evtl. entfernen
 
-            byte[] bytesToSend = ms.ToArray();
+             byte[] bytesToSend = ms.ToArray();
+             ms.Close(); //TODO: Evtl. entfernen
 
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-            nwStream.Flush();
+             nwStream.Write(bytesToSend, 0, bytesToSend.Length);*/
+            formatter.Serialize(nwStream, command);
+            nwStream.Flush(); 
         }
     }
 }
