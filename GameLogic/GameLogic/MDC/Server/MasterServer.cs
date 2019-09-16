@@ -121,7 +121,7 @@ namespace GameLogic.MDC.Server
         /// <param name="client_ID">ID of the executing client</param>
         public static void CreateNewGame(string client_ID, string levelFileName)
         {
-            string session_ID = GenerateID();
+            string session_ID = CorrelationIdGenerator.GetNextId(); //GenerateID();
             _games.Add(session_ID, new Game(session_ID, _gClients[client_ID], levelFileName));
 
             SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
@@ -272,6 +272,8 @@ namespace GameLogic.MDC.Server
         /// <returns>Returns the unique ID</returns>
         private static string GenerateID()
         {
+            //var newGuid = Guid.NewGuid();
+            //var messageID = Convert.ToBase64String(newGuid.ToByteArray());
             return Guid.NewGuid().ToString("N");
         }
 

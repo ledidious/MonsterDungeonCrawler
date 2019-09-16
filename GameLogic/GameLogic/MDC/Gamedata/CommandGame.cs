@@ -12,7 +12,6 @@ namespace GameLogic.MDC.Gamedata
         }
 
         public Player SourcePlayer { get; set; }
-
         public Level Level { get; set; }
     }
 

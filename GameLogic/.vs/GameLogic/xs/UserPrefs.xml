@@ -1,14 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="GameLogic/MDC/UpdatePack.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameLogic/MDC/Gamedata/PlayerType/CharacterType.cs">
     <Files>
-      <File FileName="GameLogic/MDC/Server/Game.cs" Line="47" Column="13" />
-      <File FileName="GameLogic/MDC/Server/MasterServer.cs" Line="86" Column="41" />
-      <File FileName="GameLogic/MDC/Gamedata/CommandGame.cs" Line="377" Column="27" />
-      <File FileName="GameLogic/MDC/CustomException.cs" Line="9" Column="30" />
-      <File FileName="GameLogic/MDC/Gamedata/CommandServer.cs" Line="3" Column="28" />
-      <File FileName="GameLogic/MDC/Server/CommandManager.cs" Line="3" Column="30" />
-      <File FileName="GameLogic/MDC/Client/ClientProgram.cs" Line="424" Column="48" />
-      <File FileName="GameLogic/MDC/UpdatePack.cs" Line="1" Column="1" />
+      <File FileName="GameLogic/MDC/Server/Game.cs" Line="147" Column="48" />
+      <File FileName="GameLogic/MDC/Server/MasterServer.cs" Line="200" Column="103" />
+      <File FileName="GameLogic/MDC/Client/ClientProgram.cs" Line="176" Column="80" />
+      <File FileName="GameLogic/MDC/UpdatePack.cs" Line="11" Column="39" />
+      <File FileName="GameLogic/MDC/Gamedata/CommandFeedback.cs" Line="58" Column="44" />
+      <File FileName="GameLogic/MDC/Gamedata/CommandGame.cs" Line="14" Column="49" />
+      <File FileName="GameLogic/MDC/Gamedata/LevelContent/Level.cs" Line="18" Column="93" />
+      <File FileName="GameLogic/MDC/Gamedata/PlayerType/CharacterType.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -20,10 +20,11 @@
                 <Node name="Client" expanded="True" />
                 <Node name="Gamedata" expanded="True">
                   <Node name="LevelContent" expanded="True" />
-                  <Node name="PlayerType" expanded="True" />
+                  <Node name="PlayerType" expanded="True">
+                    <Node name="CharacterType.cs" selected="True" />
+                  </Node>
                 </Node>
                 <Node name="Server" expanded="True" />
-                <Node name="UpdatePack.cs" selected="True" />
               </Node>
             </Node>
           </Node>

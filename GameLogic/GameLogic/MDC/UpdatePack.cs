@@ -11,13 +11,15 @@ namespace GameLogic.MDC
         public List<Player> PlayerList { get; }
         public Field[,] PlayingField { get; }
         public List<Field> TrapList { get; }
+        public string activeScene { get; }
         public int hash { get; }
 
-        public UpdatePack(List<Player> playerList, Field[,] playingField, List<Field> trapList)
+        public UpdatePack(List<Player> playerList, Field[,] playingField, List<Field> trapList, string activeScene)
         {
             this.PlayerList = playerList;
             this.PlayingField = playingField;
             this.TrapList = trapList;
+            this.activeScene = activeScene;
             this.hash = this.GetHashCode();
         }
     }

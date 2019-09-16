@@ -122,7 +122,7 @@ namespace GameLogic.MDC.Server
         {
             if (_clientsOfThisGame != null)
             {
-                return (new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList));
+                return (new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null));
             }
             else
             {
@@ -230,7 +230,7 @@ namespace GameLogic.MDC.Server
                     {
                         if (_level.PlayerList != null && _level.TrapList != null)
                         {
-                            UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList);
+                            UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null);
                             if (client.Player.Life > 0)
                             {
                                 SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -246,6 +246,29 @@ namespace GameLogic.MDC.Server
 
                 System.Threading.Thread.Sleep(1000);
             }
+
+            //Send last Update which informs Clients to load the level
+            foreach (var client in _clientsOfThisGame)
+            {
+                if (client.Client_ID != _clientsOfThisGame[0].Client_ID && client.Player != null)
+                {
+                    if (_level.PlayerList != null && _level.TrapList != null)
+                    {
+                        UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, _level.LevelName);
+                        if (client.Player.Life > 0)
+                        {
+                            SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
+                            Console.WriteLine("Sending Update to: " + client.Player.PlayerName);
+                        }
+                        else
+                        {
+                            SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, false, update));
+                        }
+                    }
+                }
+            }
+
+
 
             System.Threading.Thread.CurrentThread.Join();
         }
@@ -438,7 +461,7 @@ namespace GameLogic.MDC.Server
         {
             foreach (var client in _clientsOfThisGame)
             {
-                UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList);
+                UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null);
                 if (client.Player.Life > 0)
                 {
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -572,7 +595,7 @@ namespace GameLogic.MDC.Server
             // XElement test = new XElement(levelFromFile.Name,levelFromFile.)
 
             // Create the level object
-            _level = new Level(MAX_CLIENTS, Int32.Parse(levelFromFile.Attribute("width").Value));
+            _level = new Level(MAX_CLIENTS, Int32.Parse(levelFromFile.Attribute("width").Value), (file.Split('.')[0]));
 
             // foreach (var item in levelFromFile.Attributes())
             // {

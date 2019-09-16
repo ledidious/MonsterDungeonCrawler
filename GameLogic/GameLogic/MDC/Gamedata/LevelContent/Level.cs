@@ -16,6 +16,7 @@ namespace GameLogic.MDC.Gamedata.LevelContent
         public List<Field> TrapList = new List<Field>();
         private Boolean _keyOnField;
         public Dictionary<string, int[,]> StartingPoints = new Dictionary<string, int[,]>();
+        public string LevelName { get; }
 
         public Boolean KeyOnField
         {
@@ -30,11 +31,12 @@ namespace GameLogic.MDC.Gamedata.LevelContent
             this.StartingPoints = new Dictionary<string, int[,]>();
         }
 
-        public Level(int maxPlayer, int levelSize)
+        public Level(int maxPlayer, int levelSize, string levelName)
         {
             _maxPlayer = maxPlayer;
             this.PlayingField = new Field[levelSize, levelSize];
             this.StartingPoints = new Dictionary<string, int[,]>();
+            this.LevelName = levelName;
         }
 
         /// <summary>
