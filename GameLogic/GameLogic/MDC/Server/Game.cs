@@ -122,7 +122,7 @@ namespace GameLogic.MDC.Server
         {
             if (_clientsOfThisGame != null)
             {
-                return (new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null));
+                return (new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null, CreateClientIDList()));
             }
             else
             {
@@ -230,7 +230,7 @@ namespace GameLogic.MDC.Server
                     {
                         if (_level.PlayerList != null && _level.TrapList != null)
                         {
-                            UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null);
+                            UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null, CreateClientIDList());
                             if (client.Player.Life > 0)
                             {
                                 SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -254,7 +254,7 @@ namespace GameLogic.MDC.Server
                 {
                     if (_level.PlayerList != null && _level.TrapList != null)
                     {
-                        UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, _level.LevelName);
+                        UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, _level.LevelName, CreateClientIDList());
                         if (client.Player.Life > 0)
                         {
                             SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -487,7 +487,7 @@ namespace GameLogic.MDC.Server
         {
             foreach (var client in _clientsOfThisGame)
             {
-                UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null);
+                UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null, CreateClientIDList());
                 if (client.Player.Life > 0)
                 {
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -698,6 +698,18 @@ namespace GameLogic.MDC.Server
             //         Console.WriteLine(franz);
             //     }
             // }
+        }
+
+        private List<string> CreateClientIDList()
+        {
+            List<string> tmpList = new List<string>();
+
+            foreach(var item in _clientsOfThisGame)
+            {
+                tmpList.Add(item.Client_ID);
+            }
+
+            return tmpList;
         }
     }
 }
