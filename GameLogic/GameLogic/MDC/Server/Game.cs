@@ -367,11 +367,10 @@ namespace GameLogic.MDC.Server
         private static string ReceiveStringFromClient(TcpClient client)
         {
             NetworkStream nwStream = client.GetStream();
-            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            Console.WriteLine("TYPE: " + bytesToRead.GetType());
-            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+            Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+            Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
 
-            return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead); ;
+            return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
         }
 
         /// <summary>
@@ -382,7 +381,7 @@ namespace GameLogic.MDC.Server
         private static void SendStringToClient(TcpClient client, string data)
         {
             NetworkStream nwStream = client.GetStream();
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+            Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
         }
 
@@ -393,14 +392,35 @@ namespace GameLogic.MDC.Server
         /// <returns>Returns the received Command</returns>
         private static CommandGame ReceiveCommandFromClient(TcpClient client)
         {
-            // NetworkStream nwStream = client.GetStream();
+            NetworkStream nwStream = client.GetStream();
+            IFormatter formatter = new BinaryFormatter();
+
+            try
+            {
+                var obj = formatter.Deserialize(nwStream);
+                Console.WriteLine("GAME: " + obj.GetType());
+                nwStream.Flush();
+                if (obj.GetType().IsSubclassOf(typeof(CommandGame)))
+                {
+                    return (CommandGame)obj;
+                }
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            nwStream.Flush();
+            return null;
+
+            /* // NetworkStream nwStream = client.GetStream();
             // IFormatter formatter = new BinaryFormatter();
 
             // return (CommandGame)formatter.Deserialize(nwStream);
 
-            NetworkStream nwStream = client.GetStream();
-            MemoryStream dataStream = new MemoryStream();
-            IFormatter formatter = new BinaryFormatter();
+            //NetworkStream nwStream = client.GetStream();
+            //MemoryStream dataStream = new MemoryStream();
+            //IFormatter formatter = new BinaryFormatter();
 
             // set the binder to the custom binder:
             //formatter.Binder = TypeOnlyBinder.Default;
@@ -425,7 +445,7 @@ namespace GameLogic.MDC.Server
                 Console.WriteLine(e.Message);
             }
 
-            return null;
+            return null;*/
         }
 
         /// <summary>
@@ -435,6 +455,12 @@ namespace GameLogic.MDC.Server
         /// <param name="command">Command you want to send</param>
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
         {
+            NetworkStream nwStream = client.GetStream();
+            IFormatter formatter = new BinaryFormatter();
+
+            formatter.Serialize(nwStream, command);
+            nwStream.Flush();
+            /*
             NetworkStream nwStream = client.GetStream();
             MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
@@ -451,7 +477,7 @@ namespace GameLogic.MDC.Server
             ms.Close(); //TODO: Evtl. entfernen
 
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-            nwStream.Flush();
+            nwStream.Flush();*/
         }
 
         /// <summary>
