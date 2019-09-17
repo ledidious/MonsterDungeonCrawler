@@ -335,7 +335,8 @@ namespace GameLogic.MDC.Client
                 if (_currentStatus != Status.Spectator)
                 {
                     _currentStatus = Status.Busy;
-                    System.Threading.Thread.CurrentThread.Abort();
+                    //System.Threading.Thread.CurrentThread.Abort();
+                    //TODO: Könnte später Probleme geben, weil Thread nicht gekillt wird. Sollte aber durch _currentStatus geregelt werden.
                 }
             }
         }

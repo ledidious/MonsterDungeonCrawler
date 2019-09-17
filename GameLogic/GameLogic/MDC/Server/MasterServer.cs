@@ -18,7 +18,7 @@ namespace GameLogic.MDC.Server
         static string SERVER_IP;
         private static TcpListener listener;
         public static Boolean Shutdown { get; set; }
-        private List<Thread> myThreads;
+        //private List<Thread> myThreads;
 
         static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
         static private Dictionary<string, GameClient> _gClients = new Dictionary<string, GameClient>(); //clientID, TcpClient

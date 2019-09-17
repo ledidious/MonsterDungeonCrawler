@@ -294,7 +294,7 @@ namespace GameLogic.MDC.Server
         /// </summary>
         public void StartGame()
         {
-            if (_clientsOfThisGame.Count < 4)
+            if (_level.PlayerList.Count < 4)
             {
                 throw new NotEnoughPlayerInGameException();
             }
