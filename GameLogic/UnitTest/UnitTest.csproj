@@ -15,4 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="MeleeFighter.cs" />
+  </ItemGroup>
 </Project>
