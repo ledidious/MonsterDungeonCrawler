@@ -14,6 +14,11 @@ namespace GameLogic.MDC.Server
         public Boolean IsHost { get; set; }
         private Thread myThread;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:GameLogic.MDC.Server.GameClient"/> class.
+        /// </summary>
+        /// <param name="client">Client.</param>
+        /// <param name="client_ID">Client identifier.</param>
         public GameClient(TcpClient client, String client_ID)
         {
             this.TcpClient = client;
@@ -22,6 +27,9 @@ namespace GameLogic.MDC.Server
             myThread = System.Threading.Thread.CurrentThread;
         }
 
+        /// <summary>
+        /// Kills the thread.
+        /// </summary>
         public void killThread()
         {
             myThread.Abort();

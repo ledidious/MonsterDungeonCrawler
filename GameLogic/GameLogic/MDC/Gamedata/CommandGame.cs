@@ -15,6 +15,9 @@ namespace GameLogic.MDC.Gamedata
         public Level Level { get; set; }
     }
 
+    /// <summary>
+    /// Command game move.
+    /// </summary>
     [Serializable]
     public class CommandGameMove : CommandGame
     {
@@ -203,6 +206,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command game attack.
+    /// </summary>
     [Serializable]
     public class CommandGameAttack : CommandGame
     {
@@ -389,6 +395,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command game end turn.
+    /// </summary>
     [Serializable]
     public class CommandGameEndTurn : CommandGame
     {

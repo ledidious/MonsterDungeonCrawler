@@ -99,7 +99,6 @@ namespace GameLogic.MDC.Gamedata
         private string _playerName;
         private string _session_ID;
         private CharacterClass _characterClass;
-        private Player player;
 
         public CommandServerCreatePlayer(string SourceClientID, string session_ID, string playerName, CharacterClass characterClass) : base(SourceClientID)
         {
@@ -116,7 +115,7 @@ namespace GameLogic.MDC.Gamedata
     }
 
     /// <summary>
-    /// 
+    /// Command server get update pack for lobby.
     /// </summary>
     [Serializable]
     public class CommandServerGetUpdatePackForLobby : CommandServer

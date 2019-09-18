@@ -20,15 +20,9 @@ namespace GameLogic.MDC.Server
         const int MAX_CLIENTS = 4;
         private int PORT_NO_SESSION;
 
-        // Player/Client mapping: the string represents the clientID
-        // private Dictionary<string, Player> _players = new Dictionary<string, Player>(); TODO: !!!
-        // private Dictionary<string, TcpClient> _clientsOfThisGame = new Dictionary<string, TcpClient>();
         private List<GameClient> _clientsOfThisGame = new List<GameClient>();
         public List<GameClient> ClientsOfThisGame { get { return _clientsOfThisGame; } }
         private GameClient _currentClient;
-        // private List<TcpListener> _test = new List<TcpClient>();
-        // private Player _currentPlayer;
-        private int _lapsRemaining;
         private String _sessionID;
         CommandManager gcm = new CommandManager();
         protected Level _level;
@@ -41,28 +35,9 @@ namespace GameLogic.MDC.Server
             this._sessionID = sessionID;
             this._currentClient = _clientsOfThisGame[0];
 
-            //TODO: Loader einbauen
-            // LoadLevelFile("level1.xml");
             LoadLevelFile(levelFileName + ".xml");
 
             new Thread(new ThreadStart(() => UpdateClientsInLobby())).Start();
-
-            // _level = new Level(MAX_CLIENTS);
-            // for (int x = 0; x <= 19; x++)
-            // {
-            //     for (int y = 0; y <= 19; y++)
-            //     {
-            //         _level.AddFieldToLevel(new Field(x, y, new Floor()));
-            //     }
-            // }
-
-            // CommandManager gcm = new CommandManager();
-
-            // while (true)
-            // {
-            //     gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
-            //     gcm.ProcessPendingTransactions();
-            // }
         }
 
         /// <summary>
@@ -78,7 +53,6 @@ namespace GameLogic.MDC.Server
                 _clientsOfThisGame[0].Player = main;
                 _clientsOfThisGame[0].Player.XPosition = 1; _clientsOfThisGame[0].Player.YPosition = 1;
                 _level.AddPlayerToLevel(_clientsOfThisGame[0].Player);
-                // _players.Add(client_ID, main);
             }
             else
             {
@@ -110,14 +84,13 @@ namespace GameLogic.MDC.Server
                         _level.AddPlayerToLevel(client.Player);
                     }
                 }
-                // _players.Add(client_ID, main);
             }
         }
 
         /// <summary>
-        /// 
+        /// Gets the update pack for lobby.
         /// </summary>
-        /// <param name="client_ID"></param>
+        /// <returns>The update pack for lobby.</returns>
         public UpdatePack GetUpdatePackForLobby()
         {
             if (_clientsOfThisGame != null)
@@ -153,7 +126,6 @@ namespace GameLogic.MDC.Server
                         main = new Hero(playerName, new Archer(), 1, 1);
                         break;
                     default:
-                        // main = new Hero("***Error***", new MeleeFighter(), 0, 0);
                         throw new NotImplementedException();
                 }
 
@@ -176,7 +148,6 @@ namespace GameLogic.MDC.Server
                                 villain = new Monster(playerName, new Archer(), 1, 1);
                                 break;
                             default:
-                                // main = new Monster("***Error***", new MeleeFighter(), 0, 0);
                                 throw new NotImplementedException();
                         }
 
@@ -204,19 +175,6 @@ namespace GameLogic.MDC.Server
                     }
                 }
             }
-
-            /*  if (_clientsOfThisGame.Count == MAX_CLIENTS)
-             {
-                 if (_level.PlayerList.Count == MAX_CLIENTS)
-                 {
-                     UpdateClients();
-                     SendFeedbackToClient(_clientsOfThisGame[0].TcpClient, new CommandFeedbackYourTurn(_clientsOfThisGame[0].Client_ID));
-                 }
-             }
-             else
-             {
-                 UpdateClients();
-             }*/
         }
 
         /// <summary>
@@ -278,7 +236,7 @@ namespace GameLogic.MDC.Server
         /// <summary>
         /// Adds a TcpClient to the game
         /// </summary>
-        /// <param name="client">The TcpClient</param>
+        /// <param name="gClient">The GameClient to add</param>
         public void AddClientToGame(GameClient gClient)
         {
             if (_clientsOfThisGame.Count < MAX_CLIENTS)
@@ -317,7 +275,6 @@ namespace GameLogic.MDC.Server
                             Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
                             Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
                             CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
-                            // command.SourcePlayer = _players.GetValueOrDefault(command.SourceClientID);
                             command.SourcePlayer = _currentClient.Player;
                             command.Level = _level;
 
@@ -348,8 +305,6 @@ namespace GameLogic.MDC.Server
 
                 throw new NotImplementedException();
             }
-            // gcm.AddCommand(ReceiveCommandFromClient(_currentClient));
-            // gcm.ProcessPendingTransactions();
         }
 
         /// <summary>
@@ -414,46 +369,11 @@ namespace GameLogic.MDC.Server
 
             nwStream.Flush();
             return null;
-
-            /* // NetworkStream nwStream = client.GetStream();
-            // IFormatter formatter = new BinaryFormatter();
-
-            // return (CommandGame)formatter.Deserialize(nwStream);
-
-            //NetworkStream nwStream = client.GetStream();
-            //MemoryStream dataStream = new MemoryStream();
-            //IFormatter formatter = new BinaryFormatter();
-
-            // set the binder to the custom binder:
-            //formatter.Binder = TypeOnlyBinder.Default;
-
-            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-
-            dataStream.Write(bytesToRead, 0, bytesToRead.Length);
-            dataStream.Seek(0, SeekOrigin.Begin);
-
-            try
-            {
-                var obj = formatter.Deserialize(dataStream);
-                Console.WriteLine("GAME: " + obj.GetType());
-                if (obj.GetType().IsSubclassOf(typeof(CommandGame)))
-                {
-                    return (CommandGame)obj;
-                }
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            return null;*/
         }
 
         /// <summary>
         /// Send Command to client
         /// </summary>
-        /// <param name="server">TcpClient to which data is to be sent.</param>
         /// <param name="command">Command you want to send</param>
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
         {
@@ -462,28 +382,10 @@ namespace GameLogic.MDC.Server
 
             formatter.Serialize(nwStream, command);
             nwStream.Flush();
-            /*
-            NetworkStream nwStream = client.GetStream();
-            MemoryStream dataStream = new MemoryStream();
-            IFormatter formatter = new BinaryFormatter();
-
-            // set the binder to the custom binder:
-            //formatter.Binder = TypeOnlyBinder.Default;
-
-            var ms = new MemoryStream();
-            formatter.Serialize(ms, command);
-            ms.Flush(); //TODO: Evtl. entfernen
-            ms.Position = 0; //TODO: Evtl. entfernen
-
-            byte[] bytesToSend = ms.ToArray();
-            ms.Close(); //TODO: Evtl. entfernen
-
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-            nwStream.Flush();*/
         }
 
         /// <summary>
-        /// 
+        /// Updates the clients.
         /// </summary>
         private void UpdateClients()
         {
@@ -502,9 +404,11 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
-        /// Ends the turn of a client
+        /// Ends the active player's turn and checks:
+        /// - Whether a player has won
+        /// - The durability of the items
+        /// Notifies the next player
         /// </summary>
-        /// <returns>TODO: Muss hier etwas zurückgegeben werden, oder muss nur auf den nächsten Client gehorcht werden?</returns>
         public void NextPlayer()
         {
             if (_currentClient.Player is Hero)
@@ -557,8 +461,6 @@ namespace GameLogic.MDC.Server
 
             UpdateClients();
             SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackYourTurn(_currentClient.Client_ID));
-            // _currentClient = _clientsOfThisGame.FindIndex();
-            // return null;
         }
 
         /// <summary>
@@ -614,24 +516,18 @@ namespace GameLogic.MDC.Server
             }
         }
 
-        private void LoadLevelFile(string file)
+        /// <summary>
+        /// Loads the level file.
+        /// </summary>
+        /// <param name="fileName">Filename of the level (without extension).</param>
+        private void LoadLevelFile(string fileName)
         {
-            //TODO: Evtl. Pfad für verschiedene OS anpassen
-            var fullPathToFile = Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), ("Level" + Path.DirectorySeparatorChar + file));
+            var fullPathToFile = Path.Combine(Path.GetFullPath(Directory.GetCurrentDirectory()), ("Level" + Path.DirectorySeparatorChar + fileName));
 
             XElement levelFromFile = XElement.Load(fullPathToFile);
-            // XElement test = new XElement(levelFromFile.Name,levelFromFile.)
 
             // Create the level object
-            _level = new Level(MAX_CLIENTS, Int32.Parse(levelFromFile.Attribute("width").Value), (file.Split('.')[0]));
-
-            // foreach (var item in levelFromFile.Attributes())
-            // {
-            //     if (item.Name == "width")
-            //     {
-            //         _level = new Level(MAX_CLIENTS, Int32.Parse(item.Value));
-            //     }
-            // }
+            _level = new Level(MAX_CLIENTS, Int32.Parse(levelFromFile.Attribute("width").Value), (fileName.Split('.')[0]));
 
             // Read field information.
             foreach (var item in levelFromFile.Elements())
@@ -692,28 +588,12 @@ namespace GameLogic.MDC.Server
                     }
                 }
             }
-
-            // foreach (var item in levelFromFile.Elements())
-            // {
-            //     foreach (var franz in item.Elements())
-            //     {
-            //         Console.WriteLine(franz);
-            //     }
-            // }
         }
 
-        //private List<string> CreateClientIDList()
-        //{
-        //    List<string> tmpList = new List<string>();
-
-        //    foreach(var item in _clientsOfThisGame)
-        //    {
-        //        tmpList.Add(item.Client_ID);
-        //    }
-
-        //    return tmpList;
-        //}
-
+        /// <summary>
+        /// Creates the player client mapping.
+        /// </summary>
+        /// <returns>The player client mapping.</returns>
         private List<PlayerClientMapping> CreatePlayerClientMapping()
         {
             List<PlayerClientMapping> tmpList = new List<PlayerClientMapping>();

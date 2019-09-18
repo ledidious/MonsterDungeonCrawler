@@ -3,6 +3,10 @@ using System.Threading;
 
 namespace GameLogic.MDC.Server
 {
+    /// <summary>
+    /// Correlation identifier generator.
+    /// </summary>
+    /// <author>Nima Ara/author>
     internal static class CorrelationIdGenerator
     {
         private static readonly string Encode_32_Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUV";

@@ -14,6 +14,13 @@ namespace GameLogic.MDC
         public string activeScene { get; }
         public int hash { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:GameLogic.MDC.UpdatePack"/> class.
+        /// </summary>
+        /// <param name="playerList">Player list.</param>
+        /// <param name="playingField">Playing field.</param>
+        /// <param name="trapList">Trap list.</param>
+        /// <param name="activeScene">Active scene.</param>
         public UpdatePack(List<PlayerClientMapping> playerList, Field[,] playingField, List<Field> trapList, string activeScene)
         {
             this.PlayerList = playerList;
@@ -24,6 +31,9 @@ namespace GameLogic.MDC
         }
     }
 
+    /// <summary>
+    /// Player client mapping.
+    /// </summary>
     [Serializable]
     public class PlayerClientMapping
     {

@@ -65,6 +65,10 @@ namespace GameLogic.MDC.Server
             // listener.Stop();
         }
 
+        /// <summary>
+        /// Servers the operation.
+        /// </summary>
+        /// <param name="listener">TcpListener of the Master Server.</param>
         private static void ServerOperation(TcpListener listener)
         {
             listener.Start();
@@ -83,6 +87,9 @@ namespace GameLogic.MDC.Server
             // System.Threading.Thread.CurrentThread.Join();            
         }
 
+        /// <summary>
+        /// Stops the server.
+        /// </summary>
         public static void StopServer()
         {
             Console.WriteLine("Shuting down Server...");
@@ -119,6 +126,7 @@ namespace GameLogic.MDC.Server
         /// [Only called by received commands] Creates a new game session and saves it in the dictionary.
         /// </summary>
         /// <param name="client_ID">ID of the executing client</param>
+        /// <param name="levelFileName">Filename of the level (without extension)</param>
         public static void CreateNewGame(string client_ID, string levelFileName)
         {
             string session_ID = CorrelationIdGenerator.GetNextId(); //GenerateID();
@@ -161,7 +169,6 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="client_ID">ID of the executing client</param>
         /// <param name="session_ID">ID of the game the client wants to connect to</param>
-        /// <param name="player">The player object to be forwarded</param>
         public static void CreateNewPlayerForSession(string client_ID, string session_ID, string playerName, CharacterClass characterClass)
         {
             try
@@ -185,17 +192,16 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
-        /// 
+        /// Sends the update pack for lobby.
         /// </summary>
-        /// <param name="client_ID"></param>
-        /// <param name="session_ID"></param>
+        /// <param name="client_ID">ID of the executing client.</param>
+        /// <param name="session_ID">Session identifier.</param>
         public static void SendUpdatePackForLobby(string client_ID, string session_ID)
         {
             try
             {
                 if (_gClients[client_ID].IsHost)
                 {
-                    Console.WriteLine("Benis");
                     UpdatePack pp = _games[session_ID].GetUpdatePackForLobby();
                     SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackUpdatePack(client_ID, true, pp));
                 }
@@ -238,14 +244,12 @@ namespace GameLogic.MDC.Server
         /// <param name="cm">The server-wide CommandManager</param>
         private static void ClientInteraction(TcpClient client, CommandManager cm)
         {
-            // string client_ID = GenerateID();
             GameClient gClient = new GameClient(client, GenerateID());
             _gClients.Add(gClient.Client_ID, gClient);
 
             //---write back the client ID to the client---
             SendStringToClient(gClient.TcpClient, gClient.Client_ID);
 
-            //TODO: GameClient in dieser Klasse implementieren. Sobald StartGame aufgerufen wird, verlassen die zum Spiel gehörenden Clients diesen loop
             while (gClient.TcpClient.Connected)
             {
                 while (gClient.IsInGame == false)
@@ -272,8 +276,6 @@ namespace GameLogic.MDC.Server
         /// <returns>Returns the unique ID</returns>
         private static string GenerateID()
         {
-            //var newGuid = Guid.NewGuid();
-            //var messageID = Convert.ToBase64String(newGuid.ToByteArray());
             return Guid.NewGuid().ToString("N");
         }
 
@@ -311,15 +313,8 @@ namespace GameLogic.MDC.Server
         private static Command ReceiveCommandFromClient(TcpClient client)
         {
             NetworkStream nwStream = client.GetStream();
-            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
-
-           /* byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-
-            dataStream.Write(bytesToRead, 0, bytesToRead.Length);
-            dataStream.Seek(0, SeekOrigin.Begin); */
-
+           
             try
             {
                 var obj = formatter.Deserialize(nwStream);
@@ -342,26 +337,12 @@ namespace GameLogic.MDC.Server
         /// <summary>
         /// Send Command to client
         /// </summary>
-        /// <param name="server">TcpClient to which data is to be sent.</param>
         /// <param name="command">Command you want to send</param>
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
         {
             NetworkStream nwStream = client.GetStream();
-            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
-            // set the binder to the custom binder:
-            //formatter.Binder = TypeOnlyBinder.Default;
-
-            /* var ms = new MemoryStream();
-             formatter.Serialize(ms, command);
-             ms.Flush(); //TODO: Evtl. entfernen
-             ms.Position = 0; //TODO: Evtl. entfernen
-
-             byte[] bytesToSend = ms.ToArray();
-             ms.Close(); //TODO: Evtl. entfernen
-
-             nwStream.Write(bytesToSend, 0, bytesToSend.Length);*/
             formatter.Serialize(nwStream, command);
             nwStream.Flush(); 
         }

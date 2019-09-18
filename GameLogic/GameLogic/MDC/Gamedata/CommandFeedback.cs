@@ -10,6 +10,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command feedback ok.
+    /// </summary>
     [Serializable]
     public class CommandFeedbackOK : CommandFeedback
     {
@@ -24,6 +27,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command feedback end of turn.
+    /// </summary>
     [Serializable]
     public class CommandFeedbackEndOfTurn : CommandFeedback
     {
@@ -38,6 +44,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command feedback your turn.
+    /// </summary>
     [Serializable]
     public class CommandFeedbackYourTurn : CommandFeedback
     {
@@ -52,6 +61,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command feedback update pack.
+    /// </summary>
     [Serializable]
     public class CommandFeedbackUpdatePack : CommandFeedback
     {
@@ -74,6 +86,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command feedback game exception.
+    /// </summary>
     [Serializable]
     public class CommandFeedbackGameException : CommandFeedback
     {
