@@ -122,13 +122,15 @@ namespace GameLogic.MDC.Server
         {
             if (_clientsOfThisGame != null)
             {
-                return (new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null, CreateClientIDList()));
+                return (new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null));
             }
             else
             {
                 throw new NotEnoughPlayerInGameException();
             }
         }
+
+
 
         /// <summary>
         /// Creates a new player and adds it to the game
@@ -230,7 +232,7 @@ namespace GameLogic.MDC.Server
                     {
                         if (_level.PlayerList != null && _level.TrapList != null)
                         {
-                            UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null, CreateClientIDList());
+                            UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                             if (client.Player.Life > 0)
                             {
                                 SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -254,7 +256,7 @@ namespace GameLogic.MDC.Server
                 {
                     if (_level.PlayerList != null && _level.TrapList != null)
                     {
-                        UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, _level.LevelName, CreateClientIDList());
+                        UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, _level.LevelName);
                         if (client.Player.Life > 0)
                         {
                             SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -487,7 +489,7 @@ namespace GameLogic.MDC.Server
         {
             foreach (var client in _clientsOfThisGame)
             {
-                UpdatePack update = new UpdatePack(_level.PlayerList, _level.PlayingField, _level.TrapList, null, CreateClientIDList());
+                UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                 if (client.Player.Life > 0)
                 {
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -700,16 +702,28 @@ namespace GameLogic.MDC.Server
             // }
         }
 
-        private List<string> CreateClientIDList()
+        //private List<string> CreateClientIDList()
+        //{
+        //    List<string> tmpList = new List<string>();
+
+        //    foreach(var item in _clientsOfThisGame)
+        //    {
+        //        tmpList.Add(item.Client_ID);
+        //    }
+
+        //    return tmpList;
+        //}
+
+        private Dictionary<string, Player> CreatePlayerClientMapping()
         {
-            List<string> tmpList = new List<string>();
+            Dictionary<string, Player> tmpDic = new Dictionary<string, Player>();
 
             foreach(var item in _clientsOfThisGame)
             {
-                tmpList.Add(item.Client_ID);
+                tmpDic.Add(item.Client_ID, item.Player);
             }
 
-            return tmpList;
+            return tmpDic;
         }
     }
 }
