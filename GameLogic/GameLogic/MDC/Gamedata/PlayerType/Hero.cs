@@ -15,7 +15,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
             this.XPosition = xPosition;
             this.YPosition = yPosition;
             this.Life = LIFE_HERO;
-            this.PlayerRemainingMoves = characterType._moveRange;
+            this.PlayerRemainingMoves = characterType.MoveRange;
         }
 
         /// <summary>

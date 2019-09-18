@@ -15,7 +15,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
             this.Life = LIFE_MONSTER;
             this.XPosition = xPosition;
             this.YPosition = yPosition;
-            this.PlayerRemainingMoves = characterType._moveRange;
+            this.PlayerRemainingMoves = characterType.MoveRange;
         }
 
         /// <summary>

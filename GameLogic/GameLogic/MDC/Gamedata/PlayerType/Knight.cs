@@ -5,9 +5,9 @@ namespace GameLogic.MDC.Gamedata.PlayerType
     [Serializable]
     public class Knight : CharacterType
     {
-        public override double _attackPower => 1;
-        public override double _defensePower => 0.25;
-        public override int _attackRange => 1;
-        public override int _moveRange => MOVE_MELEE;
+        public override double AttackPower => 1;
+        public override double DefensePower => 0.25;
+        public override int AttackRange => 1;
+        public override int MoveRange => MOVE_MELEE;
     }
 }
