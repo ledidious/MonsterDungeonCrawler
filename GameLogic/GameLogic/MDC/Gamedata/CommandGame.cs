@@ -15,6 +15,9 @@ namespace GameLogic.MDC.Gamedata
         public Level Level { get; set; }
     }
 
+    /// <summary>
+    /// Command game move.
+    /// </summary>
     [Serializable]
     public class CommandGameMove : CommandGame
     {
@@ -203,6 +206,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command game attack.
+    /// </summary>
     [Serializable]
     public class CommandGameAttack : CommandGame
     {
@@ -237,9 +243,9 @@ namespace GameLogic.MDC.Gamedata
             //Verify if an enemy is vertical in range
             if (SourcePlayer.XPosition == TargetPlayer.XPosition)
             {
-                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                for (int i = 0; i <= SourcePlayer.CharacterType.AttackRange * 2; i++)
                 {
-                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.YPosition)
+                    if (SourcePlayer.YPosition - SourcePlayer.CharacterType.AttackRange + i == TargetPlayer.YPosition)
                     {
                         TargetInRange = true;
                         break;
@@ -258,9 +264,9 @@ namespace GameLogic.MDC.Gamedata
             //Verify if an enemy is horizontal in range
             if (SourcePlayer.YPosition == TargetPlayer.YPosition)
             {
-                for (int i = 0; i <= SourcePlayer.CharacterType._attackRange * 2; i++)
+                for (int i = 0; i <= SourcePlayer.CharacterType.AttackRange * 2; i++)
                 {
-                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType._attackRange + i == TargetPlayer.XPosition)
+                    if (SourcePlayer.XPosition - SourcePlayer.CharacterType.AttackRange + i == TargetPlayer.XPosition)
                     {
                         TargetInRange = true;
                         break;
@@ -389,6 +395,9 @@ namespace GameLogic.MDC.Gamedata
         }
     }
 
+    /// <summary>
+    /// Command game end turn.
+    /// </summary>
     [Serializable]
     public class CommandGameEndTurn : CommandGame
     {

@@ -5,6 +5,10 @@ namespace GameLogic.MDC
     // ###############
     // # Server side #
     // ###############
+
+    /// <summary>
+    /// Cant attack exception.
+    /// </summary>
     [Serializable]
     public class CantAttackException : Exception
     {
@@ -26,6 +30,9 @@ namespace GameLogic.MDC
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+    /// <summary>
+    /// Cant move exception.
+    /// </summary>
     [Serializable]
     public class CantMoveException : Exception
     {
@@ -48,6 +55,9 @@ namespace GameLogic.MDC
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+    /// <summary>
+    /// Session identifier is invalid exception.
+    /// </summary>
     [Serializable]
     public class SessionIdIsInvalidException : Exception
     {
@@ -69,6 +79,9 @@ namespace GameLogic.MDC
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+    /// <summary>
+    /// Not enough player in game exception.
+    /// </summary>
     [Serializable]
     public class NotEnoughPlayerInGameException : Exception
     {
@@ -90,6 +103,9 @@ namespace GameLogic.MDC
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+    /// <summary>
+    /// Game lobby is full exception.
+    /// </summary>
     [Serializable]
     public class GameLobbyIsFullException : Exception
     {
@@ -113,6 +129,9 @@ namespace GameLogic.MDC
             System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
+    /// <summary>
+    /// Command not recognized exception.
+    /// </summary>
     [Serializable]
     public class CommandNotRecognizedException : Exception
     {
@@ -139,6 +158,10 @@ namespace GameLogic.MDC
     // ##########
     // # Client #
     // ##########
+
+    /// <summary>
+    /// Cannot connect to server exception.
+    /// </summary>
     [Serializable]
     public class CannotConnectToServerException : Exception
     {
@@ -158,6 +181,9 @@ namespace GameLogic.MDC
         }
     }
 
+    /// <summary>
+    /// Client is not connected to server exception.
+    /// </summary>
     [Serializable]
     public class ClientIsNotConnectedToServerException : Exception
     {

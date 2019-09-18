@@ -4,9 +4,9 @@ namespace GameLogic.MDC.Gamedata.PlayerType
     [Serializable]
     public class Archer : CharacterType
     {
-        public override double _attackPower => 0.5;
-        public override double _defensePower => 0;
-        public override int _attackRange => 3;
-        public override int _moveRange => MOVE_RANGE;
+        public override double AttackPower => 0.5;
+        public override double DefensePower => 0;
+        public override int AttackRange => 3;
+        public override int MoveRange => MOVE_RANGE;
     }
 }

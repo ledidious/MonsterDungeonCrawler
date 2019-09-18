@@ -49,14 +49,13 @@ namespace GameLogic.MDC.Client
         public void ConnectToServer()
         {
             ReadConfig();
-            // Console.WriteLine("Connecting to: " + _server_IP);
 
             try
             {
                 //---create a TCPClient object at the IP and port no.---
                 _masterServer = new TcpClient(_server_IP, _port_NO);
-                //_server.ReceiveTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
-                //_server.SendTimeout = 3000; // 3 Seconds TODO: Wieder einbauen
+                _masterServer.ReceiveTimeout = 3000; // 3 Seconds
+                _masterServer.SendTimeout = 3000; // 3 Seconds
                 _masterServer.SendBufferSize = 524288;
                 _masterServer.ReceiveBufferSize = 524288;
 
@@ -202,8 +201,10 @@ namespace GameLogic.MDC.Client
         /// <summary>
         /// Creates a command to move your character on the playing field.
         /// </summary>
+        /// <param name="x">X Position</param>
+        /// <param name="y">Y Position</param>
         public void MovePlayer(int x, int y)
-        { //TODO: Übergabe der Richtung und Anzahl Schritte
+        {
             if (_isConnected)
             {
                 if (_gameSession_ID != null && _currentStatus == Status.Busy)
@@ -276,7 +277,7 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// 
+        /// Gets the update pack for the host in the lobby.
         /// </summary>
         public void GetUpdatePackForLobby()
         {
@@ -344,7 +345,6 @@ namespace GameLogic.MDC.Client
         /// <summary>
         /// Receive string from server
         /// </summary>
-        /// <param name="server">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received string</returns>
         private string ReceiveStringFromServer()
         {
@@ -358,7 +358,6 @@ namespace GameLogic.MDC.Client
         /// <summary>
         /// Send string to client
         /// </summary>
-        /// <param name="server">TcpClient to which data is to be sent.</param>
         /// <param name="data">String you want to send</param>
         private void SendStringToServer(string data)
         {
@@ -371,26 +370,12 @@ namespace GameLogic.MDC.Client
         /// <summary>
         /// Send Command to server
         /// </summary>
-        /// <param name="server">TcpClient to which data is to be sent.</param>
         /// <param name="command">Command you want to send</param>
         private void SendCommandToServer(Command command)
         {
             NetworkStream nwStream = _masterServer.GetStream();
-            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
 
-            // set the binder to the custom binder:
-            //formatter.Binder = TypeOnlyBinder.Default;
-
-            /* var ms = new MemoryStream();
-             formatter.Serialize(ms, command);
-             ms.Flush(); //TODO: Evtl. entfernen
-             ms.Position = 0; //TODO: Evtl. entfernen
-
-             byte[] bytesToSend = ms.ToArray();
-             ms.Close(); //TODO: Evtl. entfernen
-
-             nwStream.Write(bytesToSend, 0, bytesToSend.Length); */
             formatter.Serialize(nwStream, command);
             nwStream.Flush();
         }
@@ -403,20 +388,12 @@ namespace GameLogic.MDC.Client
         private CommandFeedback EvaluateFeedback()
         {
             NetworkStream nwStream = _masterServer.GetStream();
-            //MemoryStream dataStream = new MemoryStream();
             IFormatter formatter = new BinaryFormatter();
-
-            /* byte[] bytesToRead = new byte[_masterServer.ReceiveBufferSize];
-             nwStream.Read(bytesToRead, 0, _masterServer.ReceiveBufferSize);
-
-             dataStream.Write(bytesToRead, 0, bytesToRead.Length);
-             dataStream.Seek(0, SeekOrigin.Begin); */
 
             try
             {
                 var obj = formatter.Deserialize(nwStream);
                 nwStream.Flush();
-                //Console.WriteLine("CLIENT: " + obj.GetType());
                 if (obj is CommandFeedback)
                 {
                     return (CommandFeedback)obj;
@@ -425,7 +402,6 @@ namespace GameLogic.MDC.Client
             catch (System.Runtime.Serialization.SerializationException e)
             {
                 throw e;
-                //Console.WriteLine(e.Message);
             }
 
             nwStream.Flush();

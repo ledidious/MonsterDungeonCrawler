@@ -8,9 +8,9 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         protected const int MOVE_RANGE = 2;
         protected const int MOVE_MELEE = 5;
 
-        public abstract double _attackPower { get; }
-        public abstract double _defensePower { get; }
-        public abstract int _attackRange { get; }
-        public abstract int _moveRange { get; }
+        public abstract double AttackPower { get; }
+        public abstract double DefensePower { get; }
+        public abstract int AttackRange { get; }
+        public abstract int MoveRange { get; }
     }
 }

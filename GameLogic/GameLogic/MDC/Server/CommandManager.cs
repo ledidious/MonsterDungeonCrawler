@@ -35,7 +35,6 @@ namespace GameLogic.MDC.Server
                 }
                 catch (System.Exception)
                 {
-
                     throw;
                 }
             }

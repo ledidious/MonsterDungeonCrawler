@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="GameLogic">
+            <HintPath>GameLogic.dll</HintPath>
+        </Reference>
+        <!-- <Reference Include="Json">
+          <HintPath>Newtonsoft.Json.dll</HintPath>
+        </Reference> -->
+    </ItemGroup>
+</Project>

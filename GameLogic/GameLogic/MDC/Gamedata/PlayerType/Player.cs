@@ -17,6 +17,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         private CharacterType _char;
         private string _playerName;
         private Boolean _hasKey;
+        private string _gameColor; 
 
         public Boolean HasKey
         {
@@ -134,7 +135,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         /// </summary>
         public void ResetRemainingMoves()
         {
-            this.PlayerRemainingMoves = this.CharacterType._moveRange;
+            this.PlayerRemainingMoves = this.CharacterType.MoveRange;
         }
 
         /// <summary>
@@ -146,8 +147,8 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         /// <param name="characterType">Charactertype of the attacking enemy</param>
         public void DecrementLife(double attackBoost, CharacterType characterType)
         {
-            double totalAttackPower = attackBoost + characterType._attackPower;
-            double totalDefensePower = this.DefenseBoost + this._char._defensePower;
+            double totalAttackPower = attackBoost + characterType.AttackPower;
+            double totalDefensePower = this.DefenseBoost + this._char.DefensePower;
 
             Life -= totalAttackPower - totalDefensePower;
         }
@@ -158,10 +159,10 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         /// Additionally the defenseboost and defenseitem will be deleted
         /// CommandGameMove class call the effects method from the trap class when the player enter a trapfield and the trap class call then this method
         /// </summary>
-        /// <param name="_dealingDamage">Dealingdamage if the trap</param>
-        public void DecrementLife(double _dealingDamage)
+        /// <param name="dealingDamage">Dealingdamage if the trap</param>
+        public void DecrementLife(double dealingDamage)
         {
-            Life -= _dealingDamage - (this.DefenseBoost + this._char._defensePower);
+            Life -= dealingDamage - (this.DefenseBoost + this._char.DefensePower);
 
             ResetDefenseItem();
             ResetDefenseBooster();

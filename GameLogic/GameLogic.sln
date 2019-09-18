@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{B86DA917-1B76-459C-A2F6-FD9E2DEE7D27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{D6EEB3A6-F3A7-40F7-8F07-3274D07F8058}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +15,9 @@ Global
 		{B86DA917-1B76-459C-A2F6-FD9E2DEE7D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B86DA917-1B76-459C-A2F6-FD9E2DEE7D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B86DA917-1B76-459C-A2F6-FD9E2DEE7D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6EEB3A6-F3A7-40F7-8F07-3274D07F8058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6EEB3A6-F3A7-40F7-8F07-3274D07F8058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6EEB3A6-F3A7-40F7-8F07-3274D07F8058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6EEB3A6-F3A7-40F7-8F07-3274D07F8058}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
