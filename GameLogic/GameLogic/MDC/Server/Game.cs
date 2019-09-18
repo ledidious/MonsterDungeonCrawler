@@ -714,16 +714,16 @@ namespace GameLogic.MDC.Server
         //    return tmpList;
         //}
 
-        private Dictionary<string, Player> CreatePlayerClientMapping()
+        private List<PlayerClientMapping> CreatePlayerClientMapping()
         {
-            Dictionary<string, Player> tmpDic = new Dictionary<string, Player>();
+            List<PlayerClientMapping> tmpList = new List<PlayerClientMapping>();
 
             foreach(var item in _clientsOfThisGame)
             {
-                tmpDic.Add(item.Client_ID, item.Player);
+                tmpList.Add(new PlayerClientMapping(item.Client_ID, item.Player));
             }
 
-            return tmpDic;
+            return tmpList;
         }
     }
 }
