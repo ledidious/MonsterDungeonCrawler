@@ -8,6 +8,8 @@ namespace GameLogic.MDC
     [Serializable]
     public class UpdatePack
     {
+        public int NumberOfPlayedRounds { get; }
+        public string ActiveClientID { get; }
         public List<PlayerClientMapping> PlayerList { get; }
         public Field[,] PlayingField { get; }
         public List<Field> TrapList { get; }
@@ -21,8 +23,10 @@ namespace GameLogic.MDC
         /// <param name="playingField">Playing field.</param>
         /// <param name="trapList">Trap list.</param>
         /// <param name="activeScene">Active scene.</param>
-        public UpdatePack(List<PlayerClientMapping> playerList, Field[,] playingField, List<Field> trapList, string activeScene)
+        public UpdatePack(int numberOfPlayedRounds, string activeClientID , List<PlayerClientMapping> playerList, Field[,] playingField, List<Field> trapList, string activeScene)
         {
+            this.NumberOfPlayedRounds = numberOfPlayedRounds;
+            this.ActiveClientID = activeClientID;
             this.PlayerList = playerList;
             this.PlayingField = playingField;
             this.TrapList = trapList;

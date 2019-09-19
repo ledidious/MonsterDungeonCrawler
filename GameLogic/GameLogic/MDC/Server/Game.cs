@@ -95,7 +95,7 @@ namespace GameLogic.MDC.Server
         {
             if (_clientsOfThisGame != null)
             {
-                return (new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null));
+                return (new UpdatePack(RoundCounter ,_currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null));
             }
             else
             {
@@ -191,7 +191,7 @@ namespace GameLogic.MDC.Server
                         {
                             if (_level.PlayerList != null && _level.TrapList != null)
                             {
-                                UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
+                                UpdatePack update = new UpdatePack(RoundCounter, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                                 if (client.Player.Life > 0)
                                 {
                                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -218,7 +218,7 @@ namespace GameLogic.MDC.Server
                 {
                     if (_level.PlayerList != null && _level.TrapList != null)
                     {
-                        UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, _level.LevelName);
+                        UpdatePack update = new UpdatePack(RoundCounter, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, _level.LevelName);
                         if (client.Player.Life > 0)
                         {
                             SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -396,7 +396,7 @@ namespace GameLogic.MDC.Server
         {
             foreach (var client in _clientsOfThisGame)
             {
-                UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
+                UpdatePack update = new UpdatePack(RoundCounter, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                 if (client.Player.Life > 0)
                 {
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
