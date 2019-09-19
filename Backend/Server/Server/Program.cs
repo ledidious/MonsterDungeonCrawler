@@ -8,10 +8,12 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("[1] Server\n[2] Simulate Client\n[3] Test Stuff");
-            string input = Console.ReadLine();
+            // Console.WriteLine("[1] Server\n[2] Simulate Client\n[3] Test Stuff");
+            // string input = Console.ReadLine();
 
-            switch (input)
+
+            MasterServer.StartServer();
+          /*   switch (input)
             {
                 case "1":
                     MasterServer.StartServer();
@@ -71,7 +73,7 @@ namespace Server
                 default:
                     Console.WriteLine("No input detected!");
                     break;
-            }
+            }  */
 
             while (true)
             {
