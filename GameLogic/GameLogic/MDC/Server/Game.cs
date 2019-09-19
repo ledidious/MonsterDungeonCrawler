@@ -284,7 +284,7 @@ namespace GameLogic.MDC.Server
                                 if (_currentClient.Player.PlayerRemainingMoves > 0)
                                 {
                                     SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
-                                    UpdateClients();
+                                    //UpdateClients();
                                 }
                                 else
                                 {
