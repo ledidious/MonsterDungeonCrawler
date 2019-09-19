@@ -213,7 +213,16 @@ namespace GameLogic.MDC.Client
                     SendCommandToServer(command);
 
                     CommandFeedback feedback = EvaluateFeedback();
-                    if (feedback is CommandFeedbackOK) { }
+                    if (feedback is CommandFeedbackOK)
+                    {
+                        feedback = EvaluateFeedback();
+
+                        if (feedback is CommandFeedbackUpdatePack)
+                        {
+                            _update = ((CommandFeedbackUpdatePack)feedback).Update;
+                        }
+                        else { throw new CommandNotRecognizedException(); }
+                    }
                     else if (feedback is CommandFeedbackEndOfTurn)
                     {
                         Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn()));
@@ -239,7 +248,16 @@ namespace GameLogic.MDC.Client
                     SendCommandToServer(command);
 
                     CommandFeedback feedback = EvaluateFeedback();
-                    if (feedback is CommandFeedbackOK) { }
+                    if (feedback is CommandFeedbackOK)
+                    {
+                        feedback = EvaluateFeedback();
+
+                        if (feedback is CommandFeedbackUpdatePack)
+                        {
+                            _update = ((CommandFeedbackUpdatePack)feedback).Update;
+                        }
+                        else { throw new CommandNotRecognizedException(); }
+                    }
                     else if (feedback is CommandFeedbackEndOfTurn)
                     {
                         Thread updateThread = new Thread(new ThreadStart(() => WaitForNextTurn()));
@@ -313,7 +331,6 @@ namespace GameLogic.MDC.Client
 
             do
             {
-                //Console.WriteLine("UPDATE...");
                 feedback = EvaluateFeedback();
 
                 if (feedback is CommandFeedbackUpdatePack)
@@ -326,8 +343,8 @@ namespace GameLogic.MDC.Client
                     else
                     {
                         _update = ((CommandFeedbackUpdatePack)feedback).Update;
+                        Console.WriteLine("UPDATE RECEIVED");
                     }
-
                 }
             } while (feedback is CommandFeedbackUpdatePack);
 
@@ -393,7 +410,7 @@ namespace GameLogic.MDC.Client
             try
             {
                 var obj = formatter.Deserialize(nwStream);
-                //Console.WriteLine("CLIENT: " + obj.GetType());
+                Console.WriteLine("CLIENT: " + obj.GetType());
                 nwStream.Flush();
                 if (obj is CommandFeedback)
                 {

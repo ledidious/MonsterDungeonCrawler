@@ -183,25 +183,30 @@ namespace GameLogic.MDC.Server
         {
             while (_clientsOfThisGame[0].IsInGame == false)
             {
-                foreach (var client in _clientsOfThisGame)
+                try
                 {
-                    if (client.Client_ID != _clientsOfThisGame[0].Client_ID && client.Player != null)
+                    foreach (var client in _clientsOfThisGame)
                     {
-                        if (_level.PlayerList != null && _level.TrapList != null)
+                        if (client.Client_ID != _clientsOfThisGame[0].Client_ID && client.Player != null)
                         {
-                            UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
-                            if (client.Player.Life > 0)
+                            if (_level.PlayerList != null && _level.TrapList != null)
                             {
-                                SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
-                                Console.WriteLine("Sending Update to: " + client.Player.PlayerName);
-                            }
-                            else
-                            {
-                                SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, false, update));
+                                UpdatePack update = new UpdatePack(CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
+                                if (client.Player.Life > 0)
+                                {
+                                    SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
+                                    Console.WriteLine("Sending Update to: " + client.Player.PlayerName);
+                                }
+                                else
+                                {
+                                    SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, false, update));
+                                }
                             }
                         }
                     }
                 }
+                catch (System.Exception)
+                { }
 
                 System.Threading.Thread.Sleep(1000);
             }
@@ -284,7 +289,8 @@ namespace GameLogic.MDC.Server
                                 if (_currentClient.Player.PlayerRemainingMoves > 0)
                                 {
                                     SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
-                                    //UpdateClients();
+                                    //System.Threading.Thread.Sleep(100);
+                                    UpdateClients();
                                 }
                                 else
                                 {
@@ -597,7 +603,7 @@ namespace GameLogic.MDC.Server
         {
             List<PlayerClientMapping> tmpList = new List<PlayerClientMapping>();
 
-            foreach(var item in _clientsOfThisGame)
+            foreach (var item in _clientsOfThisGame)
             {
                 tmpList.Add(new PlayerClientMapping(item.Client_ID, item.Player));
             }

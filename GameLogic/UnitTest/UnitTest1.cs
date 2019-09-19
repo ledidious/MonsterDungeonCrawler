@@ -1274,7 +1274,24 @@ namespace UnitTest
 
             testClient.ConnectToServer();
 
-            MasterServer.StopServer();
+            //MasterServer.StopServer();
+        }
+
+        [TestMethod]
+        public void ConnectToServerWithFourClients()
+        {
+            MasterServer.StartServer();
+            System.Threading.Thread.Sleep(500);
+
+            ClientProgram client01 = new ClientProgram();
+            ClientProgram client02 = new ClientProgram();
+            ClientProgram client03 = new ClientProgram();
+            ClientProgram client04 = new ClientProgram();
+
+            client01.ConnectToServer();
+            client02.ConnectToServer();
+            client03.ConnectToServer();
+            client04.ConnectToServer();
         }
     }
 }
