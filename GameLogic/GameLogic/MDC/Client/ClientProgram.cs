@@ -54,7 +54,7 @@ namespace GameLogic.MDC.Client
             {
                 //---create a TCPClient object at the IP and port no.---
                 _masterServer = new TcpClient(_server_IP, _port_NO);
-                _masterServer.ReceiveTimeout = 3000; // 3 Seconds
+                //_masterServer.ReceiveTimeout = 3000; // 3 Seconds
                 _masterServer.SendTimeout = 3000; // 3 Seconds
                 _masterServer.SendBufferSize = 524288;
                 _masterServer.ReceiveBufferSize = 524288;
@@ -102,7 +102,7 @@ namespace GameLogic.MDC.Client
         {
             if (_isConnected)
             {
-                Console.WriteLine("Connecting to: " + session_ID);
+                //Console.WriteLine("Connecting to: " + session_ID);
                 CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, session_ID);
                 SendCommandToServer(command);
 
@@ -130,7 +130,7 @@ namespace GameLogic.MDC.Client
                 if (feedback is CommandFeedbackOK)
                 {
                     _gameSession_ID = ReceiveStringFromServer();
-                    Console.WriteLine("ID of the new Game: " + _gameSession_ID);
+                    //Console.WriteLine("ID of the new Game: " + _gameSession_ID);
                     _isHost = true;
                 }
                 else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
@@ -313,7 +313,7 @@ namespace GameLogic.MDC.Client
 
             do
             {
-                Console.WriteLine("UPDATE...");
+                //Console.WriteLine("UPDATE...");
                 feedback = EvaluateFeedback();
 
                 if (feedback is CommandFeedbackUpdatePack)
@@ -393,6 +393,7 @@ namespace GameLogic.MDC.Client
             try
             {
                 var obj = formatter.Deserialize(nwStream);
+                //Console.WriteLine("CLIENT: " + obj.GetType());
                 nwStream.Flush();
                 if (obj is CommandFeedback)
                 {

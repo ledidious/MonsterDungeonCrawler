@@ -53,7 +53,15 @@ namespace Server
                     System.Threading.Thread.Sleep(3500);
                     client01.StartCreatedGame();
 
-                    client01.EndTurn();
+                    System.Threading.Thread.Sleep(3500);
+
+                    client01.MovePlayer(2,1);
+                    client01.MovePlayer(1,1);
+                    client01.MovePlayer(2,1);
+                    client01.MovePlayer(3,1);
+                    client01.MovePlayer(4,1);
+
+
 
                     while (true)
                     {
