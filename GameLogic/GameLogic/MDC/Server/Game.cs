@@ -284,12 +284,12 @@ namespace GameLogic.MDC.Server
                                 if (_currentClient.Player.PlayerRemainingMoves > 0)
                                 {
                                     SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
+                                    UpdateClients();
                                 }
                                 else
                                 {
                                     SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackEndOfTurn(_currentClient.Client_ID));
                                 }
-
                             }
                             catch (System.Exception e)
                             {
