@@ -26,7 +26,7 @@ namespace GameLogic.MDC.Server
         private String _sessionID;
         CommandManager gcm = new CommandManager();
         protected Level _level;
-        protected int roundsPlayed;
+        protected int gameRound;
         protected Boolean _gameActive;
 
         public Game(String sessionID, GameClient firstClient, string levelFileName)
@@ -264,7 +264,7 @@ namespace GameLogic.MDC.Server
             }
             else
             {
-                roundsPlayed = 0;
+                gameRound = 1;
 
                 //TODO: Verhindern, dass ein Spiel mehrfach gestartet werden kann.
                 while (_clientsOfThisGame[0].TcpClient.Connected)
@@ -306,6 +306,7 @@ namespace GameLogic.MDC.Server
                     }
 
                     NextPlayer();
+                    Console.WriteLine("####################\n Round: " + gameRound + "\n####################");
                 }
 
                 throw new NotImplementedException();
@@ -453,10 +454,10 @@ namespace GameLogic.MDC.Server
             {
                 _currentClient = _clientsOfThisGame[0];
                 ItemManagement();
-                roundsPlayed++;
+                gameRound++;
             }
 
-            if ((roundsPlayed % 2) == 0)
+            if ((gameRound % 2) == 0)
             {
                 foreach (var field in _level.TrapList)
                 {
