@@ -202,7 +202,9 @@
     <Field x="12" y="5" />
     <Field x="13" y="5" />
     <Field x="14" y="5" />
-    <Field x="15" y="5" />
+    <Field x="15" y="5">
+        <Heart/>
+    </Field>
     <Field x="16" y="5">
         <Exit/>
     </Field>
@@ -393,8 +395,8 @@
         <Wall/>
     </Field>
     <Field x="7" y="11">
-        <Heart/>
-    </Field>
+
+
     <Field x="8" y="11" />
     <Field x="9" y="11" />
     <Field x="10" y="11" />
