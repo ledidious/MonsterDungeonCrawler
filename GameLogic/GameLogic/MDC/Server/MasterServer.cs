@@ -81,7 +81,6 @@ namespace GameLogic.MDC.Server
                 Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
                 clientThread.Start();
             }
-            Console.WriteLine("Penis");
 
             // System.Threading.Thread.CurrentThread.Abort();
             // System.Threading.Thread.CurrentThread.Join();            
@@ -265,7 +264,6 @@ namespace GameLogic.MDC.Server
                 }
             }
             // gClient.TcpClient.Close();
-            Console.WriteLine("Client Penis");
             System.Threading.Thread.CurrentThread.Abort();
             System.Threading.Thread.CurrentThread.Join();
         }

@@ -171,7 +171,6 @@ namespace GameLogic.MDC.Server
 
                         client.Player = villain;
                         _level.AddPlayerToLevel(client.Player);
-                        Console.WriteLine("Villain Position: " + client.Player.XPosition + ", " + client.Player.YPosition);
                     }
                 }
             }
