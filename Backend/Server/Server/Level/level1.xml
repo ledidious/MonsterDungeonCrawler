@@ -375,7 +375,7 @@
     <Field x="17" y="10" />
     <Field x="18" y="10">
         <Sword level="2"/>
-    </Field>    
+    </Field>
     <Field x="19" y="10">
         <Wall/>
     </Field>
@@ -395,8 +395,8 @@
         <Wall/>
     </Field>
     <Field x="7" y="11">
-
-
+      <Heart/>
+    </Field>
     <Field x="8" y="11" />
     <Field x="9" y="11" />
     <Field x="10" y="11" />
