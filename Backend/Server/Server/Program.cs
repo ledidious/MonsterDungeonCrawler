@@ -48,6 +48,9 @@ namespace Server
 
                     while (true)
                     {
+                        Console.WriteLine("Which client to end turn?");
+                        var integer = int.Parse(Console.ReadLine());
+
                         if (client01.CurrentStatus == ClientProgram.Status.Busy)
                         {
                             client01.EndTurn();
@@ -56,6 +59,7 @@ namespace Server
                         {
                             client02.EndTurn();
                         }
+                        System.Threading.Thread.Sleep(3000);
                         //string[] pos = Console.ReadLine().Split(new char[]{' '});
                         //client01.MovePlayer(int.Parse(pos[0] + ""), int.Parse(pos[1] + ""));
                         //client02.MovePlayer(int.Parse(pos[0] + ""), int.Parse(pos[1] + ""));
