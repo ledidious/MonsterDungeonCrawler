@@ -6,7 +6,7 @@ namespace GameLogic.MDC.Gamedata.LevelContent
     [Serializable]
     public class LaserBeam : Trap
     {
-        protected override double _dealingDamage => 1;
+        protected override double _dealingDamage => 1.5;
         protected Boolean _isActive = false;
 
         /// <summary>

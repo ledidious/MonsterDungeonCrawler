@@ -6,7 +6,7 @@ namespace GameLogic.MDC.Gamedata.LevelContent
     [Serializable]
     public class SpikeField : Trap
     {
-        protected override double _dealingDamage => 0.5;
+        protected override double _dealingDamage => 1;
 
         /// <summary>
         /// Constructor set ishidden on true

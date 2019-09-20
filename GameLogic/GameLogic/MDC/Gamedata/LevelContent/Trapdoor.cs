@@ -6,7 +6,7 @@ namespace GameLogic.MDC.Gamedata.LevelContent
     [Serializable]
     public class Trapdoor : Trap
     {
-        protected override double _dealingDamage => 0.25;
+        protected override double _dealingDamage => 0.75;
 
         /// <summary>
         /// Constructor set ishidden on true
