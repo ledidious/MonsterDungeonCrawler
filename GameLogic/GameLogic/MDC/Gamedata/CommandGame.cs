@@ -77,28 +77,6 @@ namespace GameLogic.MDC.Gamedata
             if (Level.PlayingField[_xPosition, _yPosition].FieldType is Trap)
             {
                 Level.PlayingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
-                if (Level.PlayingField[_xPosition, _yPosition].FieldType is Trapdoor)
-                {
-                    Boolean successfulMoving = false;
-                    int randomX;
-                    int randomY;
-
-                    while (successfulMoving == false)
-                    {
-                        randomX = new Random().Next(0, 19);
-                        randomY = new Random().Next(0, 19);
-
-                        if (Level.PlayingField[randomX, randomY].FieldType is Floor && Level.FieldBlockedByPlayer(randomX, randomY) == false)
-                        {
-                            successfulMoving = true;
-                            SourcePlayer.MovePlayer(randomX, randomY);
-                        }
-                        else
-                        {
-                            //Player can not move to a wall or another trap
-                        }
-                    }
-                }
             }
             else
             {
@@ -199,7 +177,10 @@ namespace GameLogic.MDC.Gamedata
             {
                 TargetFieldIsTrap();
                 TargetFieldContainsItem();
-                SourcePlayer.MovePlayer(_xPosition, _yPosition);
+                if (!(Level.PlayingField[_xPosition, _yPosition].FieldType is Trapdoor))
+                {
+                    SourcePlayer.MovePlayer(_xPosition, _yPosition);
+                }
                 SourcePlayer.PlayerRemainingMoves--;
                 IsCompleted = true;
             }

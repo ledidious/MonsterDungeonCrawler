@@ -17,6 +17,13 @@ namespace GameLogic.MDC.Gamedata.LevelContent
             this._isHidden = false;
         }
 
+        public LaserBeam(Boolean isActive)
+        {
+            this._isHidden = false;
+            _isActive = isActive;
+
+        }
+
         public Boolean Activate
         {
             get { return _isActive; }

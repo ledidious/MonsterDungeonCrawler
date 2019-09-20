@@ -159,7 +159,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         /// Additionally the defenseboost and defenseitem will be deleted
         /// CommandGameMove class call the effects method from the trap class when the player enter a trapfield and the trap class call then this method
         /// </summary>
-        /// <param name="dealingDamage">Dealingdamage if the trap</param>
+        /// <param name="dealingDamage">Dealingdamage if it is a trap</param>
         public void DecrementLife(double dealingDamage)
         {
             Life -= dealingDamage - (this.DefenseBoost + this._char.DefensePower);
