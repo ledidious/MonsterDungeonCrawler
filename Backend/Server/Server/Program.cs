@@ -27,47 +27,39 @@ namespace Server
                     gameClient.CreateNewPlayerForSession("TestClient", GameLogic.MDC.CharacterClass.Knight);
                     break;
                 case "3":
-                    // MasterServer.StartServer();
-                    // System.Threading.Thread.Sleep(500);
+                   // MasterServer.StartServer();
+                   // System.Threading.Thread.Sleep(500);
 
                     ClientProgram client01 = new ClientProgram();
                     ClientProgram client02 = new ClientProgram();
-                    ClientProgram client03 = new ClientProgram();
-                    ClientProgram client04 = new ClientProgram();
 
                     client01.ConnectToServer();
                     client02.ConnectToServer();
-                    client03.ConnectToServer();
-                    client04.ConnectToServer();
 
-                    client01.CreateNewGame("level1");
-                    client02.ConnectToGame(client01.GameSession_ID);
-                    client03.ConnectToGame(client01.GameSession_ID);
-                    client04.ConnectToGame(client01.GameSession_ID);
+                    Console.WriteLine("Please enter session id");
+                    string sessionID = Console.ReadLine();
+                    client01.ConnectToGame(sessionID);
+                    client02.ConnectToGame(sessionID);
 
-                    client01.CreateNewPlayerForSession("A", GameLogic.MDC.CharacterClass.Knight);
-                    client02.CreateNewPlayerForSession("B", GameLogic.MDC.CharacterClass.Archer);
-                    client03.CreateNewPlayerForSession("C", GameLogic.MDC.CharacterClass.Knight);
-                    client04.CreateNewPlayerForSession("D", GameLogic.MDC.CharacterClass.Archer);
+                    client01.CreateNewPlayerForSession("C", GameLogic.MDC.CharacterClass.Knight);
+                    client02.CreateNewPlayerForSession("D", GameLogic.MDC.CharacterClass.Knight);
 
                     System.Threading.Thread.Sleep(3500);
-                    client01.StartCreatedGame();
-
-                    System.Threading.Thread.Sleep(3500);
-
-                    client01.MovePlayer(2, 1);
-                    client01.MovePlayer(1, 1);
-                    client01.MovePlayer(2, 1);
-                    client01.MovePlayer(3, 1);
-                    client01.MovePlayer(4, 1);
-
-
 
                     while (true)
                     {
-
+                        if (client01.CurrentStatus == ClientProgram.Status.Busy)
+                        {
+                            client01.EndTurn();
+                        }
+                        if (client02.CurrentStatus == ClientProgram.Status.Busy)
+                        {
+                            client02.EndTurn();
+                        }
+                        //string[] pos = Console.ReadLine().Split(new char[]{' '});
+                        //client01.MovePlayer(int.Parse(pos[0] + ""), int.Parse(pos[1] + ""));
+                        //client02.MovePlayer(int.Parse(pos[0] + ""), int.Parse(pos[1] + ""));
                     }
-                    break;
                 default:
                     Console.WriteLine("No input detected!");
                     break;
