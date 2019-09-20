@@ -852,6 +852,66 @@ namespace UnitTest
             Assert.AreEqual(8, player2.XPosition);
             Assert.AreEqual(8, player2.YPosition);
         }
+       
+        [TestMethod]
+        public void TrapTestSpikefield()
+        {
+            Level level8 = new Level(MAX_PLAYER);
+
+            Hero player30 = new Hero("hero", new Archer(), 11, 9);
+            Monster player31 = new Monster("monster", new Knight(), 7, 7);
+            Monster player32 = new Monster("monster", new Knight(), 18, 7);
+            Monster player33 = new Monster("monster", new Knight(), 9, 7);
+
+            Field field9 = new Field(12, 9, new SpikeField());
+
+            level8.AddPlayerToLevel(player30);
+            level8.AddPlayerToLevel(player31);
+            level8.AddPlayerToLevel(player32);
+            level8.AddPlayerToLevel(player33);
+            level8.AddFieldToLevel(field9);
+
+            CommandManager cm5 = new CommandManager();
+
+            CommandGameMove cmove = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 12, 9);
+            cmove.SourcePlayer = player30;
+            cmove.Level = level8; 
+
+            cm5.AddCommand(cmove);
+            cm5.ProcessPendingTransactions();
+
+            Assert.AreEqual(4.5, player30.Life);
+        }
+
+        [TestMethod]
+        public void TrapTestLaserbeam()
+        {
+            Level level9 = new Level(MAX_PLAYER);
+
+            Hero player34 = new Hero("hero", new Archer(), 11, 9);
+            Monster player35 = new Monster("monster", new Knight(), 7, 7);
+            Monster player36 = new Monster("monster", new Knight(), 18, 7);
+            Monster player37 = new Monster("monster", new Knight(), 9, 7);
+
+            Field field10 = new Field(12, 9, new LaserBeam(true));
+
+            level9.AddPlayerToLevel(player34);
+            level9.AddPlayerToLevel(player35);
+            level9.AddPlayerToLevel(player36);
+            level9.AddPlayerToLevel(player37);
+            level9.AddFieldToLevel(field10);
+
+            CommandManager cm6 = new CommandManager();
+
+            CommandGameMove cmove13 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 12, 9);
+            cmove13.SourcePlayer = player34;
+            cmove13.Level = level9;
+
+            cm6.AddCommand(cmove13);
+            cm6.ProcessPendingTransactions();
+
+            Assert.AreEqual(4, player34.Life);
+        }
     }
 
     /*
