@@ -16,7 +16,7 @@ namespace GameLogic.MDC.Server
     {
         static Int32 PORT_NO;
         static string SERVER_IP;
-        private static TcpListener listener;
+        //private static TcpListener listener;
         public static Boolean Shutdown { get; set; }
         //private List<Thread> myThreads;
 
@@ -34,9 +34,8 @@ namespace GameLogic.MDC.Server
 
             //---listen at the specified IP and port no.---
             IPAddress localAdd = IPAddress.Any; //IPAddress.Parse(SERVER_IP);
-            listener = new TcpListener(localAdd, PORT_NO);
+            TcpListener listener = new TcpListener(localAdd, PORT_NO);
 
-            // Console.WriteLine("IP: " + SERVER_IP);
             Console.WriteLine("##################\n MDC MasterServer \n##################");
             Console.WriteLine("Port: " + PORT_NO);
             Console.WriteLine("Listening...");
@@ -73,17 +72,63 @@ namespace GameLogic.MDC.Server
         {
             listener.Start();
             while (Shutdown == false)
-            {
-                TcpClient tcpClient = listener.AcceptTcpClient();
-                tcpClient.SendBufferSize = 524288;
-                tcpClient.ReceiveBufferSize = 524288;
+            {//NEW TRY-CATCH
+                try
+                {
+                    TcpClient tcpClient = listener.AcceptTcpClient();
+                    tcpClient.SendBufferSize = 524288;
+                    tcpClient.ReceiveBufferSize = 524288;
 
-                Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
-                clientThread.Start();
+                    Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
+                    clientThread.Start();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Recover Server....");
+                }
             }
 
             // System.Threading.Thread.CurrentThread.Abort();
             // System.Threading.Thread.CurrentThread.Join();            
+        }
+
+        /// <summary>
+        /// Thread implementation for clients. Waits for commands from client. 
+        /// </summary>
+        /// <param name="client">The TcpClient which belongs to this thread</param>
+        /// <param name="cm">The server-wide CommandManager</param>
+        private static void ClientInteraction(TcpClient client, CommandManager cm)
+        {
+            try
+            {
+                GameClient gClient = new GameClient(client, GenerateID());
+                _gClients.Add(gClient.Client_ID, gClient);
+
+                //---write back the client ID to the client---
+                SendStringToClient(gClient.TcpClient, gClient.Client_ID);
+
+                while (gClient.TcpClient.Connected)
+                {
+                    while (gClient.IsInGame == false)
+                    {
+                        Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
+                        Command command = ReceiveCommandFromClient(gClient.TcpClient);
+                        if (command != null)
+                        {
+                            cm.AddCommand(command);
+                            cm.ProcessPendingTransactions();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            // gClient.TcpClient.Close();
+            ////System.Threading.Thread.CurrentThread.Abort();
+            //System.Threading.Thread.CurrentThread.Join();
         }
 
         /// <summary>
@@ -152,7 +197,7 @@ namespace GameLogic.MDC.Server
                     _games[session_ID].AddClientToGame(_gClients[client_ID]);
                     SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
                 }
@@ -184,7 +229,7 @@ namespace GameLogic.MDC.Server
                     SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
             }
@@ -205,7 +250,7 @@ namespace GameLogic.MDC.Server
                     SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackUpdatePack(client_ID, true, pp));
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
             }
@@ -232,40 +277,8 @@ namespace GameLogic.MDC.Server
             catch (NotEnoughPlayerInGameException e)
             {
                 //TODO: Evtl. noch andere Excepptions abfangen, da alles über diese Methode läuft?!
-                throw e;
+                SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
             }
-        }
-
-        /// <summary>
-        /// Thread implementation for clients. Waits for commands from client. 
-        /// </summary>
-        /// <param name="client">The TcpClient which belongs to this thread</param>
-        /// <param name="cm">The server-wide CommandManager</param>
-        private static void ClientInteraction(TcpClient client, CommandManager cm)
-        {
-            GameClient gClient = new GameClient(client, GenerateID());
-            _gClients.Add(gClient.Client_ID, gClient);
-
-            //---write back the client ID to the client---
-            SendStringToClient(gClient.TcpClient, gClient.Client_ID);
-
-            while (gClient.TcpClient.Connected)
-            {
-                while (gClient.IsInGame == false)
-                {
-                    Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
-                    Command command = ReceiveCommandFromClient(gClient.TcpClient);
-                    if (command != null)
-                    {
-                        // leCommand.Execute();
-                        cm.AddCommand(command);
-                        cm.ProcessPendingTransactions();
-                    }
-                }
-            }
-            // gClient.TcpClient.Close();
-            System.Threading.Thread.CurrentThread.Abort();
-            System.Threading.Thread.CurrentThread.Join();
         }
 
         /// <summary>
@@ -283,12 +296,21 @@ namespace GameLogic.MDC.Server
         /// <param name="client">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received string</returns>
         private static string ReceiveStringFromClient(TcpClient client)
-        {
-            NetworkStream nwStream = client.GetStream();
-            Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
+        {//NEW TRY-CATCH
+            try
+            {
+                NetworkStream nwStream = client.GetStream();
+                Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+                Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
 
-            return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -297,10 +319,17 @@ namespace GameLogic.MDC.Server
         /// <param name="client">TcpClient to which data is to be sent.</param>
         /// <param name="data">String you want to send</param>
         private static void SendStringToClient(TcpClient client, string data)
-        {
-            NetworkStream nwStream = client.GetStream();
-            Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+        {//NEW TRY-CATCH
+            try
+            {
+                NetworkStream nwStream = client.GetStream();
+                Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         /// <summary>
@@ -312,7 +341,7 @@ namespace GameLogic.MDC.Server
         {
             NetworkStream nwStream = client.GetStream();
             IFormatter formatter = new BinaryFormatter();
-           
+
             try
             {
                 var obj = formatter.Deserialize(nwStream);
@@ -337,12 +366,19 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="command">Command you want to send</param>
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
-        {
-            NetworkStream nwStream = client.GetStream();
-            IFormatter formatter = new BinaryFormatter();
+        {//NEW TRY-CATCH
+            try
+            {
+                NetworkStream nwStream = client.GetStream();
+                IFormatter formatter = new BinaryFormatter();
 
-            formatter.Serialize(nwStream, command);
-            nwStream.Flush(); 
+                formatter.Serialize(nwStream, command);
+                nwStream.Flush();
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
