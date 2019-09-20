@@ -390,11 +390,18 @@ namespace GameLogic.MDC.Client
         /// <param name="command">Command you want to send</param>
         private void SendCommandToServer(Command command)
         {
-            NetworkStream nwStream = _masterServer.GetStream();
-            IFormatter formatter = new BinaryFormatter();
+            try
+            {
+                NetworkStream nwStream = _masterServer.GetStream();
+                IFormatter formatter = new BinaryFormatter();
 
-            formatter.Serialize(nwStream, command);
-            nwStream.Flush();
+                formatter.Serialize(nwStream, command);
+                nwStream.Flush();
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         /// <summary>

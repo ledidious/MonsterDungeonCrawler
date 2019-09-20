@@ -16,7 +16,6 @@ namespace GameLogic.MDC.Server
 {
     public class Game
     {
-        public int RoundCounter;
         const int MAX_CLIENTS = 4;
         private int PORT_NO_SESSION;
 
@@ -41,6 +40,22 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
+        /// Gets the update pack for lobby.
+        /// </summary>
+        /// <returns>The update pack for lobby.</returns>
+        public UpdatePack GetUpdatePackForLobby()
+        {
+            if (_clientsOfThisGame != null)
+            {
+                return (new UpdatePack(gameRound, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null));
+            }
+            else
+            {
+                throw new NotEnoughPlayerInGameException();
+            }
+        }
+
+        /// <summary>
         /// Adds a player object to the game
         /// </summary>
         /// <param name="client_ID">ID of the owner of the player</param>
@@ -51,7 +66,10 @@ namespace GameLogic.MDC.Server
             {
                 Hero main = (Hero)player;
                 _clientsOfThisGame[0].Player = main;
-                _clientsOfThisGame[0].Player.XPosition = 1; _clientsOfThisGame[0].Player.YPosition = 1;
+                //_clientsOfThisGame[0].Player.XPosition = 1; _clientsOfThisGame[0].Player.YPosition = 1;
+                _clientsOfThisGame[0].Player.XPosition = (_level.StartingPoints["hero"])[0, 0];
+                _clientsOfThisGame[0].Player.YPosition = (_level.StartingPoints["hero"])[0, 1];
+
                 _level.AddPlayerToLevel(_clientsOfThisGame[0].Player);
             }
             else
@@ -63,6 +81,10 @@ namespace GameLogic.MDC.Server
                     if (client.Client_ID == client_ID)
                     {
                         client.Player = main;
+                        client.Player.XPosition = (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 0];
+                        client.Player.YPosition = (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 1];
+
+                        /*
                         switch (_clientsOfThisGame.IndexOf(client))
                         {
                             case 1:
@@ -79,31 +101,13 @@ namespace GameLogic.MDC.Server
                                 break;
                             default:
                                 break;
-                        }
+                        }*/
 
                         _level.AddPlayerToLevel(client.Player);
                     }
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the update pack for lobby.
-        /// </summary>
-        /// <returns>The update pack for lobby.</returns>
-        public UpdatePack GetUpdatePackForLobby()
-        {
-            if (_clientsOfThisGame != null)
-            {
-                return (new UpdatePack(RoundCounter ,_currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null));
-            }
-            else
-            {
-                throw new NotEnoughPlayerInGameException();
-            }
-        }
-
-
 
         /// <summary>
         /// Creates a new player and adds it to the game
@@ -120,10 +124,10 @@ namespace GameLogic.MDC.Server
                 switch (characterClass)
                 {
                     case CharacterClass.Knight:
-                        main = new Hero(playerName, new Knight(), 1, 1);
+                        main = new Hero(playerName, new Knight(), (_level.StartingPoints["hero"])[0, 0], (_level.StartingPoints["hero"])[0, 1]);
                         break;
                     case CharacterClass.Archer:
-                        main = new Hero(playerName, new Archer(), 1, 1);
+                        main = new Hero(playerName, new Archer(), (_level.StartingPoints["hero"])[0, 0], (_level.StartingPoints["hero"])[0, 1]);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -142,16 +146,16 @@ namespace GameLogic.MDC.Server
                         switch (characterClass)
                         {
                             case CharacterClass.Knight:
-                                villain = new Monster(playerName, new Knight(), 1, 1);
+                                villain = new Monster(playerName, new Knight(), (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 0], (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 1]);
                                 break;
                             case CharacterClass.Archer:
-                                villain = new Monster(playerName, new Archer(), 1, 1);
+                                villain = new Monster(playerName, new Archer(), (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 0], (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 1]);
                                 break;
                             default:
                                 throw new NotImplementedException();
                         }
 
-                        switch (_clientsOfThisGame.IndexOf(client))
+                        /*switch (_clientsOfThisGame.IndexOf(client))
                         {
                             case 1:
                                 villain.XPosition = 18;
@@ -167,7 +171,7 @@ namespace GameLogic.MDC.Server
                                 break;
                             default:
                                 break;
-                        }
+                        }*/
 
                         client.Player = villain;
                         _level.AddPlayerToLevel(client.Player);
@@ -191,7 +195,7 @@ namespace GameLogic.MDC.Server
                         {
                             if (_level.PlayerList != null && _level.TrapList != null)
                             {
-                                UpdatePack update = new UpdatePack(RoundCounter, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
+                                UpdatePack update = new UpdatePack(gameRound, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                                 if (client.Player.Life > 0)
                                 {
                                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -218,7 +222,7 @@ namespace GameLogic.MDC.Server
                 {
                     if (_level.PlayerList != null && _level.TrapList != null)
                     {
-                        UpdatePack update = new UpdatePack(RoundCounter, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, _level.LevelName);
+                        UpdatePack update = new UpdatePack(gameRound, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, _level.LevelName);
                         if (client.Player.Life > 0)
                         {
                             SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -258,11 +262,7 @@ namespace GameLogic.MDC.Server
         /// </summary>
         public void StartGame()
         {
-            if (_level.PlayerList.Count < 4)
-            {
-                throw new NotEnoughPlayerInGameException();
-            }
-            else
+            if (_level.PlayerList.Count == MAX_CLIENTS)
             {
                 gameRound = 1;
 
@@ -276,14 +276,15 @@ namespace GameLogic.MDC.Server
                     {
                         do
                         {
-                            Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
-                            Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
-                            CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
-                            command.SourcePlayer = _currentClient.Player;
-                            command.Level = _level;
-
                             try
                             {
+                                Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
+                                Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
+                                CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
+                                command.SourcePlayer = _currentClient.Player;
+                                command.Level = _level;
+
+
                                 command.Execute();
 
                                 if (_currentClient.Player.PlayerRemainingMoves > 0)
@@ -299,17 +300,36 @@ namespace GameLogic.MDC.Server
                             }
                             catch (System.Exception e)
                             {
-                                SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackGameException(_currentClient.Client_ID, e));
+                                if (e is System.InvalidOperationException)
+                                {
+                                    foreach (var item in _clientsOfThisGame)
+                                    {
+                                        item.TcpClient.Close();
+                                        item.IsInGame = false;
+                                    }
+                                }
+                                else
+                                {
+                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackGameException(_currentClient.Client_ID, e));
+                                }
                             }
 
-                        } while (_currentClient.Player.PlayerRemainingMoves > 0);
+                        } while (_currentClient.Player.PlayerRemainingMoves > 0 && _clientsOfThisGame[0].TcpClient.Connected);
                     }
 
                     NextPlayer();
                     Console.WriteLine("####################\n Round: " + gameRound + "\n####################");
                 }
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
+            }
+            else if (_clientsOfThisGame[0].TcpClient.Connected == false)
+            {
+                Console.WriteLine("CYA");
+            }
+            else
+            {
+                throw new NotEnoughPlayerInGameException();
             }
         }
 
@@ -342,10 +362,17 @@ namespace GameLogic.MDC.Server
         /// <param name="client">TcpClient to which data is to be sent.</param>
         /// <param name="data">String you want to send</param>
         private static void SendStringToClient(TcpClient client, string data)
-        {
-            NetworkStream nwStream = client.GetStream();
-            Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+        {//NEW TRY-CATCH
+            try
+            {
+                NetworkStream nwStream = client.GetStream();
+                Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>
@@ -382,12 +409,19 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="command">Command you want to send</param>
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
-        {
-            NetworkStream nwStream = client.GetStream();
-            IFormatter formatter = new BinaryFormatter();
+        { //NEW TRY-CATCH
+            try
+            {
+                NetworkStream nwStream = client.GetStream();
+                IFormatter formatter = new BinaryFormatter();
 
-            formatter.Serialize(nwStream, command);
-            nwStream.Flush();
+                formatter.Serialize(nwStream, command);
+                nwStream.Flush();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>
@@ -397,7 +431,7 @@ namespace GameLogic.MDC.Server
         {
             foreach (var client in _clientsOfThisGame)
             {
-                UpdatePack update = new UpdatePack(RoundCounter, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
+                UpdatePack update = new UpdatePack(gameRound, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                 if (client.Player.Life > 0)
                 {
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
@@ -587,6 +621,12 @@ namespace GameLogic.MDC.Server
                     else if (item.Element("Hero") != null)
                     {
                         _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor()));
+                        _level.FillStartingPoint("hero", Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value));
+                    }
+                    else if (item.Element("Enemy") != null)
+                    {
+                        _level.AddFieldToLevel(new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor()));
+                        _level.FillStartingPoint("monster", Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value));
                     }
                     else
                     {
