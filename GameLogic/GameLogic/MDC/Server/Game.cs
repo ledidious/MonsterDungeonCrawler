@@ -36,6 +36,8 @@ namespace GameLogic.MDC.Server
 
             LoadLevelFile(levelFileName + ".xml");
 
+            gameRound = 1;
+
             new Thread(new ThreadStart(() => UpdateClientsInLobby())).Start();
         }
 
@@ -264,8 +266,6 @@ namespace GameLogic.MDC.Server
         {
             if (_level.PlayerList.Count == MAX_CLIENTS)
             {
-                gameRound = 1;
-
                 //TODO: Verhindern, dass ein Spiel mehrfach gestartet werden kann.
                 while (_clientsOfThisGame[0].TcpClient.Connected)
                 {
