@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GameLogic.MDC.Server;
 using GameLogic.MDC.Client;
 
@@ -27,42 +27,41 @@ namespace Server
                     gameClient.CreateNewPlayerForSession("TestClient", GameLogic.MDC.CharacterClass.Knight);
                     break;
                 case "3":
-                   // MasterServer.StartServer();
-                   // System.Threading.Thread.Sleep(500);
+                    // MasterServer.StartServer();
+                    // System.Threading.Thread.Sleep(500);
+                    Console.WriteLine("How many clients?");
+                    int clientCount = int.Parse(Console.ReadLine());
 
-                    ClientProgram client01 = new ClientProgram();
-                    ClientProgram client02 = new ClientProgram();
-
-                    client01.ConnectToServer();
-                    client02.ConnectToServer();
+                    var clients = new ClientProgram[3];
+                    for(int i = 0; i < clientCount; i++)
+                    {
+                        clients[i] = new ClientProgram();
+                    }
 
                     Console.WriteLine("Please enter session id");
                     string sessionID = Console.ReadLine();
-                    client01.ConnectToGame(sessionID);
-                    client02.ConnectToGame(sessionID);
 
-                    client01.CreateNewPlayerForSession("C", GameLogic.MDC.CharacterClass.Knight);
-                    client02.CreateNewPlayerForSession("D", GameLogic.MDC.CharacterClass.Knight);
+                    foreach (var client in clients)
+                    {
+                        client.ConnectToServer();
+                        client.ConnectToGame(sessionID);
+                        client.CreateNewPlayerForSession((int) (new Random().Next() * 100) + "", GameLogic.MDC.CharacterClass.Knight);
+
+                    }
 
                     System.Threading.Thread.Sleep(3500);
 
                     while (true)
                     {
-                        Console.WriteLine("Which client to end turn?");
-                        var integer = int.Parse(Console.ReadLine());
+                        foreach(var client in clients)
+                        {
+                            if (client.CurrentStatus == ClientProgram.Status.Busy)
+                            {
+                                client.EndTurn();
+                            }
+                        }
 
-                        if (client01.CurrentStatus == ClientProgram.Status.Busy)
-                        {
-                            client01.EndTurn();
-                        }
-                        if (client02.CurrentStatus == ClientProgram.Status.Busy)
-                        {
-                            client02.EndTurn();
-                        }
-                        System.Threading.Thread.Sleep(3000);
-                        //string[] pos = Console.ReadLine().Split(new char[]{' '});
-                        //client01.MovePlayer(int.Parse(pos[0] + ""), int.Parse(pos[1] + ""));
-                        //client02.MovePlayer(int.Parse(pos[0] + ""), int.Parse(pos[1] + ""));
+                        System.Threading.Thread.Sleep(1000);
                     }
                 default:
                     Console.WriteLine("No input detected!");
@@ -117,3 +116,5 @@ namespace Server
         }
     }
 }
+
+
