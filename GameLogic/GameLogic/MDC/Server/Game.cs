@@ -287,13 +287,13 @@ namespace GameLogic.MDC.Server
 
                                 command.Execute();
 
-                                if (_currentClient.Player.PlayerRemainingMoves > 0)
+                                if (_currentClient.Player.PlayerRemainingMoves > 0 && _currentClient.Player.Life > 0 && command.IsCompleted)
                                 {
                                     SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
                                     //System.Threading.Thread.Sleep(100);
                                     UpdateClients();
                                 }
-                                else
+                                else if (command.IsCompleted)
                                 {
                                     SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackEndOfTurn(_currentClient.Client_ID));
                                 }
