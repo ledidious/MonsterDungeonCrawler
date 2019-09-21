@@ -32,7 +32,7 @@ namespace Server
                     Console.WriteLine("How many clients?");
                     int clientCount = int.Parse(Console.ReadLine());
 
-                    var clients = new ClientProgram[3];
+                    var clients = new ClientProgram[clientCount];
                     for(int i = 0; i < clientCount; i++)
                     {
                         clients[i] = new ClientProgram();
