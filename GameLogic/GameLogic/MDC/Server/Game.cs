@@ -591,6 +591,17 @@ namespace GameLogic.MDC.Server
         //TODO: call after every round
         private void ItemManagement()
         {
+            if (gameRound == 2)
+            {
+                foreach (var field in _level.PlayingField)
+                {
+                    if (field.Item is Key)
+                    {
+                        field.Item.IsVisible = true;
+                    }
+                }
+            }
+
             for (int i = 0; i < MAX_CLIENTS; i++)
             {
                 if (_level.PlayerList[i].AttackItem != null)
