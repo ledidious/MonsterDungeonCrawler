@@ -327,6 +327,8 @@ namespace GameLogic.MDC.Client
         private void WaitForNextTurn()
         {
             _currentStatus = Status.Waiting;///TODO: Muss raus!!! Sonst jeder Spectator wieder im Spiel!!!
+
+            Reset:
             CommandFeedback feedback;
 
             do
@@ -356,8 +358,8 @@ namespace GameLogic.MDC.Client
                 } else
                 {
                     // Turns the spectator temporarily to Busy and then finishes his turn.
-                    _currentStatus = Status.Busy;
-                    EndTurn();
+                    // _currentStatus = Status.Busy;
+                    goto Reset;
                 }
             }
         }
