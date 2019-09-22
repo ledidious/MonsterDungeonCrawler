@@ -261,10 +261,10 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
-        /// 
+        /// Checks whether the client is still connected to an endpoint.
         /// </summary>
-        /// <param name="client"></param>
-        /// <returns></returns>
+        /// <param name="client">The client to be checked</param>
+        /// <returns>True: When client is connected; False: If client is not connected</returns>
         private Boolean GetTcpClientState(TcpClient client)
         {
             IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
@@ -424,16 +424,20 @@ namespace GameLogic.MDC.Server
         /// <param name="client">TcpClient to which data is to be sent.</param>
         /// <param name="data">String you want to send</param>
         private void SendStringToClient(TcpClient client, string data)
-        {//NEW TRY-CATCH
-            try
+        {
+            if (GetTcpClientState(client))
             {
-                NetworkStream nwStream = client.GetStream();
-                Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
-                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                //NEW TRY-CATCH
+                try
+                {
+                    NetworkStream nwStream = client.GetStream();
+                    Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -591,7 +595,7 @@ namespace GameLogic.MDC.Server
         //TODO: call after every round
         private void ItemManagement()
         {
-            if (gameRound == 2)
+            if (gameRound == 10)
             {
                 foreach (var field in _level.PlayingField)
                 {
