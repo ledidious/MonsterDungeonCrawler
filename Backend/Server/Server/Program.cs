@@ -1,6 +1,6 @@
 using System;
-using GameLogic.MDC.Server;
 using GameLogic.MDC.Client;
+using GameLogic.MDC.Server;
 
 namespace Server
 {
@@ -29,51 +29,40 @@ namespace Server
                 case "3":
                     // MasterServer.StartServer();
                     // System.Threading.Thread.Sleep(500);
+                    Console.WriteLine("How many clients?");
+                    int clientCount = int.Parse(Console.ReadLine());
 
-                    ClientProgram client01 = new ClientProgram();
-                    ClientProgram client02 = new ClientProgram();
-                    ClientProgram client03 = new ClientProgram();
-                    ClientProgram client04 = new ClientProgram();
+                    var clients = new ClientProgram[clientCount];
+                    for (int i = 0; i < clientCount; i++)
+                    {
+                        clients[i] = new ClientProgram();
+                    }
 
-                    client01.ConnectToServer();
-                    client02.ConnectToServer();
-                    client03.ConnectToServer();
-                    client04.ConnectToServer();
+                    Console.WriteLine("Please enter session id");
+                    string sessionID = Console.ReadLine();
 
-                    client01.CreateNewGame("level1");
-                    client02.ConnectToGame(client01.GameSession_ID);
-                    client03.ConnectToGame(client01.GameSession_ID);
-                    client04.ConnectToGame(client01.GameSession_ID);
+                    foreach (var client in clients)
+                    {
+                        client.ConnectToServer();
+                        client.ConnectToGame(sessionID);
+                        client.CreateNewPlayerForSession((int) (new Random().Next() * 100) + "", GameLogic.MDC.CharacterClass.Knight);
 
-                    client01.CreateNewPlayerForSession("A", GameLogic.MDC.CharacterClass.Knight);
-                    client02.CreateNewPlayerForSession("B", GameLogic.MDC.CharacterClass.Archer);
-                    client03.CreateNewPlayerForSession("C", GameLogic.MDC.CharacterClass.Knight);
-                    client04.CreateNewPlayerForSession("D", GameLogic.MDC.CharacterClass.Archer);
+                    }
 
-                    System.Threading.Thread.Sleep(1500);
-
-                    client01.StartCreatedGame();
-
-                    System.Threading.Thread.Sleep(1500);
-
-                    client01.MovePlayer(2, 1);
-                    client01.MovePlayer(1, 1);
-                    client01.MovePlayer(2, 1);
-                    client01.MovePlayer(3, 1);
-                    client01.MovePlayer(4, 1);
-
-                    System.Threading.Thread.Sleep(1500);
-
-                    client02.MovePlayer(17, 1);
-                    client02.AttackEnemy(client01.Client_ID);
-
-
+                    System.Threading.Thread.Sleep(3500);
 
                     while (true)
                     {
+                        foreach (var client in clients)
+                        {
+                            if (client.CurrentStatus == ClientProgram.Status.Busy)
+                            {
+                                client.EndTurn();
+                            }
+                        }
 
+                        System.Threading.Thread.Sleep(1000);
                     }
-                    break;
                 default:
                     Console.WriteLine("No input detected!");
                     break;
@@ -127,5 +116,3 @@ namespace Server
         }
     }
 }
-
-
