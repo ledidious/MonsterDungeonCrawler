@@ -268,7 +268,7 @@ namespace GameLogic.MDC.Server
                 // {
                 //     item.IsInGame = true;
                 // }
-                Thread gameThread = new Thread(new ThreadStart(() => _games[session_ID].StartGame()));
+                Thread gameThread = new Thread(new ThreadStart(() => _games[session_ID].RunGame()));
                 gameThread.Start();
                 // _games.GetValueOrDefault(session_ID).StartGame();
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));

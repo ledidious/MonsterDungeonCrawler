@@ -326,7 +326,7 @@ namespace GameLogic.MDC.Client
         /// </summary>
         private void WaitForNextTurn()
         {
-            _currentStatus = Status.Waiting;
+            _currentStatus = Status.Waiting;///TODO: Muss raus!!! Sonst jeder Spectator wieder im Spiel!!!
             CommandFeedback feedback;
 
             do
@@ -353,8 +353,11 @@ namespace GameLogic.MDC.Client
                 if (_currentStatus != Status.Spectator)
                 {
                     _currentStatus = Status.Busy;
-                    //System.Threading.Thread.CurrentThread.Abort();
-                    //TODO: Könnte später Probleme geben, weil Thread nicht gekillt wird. Sollte aber durch _currentStatus geregelt werden.
+                } else
+                {
+                    // Turns the spectator temporarily to Busy and then finishes his turn.
+                    _currentStatus = Status.Busy;
+                    EndTurn();
                 }
             }
         }
@@ -400,7 +403,7 @@ namespace GameLogic.MDC.Client
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
         }
 
