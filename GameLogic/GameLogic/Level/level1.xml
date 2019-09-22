@@ -166,7 +166,9 @@
     <Field x="12" y="4" />
     <Field x="13" y="4" />
     <Field x="14" y="4" />
-    <Field x="15" y="4" />
+    <Field x="15" y="4">
+        <Heart/>
+    </Field>
     <Field x="16" y="4">
         <Wall/>
     </Field>
