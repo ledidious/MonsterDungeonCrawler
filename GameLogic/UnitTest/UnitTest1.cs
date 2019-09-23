@@ -70,7 +70,7 @@ namespace UnitTest
 
             Assert.AreEqual(3, player3.PlayerRemainingMoves);
             Assert.IsTrue(9 == player3.XPosition && 17 == player3.YPosition);
-            Assert.AreEqual(4.75, player3.Life);
+            Assert.AreEqual(4.25, player3.Life);
 
 
             //move to field with item (8, 17)
@@ -324,7 +324,7 @@ namespace UnitTest
             Monster player9 = new Monster("monster", new Archer(), 3, 3);
             Monster player10 = new Monster("monster", new Archer(), 4, 3);
 
-            Hero player11 = new Hero("hero", new Knight(), 10, 10);
+            Hero player11 = new Hero("hero", new Archer(), 10, 10);
             Field field5 = new Field(10, 11, new SpikeField());
             Field field6 = new Field(10, 12, new LaserBeam());
 
@@ -345,7 +345,7 @@ namespace UnitTest
             cm2.AddCommand(cmove5);
             cm2.ProcessPendingTransactions();
 
-            Assert.AreEqual(4.75, player11.Life);
+            Assert.AreEqual(4, player11.Life);
 
             CommandGameMove cmove6 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 10, 12);
             cmove6.SourcePlayer = player11;
@@ -353,7 +353,9 @@ namespace UnitTest
             cm2.AddCommand(cmove6);
             cm2.ProcessPendingTransactions();
 
-            Assert.AreEqual(4, player11.Life);
+            Assert.AreEqual(2.5, player11.Life);
+
+       
         }
 
         [TestMethod]
@@ -792,7 +794,7 @@ namespace UnitTest
             field1.FieldType.Effects(player1);
 
             Assert.IsFalse(field1.FieldType.IsHidden());
-            Assert.AreEqual(4.5, player1.Life);
+            Assert.AreEqual(4, player1.Life);
 
         }
 
@@ -802,55 +804,27 @@ namespace UnitTest
             Level level7 = new Level(MAX_PLAYER);
 
             Hero player2 = new Hero("hero", new Archer(), 11, 9);
-            Monster player22 = new Monster("monster", new Knight(), 7, 7);
-            Field field2 = new Field(11, 9, new Trapdoor());
 
-            Assert.IsTrue(field2.FieldType.IsHidden());
+            Field field2 = new Field(12, 9, new Trapdoor());
+            Field field5 = new Field(11, 9, new Floor());
 
-            Field field3 = new Field(5, 5, new Wall());
-            Field field4 = new Field(6, 6, new Wall());
-            Field field5 = new Field(7, 7, new Floor());
-            Field field6 = new Field(8, 8, new Floor());
-
-            level7.AddPlayerToLevel(player2);
-            level7.AddPlayerToLevel(player22);
+            level7.AddPlayerToLevel(player2);   
             level7.AddFieldToLevel(field2);
-            level7.AddFieldToLevel(field3);
-            level7.AddFieldToLevel(field4);
             level7.AddFieldToLevel(field5);
-            level7.AddFieldToLevel(field6);
 
-            player2.DecrementLife(0.25);
+            CommandManager cm7 = new CommandManager();
 
-            if (field2.FieldType is Trapdoor)
-            {
-                bool successfulMoving = false;
-                int randomX = 5;
-                int randomY = 5;
+            CommandGameMove cmove7 = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 12, 9);
+            cmove7.SourcePlayer = player2;
+            cmove7.Level = level7;
 
-                while (successfulMoving == false)
-                {
-                    if (level7.PlayingField[randomX, randomY].FieldType is Floor && level7.FieldBlockedByPlayer(randomX, randomY) == false)
-                    {
-                        successfulMoving = true;
-                        player2.MovePlayer(randomX, randomY);
-                    }
-                    else
-                    {
-                        randomX = randomX + 1;
-                        randomY = randomY + 1;
-                    }
+            cm7.AddCommand(cmove7);
 
-                }
-            }
-            else
-            {
-                //do not move the player
-            }
+            cm7.ProcessPendingTransactions();
 
-            Assert.AreEqual(4.75, player2.Life);
-            Assert.AreEqual(8, player2.XPosition);
-            Assert.AreEqual(8, player2.YPosition);
+            Assert.AreEqual(4.25, player2.Life);
+            Assert.AreEqual(11, player2.XPosition);
+            Assert.AreEqual(9, player2.YPosition);
         }
        
         [TestMethod]
@@ -880,7 +854,7 @@ namespace UnitTest
             cm5.AddCommand(cmove);
             cm5.ProcessPendingTransactions();
 
-            Assert.AreEqual(4.5, player30.Life);
+            Assert.AreEqual(4, player30.Life);
         }
 
         [TestMethod]
@@ -910,7 +884,7 @@ namespace UnitTest
             cm6.AddCommand(cmove13);
             cm6.ProcessPendingTransactions();
 
-            Assert.AreEqual(4, player34.Life);
+            Assert.AreEqual(3.5, player34.Life);
         }
     }
 
