@@ -11,6 +11,7 @@ using GameLogic.MDC.Gamedata;
 using GameLogic.MDC.Gamedata.PlayerType;
 using GameLogic.MDC.Gamedata.LevelContent;
 using System.Threading;
+using System.Net.NetworkInformation;
 
 namespace GameLogic.MDC.Server
 {
@@ -35,6 +36,8 @@ namespace GameLogic.MDC.Server
             this._currentClient = _clientsOfThisGame[0];
 
             LoadLevelFile(levelFileName + ".xml");
+
+            gameRound = 1;
 
             new Thread(new ThreadStart(() => UpdateClientsInLobby())).Start();
         }
@@ -258,49 +261,94 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
+        /// Checks whether the client is still connected to an endpoint.
+        /// </summary>
+        /// <param name="client">The client to be checked</param>
+        /// <returns>True: When client is connected; False: If client is not connected</returns>
+        private Boolean GetTcpClientState(TcpClient client)
+        {
+            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] tcpConnections = ipProperties.GetActiveTcpConnections().Where(x => x.LocalEndPoint.Equals(client.Client.LocalEndPoint) && x.RemoteEndPoint.Equals(client.Client.RemoteEndPoint)).ToArray();
+
+            if (tcpConnections != null && tcpConnections.Length > 0)
+            {
+                TcpState stateOfConnection = tcpConnections.First().State;
+                if (stateOfConnection == TcpState.Established)
+                {
+                    // Connection is OK
+                    return true;
+                }
+                else
+                {
+                    // No active tcp Connection to hostName:port
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// [Call only when all players are ready] Starts the game round
         /// </summary>
-        public void StartGame()
+        public void RunGame()
         {
             if (_level.PlayerList.Count == MAX_CLIENTS)
             {
-                gameRound = 1;
-
                 //TODO: Verhindern, dass ein Spiel mehrfach gestartet werden kann.
-                while (_clientsOfThisGame[0].TcpClient.Connected)
+                while (GetTcpClientState(_clientsOfThisGame[0].TcpClient))
                 {
                     Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
                     Console.WriteLine(_currentClient.Player.PlayerName + " has " + _currentClient.Player.PlayerRemainingMoves + " moves");
 
                     if (_currentClient.Player.Life > 0)
                     {
-                        do
+                        while (_currentClient.Player.PlayerRemainingMoves > 0 && GetTcpClientState(_currentClient.TcpClient) && _currentClient.Player.Life > 0)
                         {
                             try
                             {
                                 Console.WriteLine("Moves left: " + _currentClient.Player.PlayerRemainingMoves);
                                 Console.WriteLine("Position: " + _currentClient.Player.XPosition + ", " + _currentClient.Player.YPosition);
                                 CommandGame command = ReceiveCommandFromClient(_currentClient.TcpClient);
-                                command.SourcePlayer = _currentClient.Player;
-                                command.Level = _level;
 
-
-                                command.Execute();
-
-                                if (_currentClient.Player.PlayerRemainingMoves > 0)
+                                if (command != null)
                                 {
-                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
-                                    //System.Threading.Thread.Sleep(100);
-                                    UpdateClients();
+                                    command.SourcePlayer = _currentClient.Player;
+
+                                    if (command is CommandGameAttack)
+                                    {
+                                        foreach (var item in _clientsOfThisGame)
+                                        {
+                                            if (item.Client_ID == ((CommandGameAttack)command).TargetClientID)
+                                            {
+                                                ((CommandGameAttack)command).TargetPlayer = item.Player;
+                                            }
+                                        }
+                                    }
+
+                                    command.Level = _level;
+
+                                    command.Execute();
+
+                                    if (_currentClient.Player.PlayerRemainingMoves > 0 && _currentClient.Player.Life > 0 && command.IsCompleted)
+                                    {
+                                        SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
+                                        //System.Threading.Thread.Sleep(100);
+                                        UpdateClients();
+                                    }
+                                    else if (command.IsCompleted)
+                                    {
+                                        SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackEndOfTurn(_currentClient.Client_ID));
+                                    }
                                 }
                                 else
                                 {
-                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackEndOfTurn(_currentClient.Client_ID));
+                                    // _currentClient.TcpClient.Close();
                                 }
                             }
-                            catch (System.Exception e)
+                            catch (System.Exception ex)
                             {
-                                if (e is System.InvalidOperationException)
+                                if (ex is System.InvalidOperationException)
                                 {
                                     foreach (var item in _clientsOfThisGame)
                                     {
@@ -310,11 +358,10 @@ namespace GameLogic.MDC.Server
                                 }
                                 else
                                 {
-                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackGameException(_currentClient.Client_ID, e));
+                                    SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackGameException(_currentClient.Client_ID, ex));
                                 }
                             }
-
-                        } while (_currentClient.Player.PlayerRemainingMoves > 0 && _clientsOfThisGame[0].TcpClient.Connected);
+                        }
                     }
 
                     NextPlayer();
@@ -323,9 +370,9 @@ namespace GameLogic.MDC.Server
 
                 //throw new NotImplementedException();
             }
-            else if (_clientsOfThisGame[0].TcpClient.Connected == false)
+            else if (GetTcpClientState(_clientsOfThisGame[0].TcpClient) == false)
             {
-                Console.WriteLine("CYA");
+                //TODO: Fall behandeln
             }
             else
             {
@@ -337,7 +384,7 @@ namespace GameLogic.MDC.Server
         /// Generate an unique ID
         /// </summary>
         /// <returns>Returns the unique ID</returns>
-        private static string GenerateID()
+        private string GenerateID()
         {
             return Guid.NewGuid().ToString("N");
         }
@@ -347,13 +394,28 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received string</returns>
-        private static string ReceiveStringFromClient(TcpClient client)
+        private string ReceiveStringFromClient(TcpClient client)
         {
-            NetworkStream nwStream = client.GetStream();
-            Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-            Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
+            if (GetTcpClientState(client))
+            {
+                NetworkStream nwStream = client.GetStream();
+                Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
 
-            return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                try
+                {
+                    Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
+                    nwStream.Flush();
+                    return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+                nwStream.Flush();
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -361,17 +423,21 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="client">TcpClient to which data is to be sent.</param>
         /// <param name="data">String you want to send</param>
-        private static void SendStringToClient(TcpClient client, string data)
-        {//NEW TRY-CATCH
-            try
+        private void SendStringToClient(TcpClient client, string data)
+        {
+            if (GetTcpClientState(client))
             {
-                NetworkStream nwStream = client.GetStream();
-                Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
-                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                //NEW TRY-CATCH
+                try
+                {
+                    NetworkStream nwStream = client.GetStream();
+                    Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -380,27 +446,32 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received Command</returns>
-        private static CommandGame ReceiveCommandFromClient(TcpClient client)
+        private CommandGame ReceiveCommandFromClient(TcpClient client)
         {
-            NetworkStream nwStream = client.GetStream();
-            IFormatter formatter = new BinaryFormatter();
-
-            try
+            if (GetTcpClientState(client))
             {
-                var obj = formatter.Deserialize(nwStream);
-                Console.WriteLine("GAME: " + obj.GetType());
-                nwStream.Flush();
-                if (obj.GetType().IsSubclassOf(typeof(CommandGame)))
+                // Connection is OK
+                NetworkStream nwStream = client.GetStream();
+                IFormatter formatter = new BinaryFormatter();
+
+                try
                 {
-                    return (CommandGame)obj;
+                    var obj = formatter.Deserialize(nwStream);
+                    Console.WriteLine("GAME: " + obj.GetType());
+                    nwStream.Flush();
+                    if (obj.GetType().IsSubclassOf(typeof(CommandGame)))
+                    {
+                        return (CommandGame)obj;
+                    }
                 }
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine(e.Message);
+                catch (System.Runtime.Serialization.SerializationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                nwStream.Flush();
             }
 
-            nwStream.Flush();
             return null;
         }
 
@@ -408,19 +479,23 @@ namespace GameLogic.MDC.Server
         /// Send Command to client
         /// </summary>
         /// <param name="command">Command you want to send</param>
-        private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
-        { //NEW TRY-CATCH
-            try
+        private void SendFeedbackToClient(TcpClient client, CommandFeedback command)
+        {
+            if (GetTcpClientState(client))
             {
-                NetworkStream nwStream = client.GetStream();
-                IFormatter formatter = new BinaryFormatter();
+                //NEW TRY-CATCH
+                try
+                {
+                    NetworkStream nwStream = client.GetStream();
+                    IFormatter formatter = new BinaryFormatter();
 
-                formatter.Serialize(nwStream, command);
-                nwStream.Flush();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                    formatter.Serialize(nwStream, command);
+                    nwStream.Flush();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -434,10 +509,12 @@ namespace GameLogic.MDC.Server
                 UpdatePack update = new UpdatePack(gameRound, _currentClient.Client_ID, CreatePlayerClientMapping(), _level.PlayingField, _level.TrapList, null);
                 if (client.Player.Life > 0)
                 {
+                    //Player alive
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, true, update));
                 }
                 else
                 {
+                    //Player dead
                     SendFeedbackToClient(client.TcpClient, new CommandFeedbackUpdatePack(client.Client_ID, false, update));
                 }
             }
@@ -518,6 +595,17 @@ namespace GameLogic.MDC.Server
         //TODO: call after every round
         private void ItemManagement()
         {
+            if (gameRound == 10)
+            {
+                foreach (var field in _level.PlayingField)
+                {
+                    if (field.Item is Key)
+                    {
+                        field.Item.IsVisible = true;
+                    }
+                }
+            }
+
             for (int i = 0; i < MAX_CLIENTS; i++)
             {
                 if (_level.PlayerList[i].AttackItem != null)

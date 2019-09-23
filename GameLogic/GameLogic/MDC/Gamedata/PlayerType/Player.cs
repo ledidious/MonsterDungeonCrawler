@@ -17,7 +17,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         private CharacterType _char;
         private string _playerName;
         private Boolean _hasKey;
-        private string _gameColor; 
+        //private string _gameColor; 
 
         public Boolean HasKey
         {

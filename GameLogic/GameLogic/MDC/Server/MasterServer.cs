@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -108,9 +109,9 @@ namespace GameLogic.MDC.Server
                 //---write back the client ID to the client---
                 SendStringToClient(gClient.TcpClient, gClient.Client_ID);
 
-                while (gClient.TcpClient.Connected)
+                while (GetTcpClientState(gClient.TcpClient))
                 {
-                    while (gClient.IsInGame == false)
+                    while (gClient.IsInGame == false && GetTcpClientState(gClient.TcpClient))
                     {
                         Console.WriteLine("\n ------------------------ \n Waiting for Command... \n ------------------------");
                         Command command = ReceiveCommandFromClient(gClient.TcpClient);
@@ -268,7 +269,7 @@ namespace GameLogic.MDC.Server
                 // {
                 //     item.IsInGame = true;
                 // }
-                Thread gameThread = new Thread(new ThreadStart(() => _games[session_ID].StartGame()));
+                Thread gameThread = new Thread(new ThreadStart(() => _games[session_ID].RunGame()));
                 gameThread.Start();
                 // _games.GetValueOrDefault(session_ID).StartGame();
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
@@ -291,23 +292,57 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
+        /// Checks whether the client is still connected to an endpoint.
+        /// </summary>
+        /// <param name="client">The client to be checked</param>
+        /// <returns>True: When client is connected; False: If client is not connected</returns>
+        private static Boolean GetTcpClientState(TcpClient client)
+        {
+            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] tcpConnections = ipProperties.GetActiveTcpConnections().Where(x => x.LocalEndPoint.Equals(client.Client.LocalEndPoint) && x.RemoteEndPoint.Equals(client.Client.RemoteEndPoint)).ToArray();
+
+            if (tcpConnections != null && tcpConnections.Length > 0)
+            {
+                TcpState stateOfConnection = tcpConnections.First().State;
+                if (stateOfConnection == TcpState.Established)
+                {
+                    // Connection is OK
+                    return true;
+                }
+                else
+                {
+                    // No active tcp Connection to hostName:port
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Receive string from client
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
         /// <returns>Returns the received string</returns>
         private static string ReceiveStringFromClient(TcpClient client)
-        {//NEW TRY-CATCH
-            try
+        {
+            if (GetTcpClientState(client))
             {
                 NetworkStream nwStream = client.GetStream();
                 Byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-                Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
 
-                return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                try
+                {
+                    Int32 bytesRead = nwStream.Read(bytesToRead, 0, bytesToRead.Length);
+                    nwStream.Flush();
+                    return Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+                nwStream.Flush();
             }
 
             return null;
@@ -319,16 +354,20 @@ namespace GameLogic.MDC.Server
         /// <param name="client">TcpClient to which data is to be sent.</param>
         /// <param name="data">String you want to send</param>
         private static void SendStringToClient(TcpClient client, string data)
-        {//NEW TRY-CATCH
-            try
+        {
+            if (GetTcpClientState(client))
             {
-                NetworkStream nwStream = client.GetStream();
-                Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
-                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine(e.Message);
+                //NEW TRY-CATCH
+                try
+                {
+                    NetworkStream nwStream = client.GetStream();
+                    Byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(data);
+                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                }
+                catch (System.Runtime.Serialization.SerializationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -339,25 +378,29 @@ namespace GameLogic.MDC.Server
         /// <returns>Returns the received Command</returns>
         private static Command ReceiveCommandFromClient(TcpClient client)
         {
-            NetworkStream nwStream = client.GetStream();
-            IFormatter formatter = new BinaryFormatter();
-
-            try
+            if (GetTcpClientState(client))
             {
-                var obj = formatter.Deserialize(nwStream);
-                Console.WriteLine("MASTERSERVER: " + obj.GetType());
-                nwStream.Flush();
-                if (obj.GetType().IsSubclassOf(typeof(Command)))
+                NetworkStream nwStream = client.GetStream();
+                IFormatter formatter = new BinaryFormatter();
+
+                try
                 {
-                    return (Command)obj;
+                    var obj = formatter.Deserialize(nwStream);
+                    Console.WriteLine("MASTERSERVER: " + obj.GetType());
+                    nwStream.Flush();
+                    if (obj.GetType().IsSubclassOf(typeof(Command)))
+                    {
+                        return (Command)obj;
+                    }
                 }
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine(e.Message);
+                catch (System.Runtime.Serialization.SerializationException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                nwStream.Flush();
             }
 
-            nwStream.Flush();
             return null;
         }
 
@@ -366,18 +409,22 @@ namespace GameLogic.MDC.Server
         /// </summary>
         /// <param name="command">Command you want to send</param>
         private static void SendFeedbackToClient(TcpClient client, CommandFeedback command)
-        {//NEW TRY-CATCH
-            try
+        {
+            if (GetTcpClientState(client))
             {
-                NetworkStream nwStream = client.GetStream();
-                IFormatter formatter = new BinaryFormatter();
+                //NEW TRY-CATCH
+                try
+                {
+                    NetworkStream nwStream = client.GetStream();
+                    IFormatter formatter = new BinaryFormatter();
 
-                formatter.Serialize(nwStream, command);
-                nwStream.Flush();
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine(e.Message);
+                    formatter.Serialize(nwStream, command);
+                    nwStream.Flush();
+                }
+                catch (System.Runtime.Serialization.SerializationException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
     }
