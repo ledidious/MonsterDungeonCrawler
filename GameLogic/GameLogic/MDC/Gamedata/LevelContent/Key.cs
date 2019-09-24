@@ -16,7 +16,7 @@ namespace GameLogic.MDC.Gamedata.LevelContent
         /// Creates only one instance of a key object and set isvisible to false
         /// </summary>
         /// <returns>Key object</returns>
-        public static Key getInstance()
+        public static Key GetInstance()
         {
             //Doublelock (threadsafety)
             if (instance == null)
