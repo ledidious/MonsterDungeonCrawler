@@ -799,7 +799,7 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void ManualTrapdoorAttackandTrapHidden()
+        public void ManualTrapdoorAttackAndTrapHidden()
         {
             Level level7 = new Level(MAX_PLAYER);
 
