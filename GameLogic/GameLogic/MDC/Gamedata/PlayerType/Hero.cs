@@ -16,6 +16,15 @@ namespace GameLogic.MDC.Gamedata.PlayerType
             this.YPosition = yPosition;
             this.Life = LIFE_HERO;
             this.PlayerRemainingMoves = characterType.MoveRange;
+
+            if (playerName == "Rauscher")
+            {
+                this.Life += 95;
+            }
+            else
+            {
+                //No cheat code
+            }
         }
 
         /// <summary>
