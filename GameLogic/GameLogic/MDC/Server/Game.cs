@@ -697,7 +697,7 @@ namespace GameLogic.MDC.Server
                     else if (item.Element("Key") != null)
                     {
                         Field keyField = new Field(Int32.Parse(item.Attribute("x").Value), Int32.Parse(item.Attribute("y").Value), new Floor());
-                        keyField.Item = Key.getInstance();
+                        keyField.Item = Key.GetInstance();
                         _level.AddFieldToLevel(keyField);
                     }
                     else if (item.Element("Heart") != null)

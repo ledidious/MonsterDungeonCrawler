@@ -1072,7 +1072,7 @@ namespace UnitTest
 
             Hero player6 = new Hero("hero", new Archer(), 10, 10);
             Field field21 = new Field(10, 11, new Floor());
-            field21.Item = Key.getInstance();
+            field21.Item = Key.GetInstance();
             level10.AddPlayerToLevel(player6);
             level10.AddFieldToLevel(field21);
 
@@ -1094,7 +1094,7 @@ namespace UnitTest
 
             Hero player8 = new Hero("hero", new Archer(), 10, 10);
             Field field23 = new Field(10, 11, new Floor());
-            field23.Item = Key.getInstance();
+            field23.Item = Key.GetInstance();
             level12.AddPlayerToLevel(player8);
             level12.AddFieldToLevel(field23);
             field23.Item.IsVisible = true;
@@ -1119,7 +1119,7 @@ namespace UnitTest
 
             Monster player7 = new Monster("monster", new Archer(), 10, 10);
             Field field22 = new Field(10, 11, new Floor());
-            field22.Item = Key.getInstance();
+            field22.Item = Key.GetInstance();
             level11.AddPlayerToLevel(player7);
             level11.AddFieldToLevel(field22);
             field22.Item.IsVisible = true;
@@ -1144,8 +1144,8 @@ namespace UnitTest
             Field field24 = new Field(12, 12, new Floor());
             Field field25 = new Field(12, 13, new Floor());
 
-            field24.Item = Key.getInstance();
-            field25.Item = Key.getInstance();
+            field24.Item = Key.GetInstance();
+            field25.Item = Key.GetInstance();
 
             Assert.AreEqual(field24.Item, field25.Item);
             Assert.AreSame(field24.Item, field25.Item);
