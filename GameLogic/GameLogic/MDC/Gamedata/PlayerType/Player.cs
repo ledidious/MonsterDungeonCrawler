@@ -142,6 +142,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         /// Calculates the damage taken by the player and decrement its life when someone attacks the player
         /// Depending on attackpower and attackboost of the enemy and the defensepower and defenseboost of the victim
         /// CommandGameAttack class call this method when an enemy attack the player
+        /// If the player is dead, he will set on the "Graveyard" ;)
         /// </summary>
         /// <param name="attackBoost">Attackboost of the attacking enemy</param>
         /// <param name="characterType">Charactertype of the attacking enemy</param>
@@ -151,6 +152,15 @@ namespace GameLogic.MDC.Gamedata.PlayerType
             double totalDefensePower = this.DefenseBoost + this._char.DefensePower;
 
             Life -= totalAttackPower - totalDefensePower;
+
+            if (this.Life <= 0)
+            {
+                this.MovePlayer(0, 0); 
+            }
+            else
+            {
+                //Player is alive
+            }
         }
 
         /// <summary>
@@ -158,6 +168,7 @@ namespace GameLogic.MDC.Gamedata.PlayerType
         /// Depending on the dealingdamage of the trap and the defensepower and defenseboost of the victim
         /// Additionally the defenseboost and defenseitem will be deleted
         /// CommandGameMove class call the effects method from the trap class when the player enter a trapfield and the trap class call then this method
+        /// If the player is dead, he will set on the "Graveyard" ;)
         /// </summary>
         /// <param name="dealingDamage">Dealingdamage if it is a trap</param>
         public void DecrementLife(double dealingDamage)
@@ -166,6 +177,15 @@ namespace GameLogic.MDC.Gamedata.PlayerType
 
             ResetDefenseItem();
             ResetDefenseBooster();
+
+            if (this.Life <= 0)
+            {
+                this.MovePlayer(0, 0);
+            }
+            else
+            {
+                //Player is alive
+            }
         }
 
         /// <summary>
