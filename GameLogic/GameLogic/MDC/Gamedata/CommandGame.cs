@@ -22,8 +22,8 @@ namespace GameLogic.MDC.Gamedata
     public class CommandGameMove : CommandGame
     {
 
-        public int _xPosition { get; set; }
-        public int _yPosition { get; set; }
+        public int XPosition { get; set; }
+        public int YPosition { get; set; }
 
         /// <summary>
         /// Command for moving the player on a selected field
@@ -34,8 +34,8 @@ namespace GameLogic.MDC.Gamedata
         /// <param name="yPosition">Target y-position</param>
         public CommandGameMove(string sourceClientID, int xPosition, int yPosition) : base(sourceClientID)
         {
-            _xPosition = xPosition;
-            _yPosition = yPosition;
+            XPosition = xPosition;
+            YPosition = yPosition;
             IsCompleted = false;
         }
 
@@ -47,7 +47,7 @@ namespace GameLogic.MDC.Gamedata
         {
             Boolean fieldIsNotAccessable = false;
 
-            if (Level.PlayingField[_xPosition, _yPosition].FieldType is Wall || _xPosition == SourcePlayer.XPosition && _yPosition == SourcePlayer.YPosition)
+            if (Level.PlayingField[XPosition, YPosition].FieldType is Wall || XPosition == SourcePlayer.XPosition && YPosition == SourcePlayer.YPosition)
             {
                 fieldIsNotAccessable = true;
             }
@@ -55,7 +55,7 @@ namespace GameLogic.MDC.Gamedata
             {
                 for (int i = 0; i < Level.PlayerList.Count; i++)
                 {
-                    if (Level.PlayerList[i].XPosition == _xPosition && Level.PlayerList[i].YPosition == _yPosition)
+                    if (Level.PlayerList[i].XPosition == XPosition && Level.PlayerList[i].YPosition == YPosition)
                     {
                         fieldIsNotAccessable = true;
                     }
@@ -74,9 +74,9 @@ namespace GameLogic.MDC.Gamedata
         /// </summary>
         public void TargetFieldIsTrap()
         {
-            if (Level.PlayingField[_xPosition, _yPosition].FieldType is Trap)
+            if (Level.PlayingField[XPosition, YPosition].FieldType is Trap)
             {
-                Level.PlayingField[_xPosition, _yPosition].FieldType.Effects(SourcePlayer);
+                Level.PlayingField[XPosition, YPosition].FieldType.Effects(SourcePlayer);
             }
             else
             {
@@ -90,11 +90,11 @@ namespace GameLogic.MDC.Gamedata
         /// </summary>
         public void TargetFieldContainsItem()
         {
-            if (Level.PlayingField[_xPosition, _yPosition].FieldType is Floor && Level.PlayingField[_xPosition, _yPosition].Item != null && Level.PlayingField[_xPosition, _yPosition].Item.IsVisible == true)
+            if (Level.PlayingField[XPosition, YPosition].FieldType is Floor && Level.PlayingField[XPosition, YPosition].Item != null && Level.PlayingField[XPosition, YPosition].Item.IsVisible == true)
             {
-                if (SourcePlayer.CollectItem(Level.PlayingField[_xPosition, _yPosition].Item) == true)
+                if (SourcePlayer.CollectItem(Level.PlayingField[XPosition, YPosition].Item) == true)
                 {
-                    Level.PlayingField[_xPosition, _yPosition].Item = null;
+                    Level.PlayingField[XPosition, YPosition].Item = null;
                 }
                 else
                 {
@@ -117,9 +117,9 @@ namespace GameLogic.MDC.Gamedata
             Boolean MoveInRange = false;
 
             //Verify if targetfield is vertical in range
-            if (SourcePlayer.XPosition == _xPosition)
+            if (SourcePlayer.XPosition == XPosition)
             {
-                if (_yPosition == SourcePlayer.YPosition + 1 || _yPosition == SourcePlayer.YPosition - 1)
+                if (YPosition == SourcePlayer.YPosition + 1 || YPosition == SourcePlayer.YPosition - 1)
                 {
                     MoveInRange = true;
                 }
@@ -134,9 +134,9 @@ namespace GameLogic.MDC.Gamedata
             }
 
             //Verify if targetfield is horizontal in range
-            if (SourcePlayer.YPosition == _yPosition)
+            if (SourcePlayer.YPosition == YPosition)
             {
-                if (_xPosition == SourcePlayer.XPosition + 1 || _xPosition == SourcePlayer.XPosition - 1)
+                if (XPosition == SourcePlayer.XPosition + 1 || XPosition == SourcePlayer.XPosition - 1)
                 {
                     MoveInRange = true;
                 }
@@ -177,9 +177,9 @@ namespace GameLogic.MDC.Gamedata
             {
                 TargetFieldIsTrap();
                 TargetFieldContainsItem();
-                if (!(Level.PlayingField[_xPosition, _yPosition].FieldType is Trapdoor))
+                if (!(Level.PlayingField[XPosition, YPosition].FieldType is Trapdoor))
                 {
-                    SourcePlayer.MovePlayer(_xPosition, _yPosition);
+                    SourcePlayer.MovePlayer(XPosition, YPosition);
                 }
                 SourcePlayer.PlayerRemainingMoves--;
                 IsCompleted = true;
@@ -337,15 +337,13 @@ namespace GameLogic.MDC.Gamedata
             return ObstacleInRange;
         }
 
-        //TODO: Mapping ID -> SourceClients for Server :: First identify type of command than execute mapping
+
         /// <summary>
         /// Set iscompleted on true, call decrementlife method and set playerremainingmoves to 0 when source- or targetplayer is the hero,
         /// the targetplayer is in attackrange, there is no obstacle between source- and targetplayer and the sourceplayer has more moves left
         /// </summary>
         public override void Execute()
         {
-            //TODO: Throw Exception if AttackedPlayer not reachable 
-
             if (SourcePlayer is Monster && TargetPlayer is Monster)
             {
                 throw new CantAttackException("Do not attack your teammember");
