@@ -308,7 +308,7 @@ namespace UnitTest
             Monster player2 = new Monster("monster", new Archer(), 19, 18);
 
             Assert.AreEqual(5, player1.CharacterType.MoveRange);
-            Assert.AreEqual(2, player2.CharacterType.MoveRange);
+            Assert.AreEqual(3, player2.CharacterType.MoveRange);
 
             Assert.AreEqual(5, player1.PlayerRemainingMoves);
         }
@@ -513,7 +513,7 @@ namespace UnitTest
             Assert.IsTrue(cattack3.VerifyAttackRange());
 
             //test out of range on the right side
-            Monster player9 = new Monster("monster", new Knight(), 15, 9);
+            Monster player9 = new Monster("monster", new Knight(), 16, 9);
             CommandGameAttack cattack4 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "zut85822asd52885");
             cattack4.SourcePlayer = player7;
             cattack4.TargetPlayer = player9;
@@ -529,7 +529,7 @@ namespace UnitTest
             Assert.IsTrue(cattack5.VerifyAttackRange());
 
             //test out of range on the bottom side
-            Monster player11 = new Monster("monster", new Knight(), 11, 5);
+            Monster player11 = new Monster("monster", new Knight(), 12, 5);
             CommandGameAttack cattack6 = new CommandGameAttack("2f2de19a291c41b5ae950faa11162e07", "1sda12423124sdf2885");
             cattack6.SourcePlayer = player7;
             cattack6.TargetPlayer = player11;

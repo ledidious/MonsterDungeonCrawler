@@ -12,6 +12,7 @@ TagManager:
   - Key
   - music
   - client
+  - Laser
   layers:
   - Default
   - TransparentFX

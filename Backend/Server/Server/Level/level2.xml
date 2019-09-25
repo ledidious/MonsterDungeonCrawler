@@ -124,7 +124,7 @@
         <Wall/>
     </Field>
     <Field x="14" y="2">
-        <Wall >
+        <Wall/>
     </Field>
     <Field x="15" y="2" />
     <Field x="16" y="2" />
@@ -242,7 +242,7 @@
     </Field>
     <Field x="11" y="5" >
         <Trapdoor/>
-    </Field> 
+    </Field>
     <Field x="12" y="5" />
     <Field x="13" y="5" />
     <Field x="14" y="5" />
@@ -330,7 +330,7 @@
         <Laserbeam/>
     </Field>
     <Field x="4" y="8" />
-    <Field x="5" y="8"> 
+    <Field x="5" y="8">
         <Sword level="3"/>
     </Field>
     <Field x="6" y="8">
@@ -364,7 +364,7 @@
     <Field x="2" y="9" />
     <Field x="3" y="9">
         <Laserbeam/>
-    </Field>  
+    </Field>
     <Field x="4" y="9" />
     <Field x="5" y="9" />
     <Field x="6" y="9">
@@ -453,7 +453,7 @@
     </Field>
     <Field x="18" y="10">
         <Wall/>
-    </Field>  
+    </Field>
     <Field x="19" y="10">
         <Wall/>
     </Field>
@@ -665,7 +665,7 @@
     <Field x="9" y="16">
         <Wall/>
     </Field>
-    <Field x="10" y="16"> 
+    <Field x="10" y="16">
         <Wall/>
     </Field>
     <Field x="11" y="16">
@@ -688,7 +688,7 @@
     </Field>
     <Field x="17" y="16" />
     <Field x="18" y="16" />
-    <Field x="19" y="16"> 
+    <Field x="19" y="16">
         <Wall/>
     </Field>
     <Field x="0" y="17">

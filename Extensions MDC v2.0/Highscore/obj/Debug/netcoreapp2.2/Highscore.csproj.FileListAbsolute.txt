@@ -1,0 +1,11 @@
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/bin/Debug/netcoreapp2.2/Highscore.deps.json
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/bin/Debug/netcoreapp2.2/Highscore.runtimeconfig.json
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/bin/Debug/netcoreapp2.2/Highscore.runtimeconfig.dev.json
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/bin/Debug/netcoreapp2.2/Highscore.dll
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/bin/Debug/netcoreapp2.2/Highscore.pdb
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/obj/Debug/netcoreapp2.2/Highscore.csprojAssemblyReference.cache
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/obj/Debug/netcoreapp2.2/Highscore.csproj.CoreCompileInputs.cache
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/obj/Debug/netcoreapp2.2/Highscore.AssemblyInfoInputs.cache
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/obj/Debug/netcoreapp2.2/Highscore.AssemblyInfo.cs
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/obj/Debug/netcoreapp2.2/Highscore.dll
+/home/mg/DEV/Workspace/Mono/Highscore/Highscore/obj/Debug/netcoreapp2.2/Highscore.pdb
