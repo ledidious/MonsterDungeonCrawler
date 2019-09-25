@@ -8,7 +8,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("[1] Server\n[2] Simulate Client\n[3] Test Stuff");
+            Console.WriteLine("[1] Server\n[2] Simulate Client\n[3] Demo Mode");
             string input = Console.ReadLine();
 
             switch (input)
@@ -64,7 +64,7 @@ namespace Server
                         System.Threading.Thread.Sleep(1000);
                     }
                 default:
-                    Console.WriteLine("No input detected!");
+                    Console.WriteLine("Input not recognized");
                     break;
             }
 
@@ -72,47 +72,6 @@ namespace Server
             {
 
             }
-
-            /*
-            ClientProgram myFirstClient = new ClientProgram();
-
-            //Thread serverThread = new Thread(new ThreadStart(() => MasterServer.StartServer()));
-            //serverThread.Start();
-
-
-
-            System.Threading.Thread.Sleep(500);
-
-            myFirstClient.ConnectToServer();
-            myFirstClient.CreateNewGame("level1");
-            myFirstClient.CreateNewPlayerForSession("Snoop Dog", GameLogic.MDC.CharacterClass.Knight);
-
-
-
-
-            // myFirstClient.DisconnectFromServer();
-
-            System.Threading.Thread.Sleep(500);
-
-            ClientProgram mySecondClient = new ClientProgram();
-            mySecondClient.ConnectToServer();
-            mySecondClient.ConnectToGame(myFirstClient.GameSession_ID);
-            mySecondClient.CreateNewPlayerForSession("Tux", GameLogic.MDC.CharacterClass.Archer);
-
-            myFirstClient.GetUpdatePackForLobby();
-
-            while (true)
-            {
-                if (myFirstClient.Update != null)
-                {
-                    Console.WriteLine("C01: " + myFirstClient.Update.PlayerList[0].PlayerName);
-                    Console.WriteLine("C01: " + myFirstClient.Update.PlayerList[1].PlayerName);
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(1500);
-                }
-            } */
         }
     }
 }
