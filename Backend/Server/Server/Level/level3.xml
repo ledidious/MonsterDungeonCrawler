@@ -76,7 +76,9 @@
     <Field x="10" y="1">
         <Sword level="1"/>
     </Field>
-    <Field x="11" y="1" />
+    <Field x="11" y="1">
+        <Trapdoor/>
+    </Field>
     <Field x="12" y="1" />
     <Field x="13" y="1" />
     <Field x="14" y="1" />
@@ -99,7 +101,9 @@
     <Field x="5" y="2" />
     <Field x="6" y="2" />
     <Field x="7" y="2" />
-    <Field x="8" y="2" />
+    <Field x="8" y="2">
+        <Trapdoor/>
+    </Field>
     <Field x="9" y="2" />
     <Field x="10" y="2" />
     <Field x="11" y="2" />
@@ -194,7 +198,7 @@
     </Field>
     <Field x="17" y="4" />
     <Field x="18" y="4">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="19" y="4">
         <Wall/>
@@ -217,7 +221,7 @@
     <Field x="9" y="5" />
     <Field x="10" y="5" />
     <Field x="11" y="5">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="12" y="5" />
     <Field x="13" y="5" />
@@ -266,7 +270,7 @@
         <Wall/>
     </Field>
     <Field x="14" y="6">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="15" y="6" />
     <Field x="16" y="6">
@@ -310,7 +314,9 @@
     <Field x="16" y="7">
         <Wall/>
     </Field>
-    <Field x="17" y="7" />
+    <Field x="17" y="7">
+        <SpikeField />
+    </Field>
     <Field x="18" y="7" />
     <Field x="19" y="7">
         <Wall/>
@@ -381,7 +387,7 @@
     </Field>
     <Field x="14" y="9" />
     <Field x="15" y="9">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="16" y="9">
         <Wall/>
@@ -468,7 +474,7 @@
     </Field>
     <Field x="17" y="11" />
     <Field x="18" y="11">
-        <Spikefiield/>
+        <SpikeField />
     </Field>
     <Field x="19" y="11">
         <Wall/>
@@ -611,13 +617,13 @@
     </Field>
     <Field x="14" y="15" />
     <Field x="15" y="15">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="16" y="15">
         <Wall/>
     </Field>
     <Field x="17" y="15">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="18" y="15" />
     <Field x="19" y="15">

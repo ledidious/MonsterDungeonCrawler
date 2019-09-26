@@ -576,8 +576,8 @@
         <Wall/>
     </Field>
     <Field x="6" y="15" />
-    <Field x="7" y="15">
-        <Spikefield/>
+    <Field x="7" y="15" >
+        <SpikeField/>
     </Field>
     <Field x="8" y="15" />
     <Field x="9" y="15" />

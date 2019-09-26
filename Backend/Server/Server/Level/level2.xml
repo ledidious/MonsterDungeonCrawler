@@ -167,7 +167,7 @@
     </Field>
     <Field x="14" y="3" />
     <Field x="15" y="3">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="16" y="3" />
     <Field x="17" y="3" />
@@ -387,7 +387,7 @@
         <Shiel level="3"/>
     </Field>
     <Field x="15" y="9">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="16" y="9">
         <Laserbeam/>
@@ -490,7 +490,7 @@
     <Field x="2" y="12" />
     <Field x="3" y="12" />
     <Field x="4" y="12">
-        <Spikefield/>
+        <SpikeField />
     </Field>
     <Field x="5" y="12" />
     <Field x="6" y="12" />
