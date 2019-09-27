@@ -117,15 +117,5 @@ namespace GameLogic.MDC.Gamedata.LevelContent
             }
             return FieldIsBlocked;
         }
-
-        enum landscape
-        {
-            desert,
-            iceland,
-            forest,
-            dungeon,
-            island,
-            asia
-        }
     }
 }

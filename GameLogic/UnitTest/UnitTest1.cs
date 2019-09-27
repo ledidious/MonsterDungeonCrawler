@@ -205,18 +205,6 @@ namespace UnitTest
     public class UnitTestMove
     {
         public const int MAX_PLAYER = 4;
-        /*
-        [TestMethod]
-        [ExpectedException(typeof(System.NullReferenceException), "Object reference not set to an instance of an object.")]
-        public void NullTargetPlayerCommand()
-        {
-            CommandManager cm = new CommandManager();
-            CommandGameMove cmove = new CommandGameMove("2f2de19a291c41b5ae950faa11162e07", 5);
-
-            cm.AddCommand(cmove);
-            cm.ProcessPendingTransactions();
-        }
-        */
 
         [TestMethod]
         public void InvalidTargetField()
@@ -888,32 +876,6 @@ namespace UnitTest
         }
     }
 
-    /*
-    [TestMethod]
-    public void TestAllCommandsSuccessful()
-    {
-        CommandManager cm = new CommandManager();
-
-        //---try assigning an invalid value.--- 
-        Player cheatingPlayer = new Player("Cheater", 42);
-        Assert.AreEqual(-999, cheatingPlayer.PlayerRemainingMoves);
-
-        //---assigning a correct value.--- 
-        Player correctPlayer = new Player("Borsti", 20);
-        Assert.AreEqual(20, correctPlayer.PlayerRemainingMoves);
-
-        CommandMove cmove = new CommandMove("2f2de19a291c41b5ae950faa11162e07", 5);
-
-        cmove.TargetPlayer = correctPlayer;
-        cm.AddCommand(cmove);
-
-        Assert.IsTrue(cm.HasPendingCommands);
-
-        cm.ProcessPendingTransactions();
-        Assert.AreEqual(15, correctPlayer.PlayerRemainingMoves);
-    }
-    */
-
     [TestClass]
     public class UnitTestItems
     {
@@ -960,28 +922,7 @@ namespace UnitTest
             //Assert.AreEqual(3, field12.Item.Duration);
 
         }
-        /*
-        [TestMethod]
-        [ExpectedException(typeof(System.ArgumentException))]
-        public void CantSetDurationForExtralife()
-        {
-            Field field13 = new Field(1, 19, new Floor());
-            field13.Item = new ExtraLife();
-
-            field13.Item.Duration = 13; 
-        }
-
-        
-        [TestMethod]
-        [ExpectedException(typeof(System.ArgumentException))]
-        public void ExtralifeHasNoDuration()
-        {
-            Field field14 = new Field(11, 1, new Floor());
-            field14.Item = new ExtraLife();
-
-            int test = field14.Item.Duration; 
-        }
-        */
+    
 
         [TestMethod]
         public void PlayerCollectItem()
@@ -1015,20 +956,7 @@ namespace UnitTest
 
         }
 
-        /*
-        [TestMethod]
-        [ExpectedException(typeof(System.ArgumentException))]
-        public void ItemOutOfRange()
-        {
-            Monster player3 = new Monster("monster", new MeleeFighter(), 6, 7);
-            Field field17 = new Field(7, 7, new Floor());
-            Field field18 = new Field(6, 7, new Floor());
-            field17.Item = new DefenseBoost(2);
-
-            player3.CollectItem(field17.Item);  
-        }
-        */
-
+     
         [TestMethod]
         public void IgnoreExtralife()
         {
@@ -1173,59 +1101,6 @@ namespace UnitTest
     {
         public const int MAX_PLAYER = 4;
 
-        /*
-        [TestMethod]
-        public void DecrementItemDurationAndDelete()
-        {//need number of max. clients
-
-            Hero player1 = new Hero("hero", new RangeFighter(), 12, 1);
-            Monster player2 = new Monster("monster", new RangeFighter(), 2, 3);
-            Monster player3 = new Monster("monster", new RangeFighter(), 10, 11);
-            Monster player4 = new Monster("monster", new RangeFighter(), 11, 10);
-            Field field1 = new Field(12, 2, new Floor());
-            Field field2 = new Field(2, 4, new Floor());
-            field1.Item = new DefenseBoost(2);
-            field2.Item = new AttackBoost(3);  
-
-            CommandGameMove cmove1 = new CommandGameMove("1jhb2h48325sdf5", 12, 2);
-            cmove1.SourcePlayer = player1; 
-            player1.PlayerRemainingMoves = player1.CharacterType._moveRange; 
-
-            CommandManager cm1 = new CommandManager(); 
-            cm1.AddCommand(cmove1);
-
-            CommandGameMove cmove2 = new CommandGameMove("1jhb2h48325sdf5", 2, 4);
-            cmove2.SourcePlayer = player2; 
-            player2.PlayerRemainingMoves = player2.CharacterType._moveRange; 
-
-            cm1.AddCommand(cmove2);
-            cm1.ProcessPendingTransactions();
-
-            Assert.AreEqual(0.5, player1.DefenseBoost); 
-            Assert.AreEqual(0.75, player2.AttackBoost); 
-
-            TcpClient tcp1 = new TcpClient(); 
-            Game game1 = new Game("asdasd", tcp1); 
-
-            game1.ItemManagement();
-            Assert.IsNotNull(player1.DefenseItem);
-            Assert.AreEqual(0.5, player1.DefenseBoost);
-            Assert.IsNotNull(player2.AttackItem);
-            Assert.AreEqual(0.75, player2.AttackBoost);
-
-            game1.ItemManagement();
-            Assert.IsNotNull(player1.DefenseItem);
-            Assert.AreEqual(0.5, player1.DefenseBoost);
-            Assert.IsNotNull(player2.AttackItem);
-            Assert.AreEqual(0.75, player2.AttackBoost);
-
-            game1.ItemManagement();
-            Assert.IsNull(player1.DefenseItem);
-            Assert.AreEqual(0, player1.DefenseBoost);
-            Assert.IsNull(player2.AttackItem);
-            Assert.AreEqual(0, player2.AttackBoost);
-        }
-        */
 
         [TestMethod]
         public void SwappingItems()
