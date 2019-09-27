@@ -43,8 +43,8 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// generates a tcp client and networkstream to send data or receive data from the server
-        /// Establish a connection to the server and receive the client_ID
+        /// Generates a tcp client and networkstream to send data or receive data from the server.
+        /// Establish a connection to the server and receive the client_ID.
         /// </summary>
         public void ConnectToServer()
         {
@@ -54,7 +54,6 @@ namespace GameLogic.MDC.Client
             {
                 //---create a TCPClient object at the IP and port no.---
                 _masterServer = new TcpClient(_server_IP, _port_NO);
-                //_masterServer.ReceiveTimeout = 3000; // 3 Seconds
                 _masterServer.SendTimeout = 3000; // 3 Seconds
                 _masterServer.SendBufferSize = 524288;
                 _masterServer.ReceiveBufferSize = 524288;
@@ -76,7 +75,7 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Disconnect Client from Server and delete client_ID
+        /// Disconnect Client from Server and delete client_ID.
         /// </summary>
         public void DisconnectFromServer()
         {
@@ -89,20 +88,18 @@ namespace GameLogic.MDC.Client
             else if (_isConnected && _isHost)
             {
                 throw new NotImplementedException();
-                //TODO: Wenn Host disconnected, auf Serverseite alle Clients disconnecten.
             }
             else { throw new ClientIsNotConnectedToServerException(); }
         }
 
         /// <summary>
-        /// Establish a connection to the game session
+        /// Establish a connection to the game session.
         /// </summary>
-        /// <param name="session_ID">The SessionID of the game to be joined</param>
+        /// <param name="session_ID">The SessionID of the game to be joined.</param>
         public void ConnectToGame(string session_ID)
         {
             if (_isConnected)
             {
-                //Console.WriteLine("Connecting to: " + session_ID);
                 CommandServerJoinGame command = new CommandServerJoinGame(_client_ID, session_ID);
                 SendCommandToServer(command);
 
@@ -117,8 +114,9 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Create a new game session
+        /// Create a new game session.
         /// </summary>
+        /// <param name="levelFileName">File name of the level to be loaded (without file extension).</param>
         public void CreateNewGame(string levelFileName)
         {
             if (_isConnected)
@@ -130,7 +128,6 @@ namespace GameLogic.MDC.Client
                 if (feedback is CommandFeedbackOK)
                 {
                     _gameSession_ID = ReceiveStringFromServer();
-                    //Console.WriteLine("ID of the new Game: " + _gameSession_ID);
                     _isHost = true;
                 }
                 else if (feedback is CommandFeedbackGameException) { throw ((CommandFeedbackGameException)feedback).GameException; }
@@ -168,10 +165,10 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Creates a new player for the client in the current session
+        /// Creates a new player for the client in the current session.
         /// </summary>
-        /// <param name="playerName">Name of the character</param>
-        /// <param name="pClass">The class of character of the character</param>
+        /// <param name="playerName">Name of the character.</param>
+        /// <param name="pClass">The class of character of the character.</param>
         public void CreateNewPlayerForSession(string playerName, CharacterClass pClass)
         {
             if (_isConnected)
@@ -201,8 +198,8 @@ namespace GameLogic.MDC.Client
         /// <summary>
         /// Creates a command to move your character on the playing field.
         /// </summary>
-        /// <param name="x">X Position</param>
-        /// <param name="y">Y Position</param>
+        /// <param name="x">X Position.</param>
+        /// <param name="y">Y Position.</param>
         public void MovePlayer(int x, int y)
         {
             if (_isConnected)
@@ -235,9 +232,9 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Creates a command that lets your character attack another character
+        /// Creates a command that lets your character attack another character.
         /// </summary>
-        /// <param name="client_ID_From_Enemy">The ClientID of the opponent</param>
+        /// <param name="client_ID_From_Enemy">The ClientID of the opponent.</param>
         public void AttackEnemy(string client_ID_From_Enemy)
         {
             if (_isConnected)
@@ -270,7 +267,7 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Ends the player's turn earlier than normal
+        /// Ends the player's turn earlier than normal.
         /// </summary>
         public void EndTurn()
         {
@@ -326,7 +323,7 @@ namespace GameLogic.MDC.Client
         /// </summary>
         private void WaitForNextTurn()
         {
-            _currentStatus = Status.Waiting;///TODO: Muss raus!!! Sonst jeder Spectator wieder im Spiel!!!
+            _currentStatus = Status.Waiting;
 
             Reset:
             CommandFeedback feedback;
@@ -357,17 +354,15 @@ namespace GameLogic.MDC.Client
                     _currentStatus = Status.Busy;
                 } else
                 {
-                    // Turns the spectator temporarily to Busy and then finishes his turn.
-                    // _currentStatus = Status.Busy;
                     goto Reset;
                 }
             }
         }
 
         /// <summary>
-        /// Receive string from server
+        /// Receive string from server.
         /// </summary>
-        /// <returns>Returns the received string</returns>
+        /// <returns>Returns the received string.</returns>
         private string ReceiveStringFromServer()
         {
             NetworkStream nwStream = _masterServer.GetStream();
@@ -378,9 +373,9 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Send string to client
+        /// Send string to client.
         /// </summary>
-        /// <param name="data">String you want to send</param>
+        /// <param name="data">String you want to send.</param>
         private void SendStringToServer(string data)
         {
             NetworkStream nwStream = _masterServer.GetStream();
@@ -390,9 +385,9 @@ namespace GameLogic.MDC.Client
         }
 
         /// <summary>
-        /// Send Command to server
+        /// Send Command to server.
         /// </summary>
-        /// <param name="command">Command you want to send</param>
+        /// <param name="command">Command you want to send.</param>
         private void SendCommandToServer(Command command)
         {
             try
@@ -413,7 +408,7 @@ namespace GameLogic.MDC.Client
         /// Should be called after each command sent to the server: 
         /// Evaluates feedback from the server.
         /// </summary>
-        /// <returns>True: If the command was successfully processed by the server. False: If command could not be executed.</returns>
+        /// <returns>The received feedback command or null.</returns>
         private CommandFeedback EvaluateFeedback()
         {
             NetworkStream nwStream = _masterServer.GetStream();

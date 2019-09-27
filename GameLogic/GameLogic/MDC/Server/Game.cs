@@ -18,13 +18,11 @@ namespace GameLogic.MDC.Server
     public class Game
     {
         const int MAX_CLIENTS = 4;
-        private int PORT_NO_SESSION;
 
         private List<GameClient> _clientsOfThisGame = new List<GameClient>();
         public List<GameClient> ClientsOfThisGame { get { return _clientsOfThisGame; } }
         private GameClient _currentClient;
         private String _sessionID;
-        CommandManager gcm = new CommandManager();
         protected Level _level;
         protected int gameRound;
         protected Boolean _gameActive;
@@ -69,7 +67,7 @@ namespace GameLogic.MDC.Server
             {
                 Hero main = (Hero)player;
                 _clientsOfThisGame[0].Player = main;
-                //_clientsOfThisGame[0].Player.XPosition = 1; _clientsOfThisGame[0].Player.YPosition = 1;
+
                 _clientsOfThisGame[0].Player.XPosition = (_level.StartingPoints["hero"])[0, 0];
                 _clientsOfThisGame[0].Player.YPosition = (_level.StartingPoints["hero"])[0, 1];
 
@@ -87,25 +85,6 @@ namespace GameLogic.MDC.Server
                         client.Player.XPosition = (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 0];
                         client.Player.YPosition = (_level.StartingPoints["monster" + _clientsOfThisGame.IndexOf(client).ToString()])[0, 1];
 
-                        /*
-                        switch (_clientsOfThisGame.IndexOf(client))
-                        {
-                            case 1:
-                                client.Player.XPosition = 18;
-                                client.Player.YPosition = 1;
-                                break;
-                            case 2:
-                                client.Player.XPosition = 1;
-                                client.Player.YPosition = 18;
-                                break;
-                            case 3:
-                                client.Player.XPosition = 18;
-                                client.Player.YPosition = 18;
-                                break;
-                            default:
-                                break;
-                        }*/
-
                         _level.AddPlayerToLevel(client.Player);
                     }
                 }
@@ -120,7 +99,6 @@ namespace GameLogic.MDC.Server
         /// <param name="characterClass">The class of character of the character</param>
         public void AddPlayerToGame(string client_ID, string playerName, CharacterClass characterClass)
         {
-            //TODO: Wenn Game aktiv, dann nicht zulassen
             if (_clientsOfThisGame[0].Client_ID == client_ID)
             {
                 Hero main;
@@ -157,24 +135,6 @@ namespace GameLogic.MDC.Server
                             default:
                                 throw new NotImplementedException();
                         }
-
-                        /*switch (_clientsOfThisGame.IndexOf(client))
-                        {
-                            case 1:
-                                villain.XPosition = 18;
-                                villain.YPosition = 1;
-                                break;
-                            case 2:
-                                villain.XPosition = 1;
-                                villain.YPosition = 18;
-                                break;
-                            case 3:
-                                villain.XPosition = 18;
-                                villain.YPosition = 18;
-                                break;
-                            default:
-                                break;
-                        }*/
 
                         client.Player = villain;
                         _level.AddPlayerToLevel(client.Player);
@@ -295,7 +255,6 @@ namespace GameLogic.MDC.Server
         {
             if (_level.PlayerList.Count == MAX_CLIENTS)
             {
-                //TODO: Verhindern, dass ein Spiel mehrfach gestartet werden kann.
                 while (GetTcpClientState(_clientsOfThisGame[0].TcpClient))
                 {
                     Console.WriteLine("Du bist dran " + _currentClient.Player.PlayerName);
@@ -333,17 +292,12 @@ namespace GameLogic.MDC.Server
                                     if (_currentClient.Player.PlayerRemainingMoves > 0 && _currentClient.Player.Life > 0 && command.IsCompleted)
                                     {
                                         SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackOK(_currentClient.Client_ID));
-                                        //System.Threading.Thread.Sleep(100);
                                         UpdateClients();
                                     }
                                     else if (command.IsCompleted)
                                     {
                                         SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackEndOfTurn(_currentClient.Client_ID));
                                     }
-                                }
-                                else
-                                {
-                                    // _currentClient.TcpClient.Close();
                                 }
                             }
                             catch (System.Exception ex)
@@ -367,12 +321,10 @@ namespace GameLogic.MDC.Server
                     NextPlayer();
                     Console.WriteLine("####################\n Round: " + gameRound + "\n####################");
                 }
-
-                //throw new NotImplementedException();
             }
             else if (GetTcpClientState(_clientsOfThisGame[0].TcpClient) == false)
             {
-                //TODO: Fall behandeln
+
             }
             else
             {
@@ -393,7 +345,7 @@ namespace GameLogic.MDC.Server
         /// Receive string from client
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
-        /// <returns>Returns the received string</returns>
+        /// <returns>Returns the received string or null</returns>
         private string ReceiveStringFromClient(TcpClient client)
         {
             if (GetTcpClientState(client))
@@ -445,7 +397,7 @@ namespace GameLogic.MDC.Server
         /// Receive Command from client
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
-        /// <returns>Returns the received Command</returns>
+        /// <returns>Returns the received Command or null</returns>
         private CommandGame ReceiveCommandFromClient(TcpClient client)
         {
             if (GetTcpClientState(client))
@@ -479,11 +431,11 @@ namespace GameLogic.MDC.Server
         /// Send Command to client
         /// </summary>
         /// <param name="command">Command you want to send</param>
+        /// <param name="client">Client to which the command is to be sent</param>
         private void SendFeedbackToClient(TcpClient client, CommandFeedback command)
         {
             if (GetTcpClientState(client))
             {
-                //NEW TRY-CATCH
                 try
                 {
                     NetworkStream nwStream = client.GetStream();
@@ -536,10 +488,8 @@ namespace GameLogic.MDC.Server
                     {
                         foreach (var client in _clientsOfThisGame)
                         {
-                            //SendFeedbackToClient(client.TcpClient, new CommandFeedbackEndOfGame());
-                            //Oder ein UpdatePack welches alle über Ende des Spiels informiert
+                            //TODO: Notify clients --> Hero wins
                         }
-                        //TODO: Held gewinnen lassen
                     }
                 }
 
@@ -547,12 +497,12 @@ namespace GameLogic.MDC.Server
 
             if (_clientsOfThisGame[1].Player.Life <= 0 && _clientsOfThisGame[2].Player.Life <= 0 && _clientsOfThisGame[3].Player.Life <= 0)
             {
-                //TODO: Held gewinnen lassen
+                //TODO: Notify clients --> Hero wins
             }
 
             if (_clientsOfThisGame[0].Player.Life <= 0)
             {
-                //TODO: Monster gewinnen lassen
+                //TODO: Notify clients --> Monsters wins
             }
 
             _currentClient.Player.ResetRemainingMoves();
@@ -580,19 +530,6 @@ namespace GameLogic.MDC.Server
             SendFeedbackToClient(_currentClient.TcpClient, new CommandFeedbackYourTurn(_currentClient.Client_ID));
         }
 
-        /// <summary>
-        /// Read the configuration from the config-file and store the value in the corresponding variables.
-        /// </summary>
-        private void ReadConfig()
-        {
-            var data = new Dictionary<string, string>();
-            foreach (var row in File.ReadAllLines("game.config"))
-                data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
-
-            PORT_NO_SESSION = Convert.ToInt32(data["PortNo"]) + 1; //Games should not listen on the same port as the MasterServer
-        }
-
-        //TODO: call after every round
         private void ItemManagement()
         {
             if (gameRound == 10)
@@ -725,7 +662,7 @@ namespace GameLogic.MDC.Server
         }
 
         /// <summary>
-        /// Creates the player client mapping.
+        /// Creates an mapping of player object and client_ID.
         /// </summary>
         /// <returns>The player client mapping.</returns>
         private List<PlayerClientMapping> CreatePlayerClientMapping()

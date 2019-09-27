@@ -1,5 +1,4 @@
 ﻿using System;
-using GameLogic.MDC.Gamedata.PlayerType;
 using GameLogic.MDC.Server;
 
 namespace GameLogic.MDC.Gamedata
@@ -82,6 +81,7 @@ namespace GameLogic.MDC.Gamedata
     {
         public CommandServerAbortGame(string SourceClientID) : base(SourceClientID)
         {
+            throw new NotImplementedException();
         }
 
         public override void Execute()

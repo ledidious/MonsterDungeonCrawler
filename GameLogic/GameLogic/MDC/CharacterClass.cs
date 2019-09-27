@@ -1,5 +1,4 @@
-﻿using System;
-namespace GameLogic.MDC
+﻿namespace GameLogic.MDC
 {
     public enum CharacterClass
     {

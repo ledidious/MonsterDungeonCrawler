@@ -17,9 +17,7 @@ namespace GameLogic.MDC.Server
     {
         static Int32 PORT_NO;
         static string SERVER_IP;
-        //private static TcpListener listener;
         public static Boolean Shutdown { get; set; }
-        //private List<Thread> myThreads;
 
         static private Dictionary<string, Game> _games = new Dictionary<string, Game>(); //sessionID, Game
         static private Dictionary<string, GameClient> _gClients = new Dictionary<string, GameClient>(); //clientID, TcpClient
@@ -31,7 +29,7 @@ namespace GameLogic.MDC.Server
         public static void StartServer()
         {
             ReadConfig();
-            // CommandManager scm = new CommandManager();
+            CommandManager scm = new CommandManager();
 
             //---listen at the specified IP and port no.---
             IPAddress localAdd = IPAddress.Any; //IPAddress.Parse(SERVER_IP);
@@ -45,24 +43,6 @@ namespace GameLogic.MDC.Server
 
             Thread serverThread = new Thread(new ThreadStart(() => ServerOperation(listener)));
             serverThread.Start();
-
-            // // Keep the Server alive
-            // while (Shutdown == false)
-            // {
-
-            // }
-
-            // while (Shutdown == false)
-            // {
-            //     TcpClient tcpClient = listener.AcceptTcpClient();
-
-            //     Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
-            //     clientThread.Start();
-            // }
-
-
-
-            // listener.Stop();
         }
 
         /// <summary>
@@ -73,14 +53,14 @@ namespace GameLogic.MDC.Server
         {
             listener.Start();
             while (Shutdown == false)
-            {//NEW TRY-CATCH
+            {
                 try
                 {
                     TcpClient tcpClient = listener.AcceptTcpClient();
                     tcpClient.SendBufferSize = 524288;
                     tcpClient.ReceiveBufferSize = 524288;
 
-                    Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, new CommandManager())));
+                    Thread clientThread = new Thread(new ThreadStart(() => ClientInteraction(tcpClient, scm)));
                     clientThread.Start();
                 }
                 catch (Exception ex)
@@ -89,9 +69,6 @@ namespace GameLogic.MDC.Server
                     Console.WriteLine("Recover Server....");
                 }
             }
-
-            // System.Threading.Thread.CurrentThread.Abort();
-            // System.Threading.Thread.CurrentThread.Join();            
         }
 
         /// <summary>
@@ -127,9 +104,6 @@ namespace GameLogic.MDC.Server
             {
                 Console.WriteLine(ex.Message);
             }
-            // gClient.TcpClient.Close();
-            ////System.Threading.Thread.CurrentThread.Abort();
-            //System.Threading.Thread.CurrentThread.Join();
         }
 
         /// <summary>
@@ -137,21 +111,7 @@ namespace GameLogic.MDC.Server
         /// </summary>
         public static void StopServer()
         {
-            Console.WriteLine("Shuting down Server...");
-            Shutdown = true;
-            // listener.Stop();
-
-            foreach (var item in _gClients)
-            {
-                item.Value.TcpClient.Close();
-            }
-
-            // ProcessThreadCollection currentThreads = Process.GetCurrentProcess().Threads;
-
-            // foreach (ProcessThread thread in currentThreads)
-            // {
-            //     thread.Id
-            // }
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -265,19 +225,13 @@ namespace GameLogic.MDC.Server
         {
             try
             {
-                // foreach (var item in _games.GetValueOrDefault(session_ID).ClientsOfThisGame)
-                // {
-                //     item.IsInGame = true;
-                // }
                 Thread gameThread = new Thread(new ThreadStart(() => _games[session_ID].RunGame()));
                 gameThread.Start();
-                // _games.GetValueOrDefault(session_ID).StartGame();
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackOK(client_ID));
                 _gClients[client_ID].IsInGame = true;
             }
             catch (NotEnoughPlayerInGameException e)
             {
-                //TODO: Evtl. noch andere Excepptions abfangen, da alles über diese Methode läuft?!
                 SendFeedbackToClient(_gClients[client_ID].TcpClient, new CommandFeedbackGameException(client_ID, e));
             }
         }
@@ -323,7 +277,7 @@ namespace GameLogic.MDC.Server
         /// Receive string from client
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
-        /// <returns>Returns the received string</returns>
+        /// <returns>Returns the received string or null</returns>
         private static string ReceiveStringFromClient(TcpClient client)
         {
             if (GetTcpClientState(client))
@@ -375,7 +329,7 @@ namespace GameLogic.MDC.Server
         /// Receive Command from client
         /// </summary>
         /// <param name="client">TcpClient from which data is to be received.</param>
-        /// <returns>Returns the received Command</returns>
+        /// <returns>Returns the received Command or null</returns>
         private static Command ReceiveCommandFromClient(TcpClient client)
         {
             if (GetTcpClientState(client))
@@ -412,7 +366,6 @@ namespace GameLogic.MDC.Server
         {
             if (GetTcpClientState(client))
             {
-                //NEW TRY-CATCH
                 try
                 {
                     NetworkStream nwStream = client.GetStream();

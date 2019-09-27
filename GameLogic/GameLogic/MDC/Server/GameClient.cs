@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Threading;
 using GameLogic.MDC.Gamedata.PlayerType;
 
 namespace GameLogic.MDC.Server
@@ -12,7 +11,6 @@ namespace GameLogic.MDC.Server
         public String Client_ID { get; }
         public Boolean IsInGame { get; set; }
         public Boolean IsHost { get; set; }
-        private Thread myThread;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:GameLogic.MDC.Server.GameClient"/> class.
@@ -24,16 +22,6 @@ namespace GameLogic.MDC.Server
             this.TcpClient = client;
             this.Client_ID = client_ID;
             this.IsInGame = false;
-            myThread = System.Threading.Thread.CurrentThread;
-        }
-
-        /// <summary>
-        /// Kills the thread.
-        /// </summary>
-        public void killThread()
-        {
-            myThread.Abort();
-            myThread.Join();
         }
     }
 }
